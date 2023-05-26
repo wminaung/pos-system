@@ -3,11 +3,7 @@ import { prisma } from "@/utils/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import colors from "colors";
-import { user } from "@prisma/client";
-
-type Data = {
-  name: string;
-};
+import type { user as User } from "@prisma/client";
 
 export default async function handler(
   req: NextApiRequest,
@@ -187,58 +183,10 @@ const handleGetRequest = async (
 
   const data = await getData(user);
   return res.status(200).json(data);
-  /*
-  const companyId = user.company_id;
-  const locations = await prisma.location.findMany({
-    where: {
-      company_id: companyId,
-    },
-    orderBy: {
-      id: "asc",
-    },
-  });
-  const locationIds = locations.map((location) => location.id);
-  const menusLocations = await prisma.menu_location.findMany({
-    where: {
-      location_id: {
-        in: locationIds,
-      },
-    },
-  });
-  const menuIds = menusLocations.map((menuLocation) => menuLocation.menu_id);
-  const menus = await prisma.menu.findMany({
-    where: {
-      id: {
-        in: menuIds,
-      },
-    },
-  });
-
-  const menusMenuCategories = await prisma.menu_menu_category.findMany({
-    where: {
-      menu_id: {
-        in: menuIds,
-      },
-    },
-  });
-  const menuCategories = await prisma.menu_category.findMany();
-  const addonCategories = await prisma.addon_category.findMany();
-  const addons = await prisma.addon.findMany();
-
-  return res.status(200).json({
-    menus,
-    menuCategories,
-    addons,
-    addonCategories,
-    locations,
-    menusLocations,
-    menusMenuCategories,
-    selectedLocationId: locations[0].id,
-  });*/
 };
 
 // TODO
-const getData = async (user: user) => {
+const getData = async (user: User) => {
   const companyId = user.company_id;
   const locations = await prisma.location.findMany({
     where: {

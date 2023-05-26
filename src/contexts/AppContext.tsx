@@ -80,7 +80,7 @@ export const AppProvider = ({ children }: Props) => {
   useEffect(() => {
     // session && fetchData();
     session && fetchData();
-  }, [session?.user]);
+  }, [session]);
 
   const headersObj = {
     Authorization: `Bearer ${accessToken}`,
