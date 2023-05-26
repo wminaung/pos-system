@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model addon {
+  id                Int             @id @default(autoincrement())
+  name              String
+  addon_category_id Int?
+  price             Int
+  addon_category    addon_category? @relation(fields: [addon_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model addon_category {
+  id                  Int                   @id @default(autoincrement())
+  name                String
+  is_required         Boolean               @default(true)
+  addon               addon[]
+  menu_addon_category menu_addon_category[]
+}
+
+model company {
+  id       Int        @id @default(autoincrement())
+  name     String?
+  location location[]
+  user     user[]
+}
+
+model location {
+  id            Int             @id @default(autoincrement())
+  name          String
+  address       String?
+  company_id    Int
+  company       company         @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  menu_location menu_location[]
+}
+
+model menu {
+  id                  Int                   @id @default(autoincrement())
+  name                String
+  price               Int
+  image_url           String?
+  description         String                @default("")
+  menu_addon_category menu_addon_category[]
+  menu_location       menu_location[]
+  menu_menu_category  menu_menu_category[]
+}
+
+model menu_addon_category {
+  id                Int            @id @default(autoincrement())
+  menu_id           Int
+  addon_category_id Int
+  addon_category    addon_category @relation(fields: [addon_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  menu              menu           @relation(fields: [menu_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model menu_category {
+  id                 Int                  @id @default(autoincrement())
+  name               String
+  menu_menu_category menu_menu_category[]
+}
+
+model menu_location {
+  id           Int      @id @default(autoincrement())
+  menu_id      Int
+  location_id  Int
+  is_available Boolean? @default(true)
+  location     location @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  menu         menu     @relation(fields: [menu_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model menu_menu_category {
+  id               Int           @id @default(autoincrement())
+  menu_id          Int
+  menu_category_id Int
+  menu_category    menu_category @relation(fields: [menu_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  menu             menu          @relation(fields: [menu_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user {
+  id         Int     @default(autoincrement())
+  email      String  @unique(map: "unique_email")
+  name       String
+  password   String  @default("")
+  company_id Int     @default(3)
+  image      String?
+  company    company @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

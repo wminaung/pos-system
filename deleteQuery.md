@@ -1,0 +1,10 @@
+delete from menu_addon_category;
+delete from menu_category;
+delete from menu_location;
+delete from menu_menu_category;
+delete from menu;
+delete from location;
+delete from addon;
+delete from addon_category;
+delete from PUBLIC.user;
+delete from company;
