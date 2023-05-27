@@ -24,8 +24,13 @@ import {
   UpdateAddonQuery,
   defaultAppUpdateContext,
 } from "./AppUpdateContext";
-import { getAccessToken, getSelectedLocationId } from "@/utils";
+import {
+  getAccessToken,
+  getSelectedLocationId,
+  setSelectedLocationId,
+} from "@/utils";
 import { useSession } from "next-auth/react";
+import { useGetData } from "@/hooks/useGetData";
 
 interface AppContextType {
   menus: Menu[];
@@ -75,23 +80,22 @@ export const AppProvider = ({ children }: Props) => {
 
   const { data: session, status } = useSession();
   console.log("session", session);
-  console.log("AllData", data);
+  console.log("AllData", { data });
 
   useEffect(() => {
     // session && fetchData();
     session && fetchData();
   }, [session]);
 
-  const headersObj = {
-    Authorization: `Bearer ${accessToken}`,
-  };
+  useEffect(() => {
+    selectedLocationId && setSelectedLocationId(selectedLocationId);
+  }, [selectedLocationId]);
 
   // ? fetch all data
   const fetchData = async (callback?: (error?: any, data?: any) => void) => {
-    updateData({ ...data, isFetch: true });
+    updateData({ ...data });
     const res = await fetch(`${config.apiBaseUrl}/app`);
 
-    // if (res.status === 401) return (window.location.href = "/logout");
     if (!res.ok) return; // console.log(res.status, res.statusText);
 
     const resData = await res.json();
@@ -109,7 +113,6 @@ export const AppProvider = ({ children }: Props) => {
     /*
     todo test
     */
-
     updateData({
       ...data,
       menus,
@@ -130,7 +133,9 @@ export const AppProvider = ({ children }: Props) => {
     //! ---------------------- menus ----------------------
 
     // ? create -> Menu
-
+    const headersObj = {
+      Authorization: `Bearer ${accessToken}`,
+    };
     const createMenu = async (
       payload: CreateMenuPayload,
       callback?: (error?: any, data?: any) => void

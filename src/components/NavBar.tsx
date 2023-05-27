@@ -78,7 +78,6 @@ const NavBar = ({ title }: Props) => {
   const { locations } = useApp();
   const { data: session, status } = useSession();
   const router = useRouter();
-  const selectedLocationId = getSelectedLocationId();
 
   const profileImageUrl = session?.user?.image ?? "";
   const profleName = session?.user?.name ?? "no-name";
@@ -113,7 +112,7 @@ const NavBar = ({ title }: Props) => {
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                <Avatar src="" alt="Your Profile" />
+                <Avatar src={profileImageUrl} alt="Your Profile" />
               </ListItemIcon>
               <ListItemText primary={profleName} />
             </ListItemButton>

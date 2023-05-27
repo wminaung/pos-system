@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import { useApp, useAppUpdate } from "@/contexts/AppContext";
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
+import { config } from "@/config/config";
 
 const MenuCategoryDetail = () => {
   //********************* */
@@ -26,24 +27,46 @@ const MenuCategoryDetail = () => {
 
   console.log({ id, name });
 
-  const handeleUpdateMenuCategory = () => {
+  const handeleUpdateMenuCategory = async () => {
     const nametoUpdate = nameRef.current?.value || "";
 
     const payload = { name: nametoUpdate };
-
+    const res = await fetch(
+      `${config.apiBaseUrl}/menuCategories/${menuCategoryId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!res.ok) {
+      console.log(await res.json());
+      return alert("you can't update this mcat");
+    }
+    console.log(await res.json());
+    await fetchData();
     // updateMenuCategory({ menuCategoryId, payload }, (error, data) => {
     //   console.log({ error, data }, "updatemcat");
     // });
   };
-  const handleDeleteMenuCategory = () => {
-    // deleteMenuCategory(menuCategoryId, (error, data) => {
-    //   console.log({ error, data }, "deletemcat");
-    //   if (data) {
-    //     router.push("/backoffice/menu-categories");
-    //   }
-    // });
-  };
 
+  const handleDeleteMenuCategory = async () => {
+    const res = await fetch(
+      `${config.apiBaseUrl}/menuCategories/${menuCategoryId}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!res.ok) {
+      console.log(await res.json());
+      return alert("you can't delete this mcat");
+    }
+    console.log(await res.json());
+    await fetchData();
+    router.push("/backoffice/menu-categories");
+  };
   return (
     <Layout title="Edit Menu Category">
       <Box

@@ -36,14 +36,13 @@ const handleGetRequest = async (
   console.log(
     colors.bold.bgGreen("<server session>\n"),
     session,
-    colors.bold.bgGreen("\n</server session>")
+    colors.bold.bgGreen("\n</server session>\n")
   );
 
   if (!session || !session?.user || !session.user.email) {
     return res
       .status(404)
       .json({ message: "email not exists--> check middleware header" });
-    return;
   }
 
   const user = await prisma.user.findUnique({
@@ -203,6 +202,7 @@ const getData = async (user: User) => {
         in: locationIds,
       },
     },
+    orderBy: { id: "asc" },
   });
   const menuIds = menusLocations.map((menuLocation) => menuLocation.menu_id);
   const menus = await prisma.menu.findMany({
@@ -211,6 +211,7 @@ const getData = async (user: User) => {
         in: menuIds,
       },
     },
+    orderBy: { id: "asc" },
   });
 
   const menusMenuCategories = await prisma.menu_menu_category.findMany({
@@ -219,10 +220,17 @@ const getData = async (user: User) => {
         in: menuIds,
       },
     },
+    orderBy: { id: "asc" },
   });
-  const menuCategories = await prisma.menu_category.findMany();
-  const addonCategories = await prisma.addon_category.findMany();
-  const addons = await prisma.addon.findMany();
+  const menuCategories = await prisma.menu_category.findMany({
+    orderBy: { id: "asc" },
+  });
+  const addonCategories = await prisma.addon_category.findMany({
+    orderBy: { id: "asc" },
+  });
+  const addons = await prisma.addon.findMany({
+    orderBy: { id: "asc" },
+  });
 
   return {
     menus,

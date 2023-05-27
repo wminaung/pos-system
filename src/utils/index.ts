@@ -7,3 +7,11 @@ export const getSelectedLocationId = () => {
     return localStorage.getItem("selectedLocation");
   return "";
 };
+export const setSelectedLocationId = (selectedLocationId: string) => {
+  if (typeof window !== "undefined")
+    return localStorage.setItem(
+      "selectedLocationId",
+      String(selectedLocationId)
+    );
+  return "";
+};

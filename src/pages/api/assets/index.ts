@@ -37,7 +37,7 @@ export default function handler(
 }
 
 // TODO - handle image upload
-const handlePostRequest = (
+const handlePostRequest = async (
   req: CustomNextApiRequest,
   res: CustomNextApiResponse
 ) => {

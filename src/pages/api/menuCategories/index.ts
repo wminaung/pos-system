@@ -34,26 +34,15 @@ const handlePostRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name, price, description, location_ids, imageUrl } = req.body;
+  const { name } = req.body;
 
   console.log(req.body, "reg");
-  if (!name || price < 0 || !description || !imageUrl)
-    return res
-      .status(404)
-      .json({ error: "name,description,imageUrl & price are needed" });
+  if (!name) return res.status(404).json({ error: "name are needed" });
 
   try {
-    const newMenus = await prisma.menu.create({
+    const newMenus = await prisma.menu_category.create({
       data: {
         name,
-        price,
-        description,
-        image_url: imageUrl,
-        menu_location: {
-          createMany: {
-            data: location_ids.map((location_id: number) => ({ location_id })),
-          },
-        },
       },
     });
 

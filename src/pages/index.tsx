@@ -15,20 +15,19 @@ export default function Home() {
 
   const { isFetch } = useApp();
 
-  if (isFetch) {
-    console.log(isFetch);
-    return (
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isFetch}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
-  }
-
   return (
     <Layout>
+      {isFetch ? (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isFetch}
+          timeout={3000}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      ) : (
+        <span></span>
+      )}
       <button onClick={() => fetchData()}>click</button>
     </Layout>
   );

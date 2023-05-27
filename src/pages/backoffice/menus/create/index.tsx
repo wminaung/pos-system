@@ -22,14 +22,22 @@ import Layout from "@/components/Layout";
 const CreateMenu = () => {
   const [loading, setLoading] = useState(false);
   const [menuImage, setMenuImage] = useState<File>();
-  const [menu, setMenu] = useState<Menu>({} as Menu);
-  const [selectedLocationIds, setSelectedLocationIds] = useState<number[]>([]);
+  const [menu, setMenu] = useState<Menu>({
+    description: "",
+    location_ids: [],
+    name: "",
+    price: 0,
+    image_url: "",
+  } as Menu);
+
+  const { selectedLocationId } = useApp();
 
   useEffect(() => {
-    const selectedLocationId = Number(localStorage.getItem("selectedLocation"));
-    setSelectedLocationIds([selectedLocationId]);
-    setMenu({ ...menu, location_ids: [selectedLocationId] });
-  }, []);
+    setMenu({
+      ...menu,
+      location_ids: selectedLocationId ? [Number(selectedLocationId)] : [],
+    });
+  }, [selectedLocationId]);
 
   useEffect(() => {
     console.log("menu : ", menu);
@@ -40,7 +48,7 @@ const CreateMenu = () => {
   console.log(isDisabled);
 
   const { fetchData } = useAppUpdate();
-  const { locations, accessToken } = useApp();
+  const { locations } = useApp();
 
   const onFileSelected = (files: File[]) => {
     setMenuImage(files[0]);
@@ -49,48 +57,54 @@ const CreateMenu = () => {
   const handleCreateMenu = async () => {
     if (!menu.name) return console.log("Please enter menu name");
     setLoading(true);
+    // todo -- need to comment out for image upload
+    try {
+      // const formData = new FormData();
+      // formData.append("files", menuImage as Blob);
+      // const response = await fetch(`${config.apiBaseUrl}/assets`, {
+      //   method: "POST",
+      //   body: formData,
+      // });
 
-    const formData = new FormData();
-    formData.append("files", menuImage as Blob);
-    const response = await fetch(`${config.apiBaseUrl}/assets`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: formData,
-    });
+      // if (response.ok) {
+      //   const imageRes = await response.json();
+      //   const imageUrl = imageRes.assetUrl as string;
+      let imageUrl = "/test.png";
+      if (imageUrl) {
+        console.log("imageurl", imageUrl);
+        const payload = { ...menu, imageUrl: imageUrl };
 
-    if (response.ok) {
-      const imageRes = await response.json();
-      const imageUrl = imageRes.assetUrl as string;
-      const { location_ids, name, price, description } = menu;
-      const payload = { location_ids, name, price, description, imageUrl };
-      const res = await fetch(`${config.apiBaseUrl}/menus`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) return alert("fail");
-      console.log(await res.json());
-      await fetchData();
-      //   createMenu(
-      //     {
-      //       description,
-      //       locationIds: location_ids,
-      //       name,
-      //       price,
-      //       imageUrl: imageUrl,
-      //     },
-      //     (error, data) => {
-      //       setLoading(false);
-      //       if (error) console.log({ error });
-      //       console.log("menu created", data);
-      //     }
-      //   );
-    } else {
+        console.log("payload", payload);
+
+        const res = await fetch(`${config.apiBaseUrl}/menus`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("fail res.ok");
+        console.log(await res.json());
+        await fetchData();
+        setLoading(false);
+        //   createMenu(
+        //     {
+        //       description,
+        //       locationIds: location_ids,
+        //       name,
+        //       price,
+        //       imageUrl: imageUrl,
+        //     },
+        //     (error, data) => {
+        //       setLoading(false);
+        //       if (error) console.log({ error });
+        //       console.log("menu created", data);
+        //     }
+        //   );
+        // } else {
+        //   setLoading(false);
+      }
+    } catch (error) {
       setLoading(false);
     }
   };
@@ -114,7 +128,6 @@ const CreateMenu = () => {
   const handleChange = (event: SelectChangeEvent<any>) => {
     const changeValues = event.target.value as number[];
 
-    setSelectedLocationIds(changeValues);
     setMenu({ ...menu, location_ids: changeValues });
   };
 
@@ -134,6 +147,7 @@ const CreateMenu = () => {
             label="Name"
             variant="outlined"
             sx={{ mb: 2 }}
+            value={menu.name}
             onChange={(evt) => setMenu({ ...menu, name: evt.target.value })}
           />
           <TextField
@@ -141,6 +155,7 @@ const CreateMenu = () => {
             variant="outlined"
             type="number"
             sx={{ mb: 2 }}
+            value={menu.price}
             onChange={(evt) =>
               setMenu({ ...menu, price: parseInt(evt.target.value, 10) })
             }
@@ -152,6 +167,7 @@ const CreateMenu = () => {
             minRows={2}
             placeholder="Description..."
             size="lg"
+            value={menu.description}
             onChange={(evt) =>
               setMenu({ ...menu, description: evt.target.value })
             }
@@ -162,11 +178,11 @@ const CreateMenu = () => {
               labelId="demo-multiple-checkbox-label"
               id="demo-multiple-checkbox"
               multiple
-              value={selectedLocationIds}
+              value={menu.location_ids}
               onChange={handleChange}
               input={<OutlinedInput label="Tag" />}
               renderValue={(values) => {
-                const locationNames = selectedLocationIds.map(
+                const locationNames = menu.location_ids.map(
                   (selectedLocationId) =>
                     locations.find(
                       (location) => location.id === selectedLocationId
@@ -178,7 +194,7 @@ const CreateMenu = () => {
               MenuProps={MenuProps}
             >
               {locations.map((location) => {
-                const isChecked = selectedLocationIds.includes(
+                const isChecked = menu.location_ids.includes(
                   location.id as number
                 );
 

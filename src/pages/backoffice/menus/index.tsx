@@ -24,19 +24,12 @@ const MenusPage = () => {
   const { menus, menusLocations, selectedLocationId, isFetch } = useApp();
   const { fetchData } = useAppUpdate();
 
-  console.log({ menus });
-  console.log({ menusLocations, selectedLocationId });
   const validMenusLocations = menusLocations
     .filter(
       (menuLocation) => String(menuLocation.location_id) === selectedLocationId
     )
     .map((menuLocation) => menuLocation.menu_id);
-  console.log(
-    menusLocations.filter((menuLocation) => {
-      console.log(String(menuLocation.location_id), String(selectedLocationId));
-      return String(menuLocation.location_id) === String(selectedLocationId);
-    })
-  );
+
   const filteredMenu = menus.filter((menu) =>
     validMenusLocations.includes(menu.id as number)
   );
@@ -138,7 +131,7 @@ const MenusPage = () => {
                     cursor: "pointer",
                   }}
                 >
-                  Delete Dish
+                  Delete Dish {menu.id}
                 </CardActions>
               </Card>
             </Box>

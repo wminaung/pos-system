@@ -43,7 +43,8 @@ const MenuDetail = () => {
   // **************************************************
   // **************************************************
   // **************************************************
-  const { menus, menuCategories, menusMenuCategories, accessToken } = useApp();
+  const { menus, selectedLocationId, menuCategories, menusMenuCategories } =
+    useApp();
   const { fetchData } = useAppUpdate();
   const [selectedMenuCatIds, setSelectedMenuCatIds] = useState<number[]>([]);
   const [oldSelectedMenuCatIds, setOldSelectedMenuCatIds] = useState<number[]>(
@@ -58,7 +59,6 @@ const MenuDetail = () => {
   const theme = useTheme();
 
   const menuId = parseInt(menuIdStr as string, 10);
-  console.log(menuId, "middddddddd");
 
   const hasMenu = menus.find((menu) => menu.id === menuId);
 
@@ -91,8 +91,16 @@ const MenuDetail = () => {
       </Stack>
     );
   }
-  const { name, price, description, location_ids, image_url } = menu;
-
+  const {
+    name,
+    price,
+    description,
+    image_url,
+    location_ids,
+    addon_category_id,
+    menu_category_id,
+  } = menu;
+  console.log({ menu }, "adsffffffffffffffffffff");
   // todo UPDATE
   const handleUpdateMenu = async () => {
     // console.log(menu, selectedMenuCatIds);
@@ -111,9 +119,7 @@ const MenuDetail = () => {
       formData.append("files", menuImage as Blob);
       const response = await fetch(`${config.apiBaseUrl}/assets`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+
         body: formData,
       });
 
@@ -126,6 +132,7 @@ const MenuDetail = () => {
     } else {
       imageUrl = oldImageUrl;
     }
+
     if (
       name === oldName &&
       price === oldPrice &&
@@ -136,19 +143,20 @@ const MenuDetail = () => {
     ) {
       return alert("you can't update");
     }
+
     const payload = {
       name,
       price,
       description,
       imageUrl,
       menuCategoryIds: selectedMenuCatIds,
+      locationIds: [Number(selectedLocationId)],
     };
 
     const menuRes = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(payload),
     });
@@ -158,21 +166,6 @@ const MenuDetail = () => {
     }
     fetchData();
     console.log(await menuRes.json());
-    // updateMenu(
-    //   {
-    //     menuId,
-    //     payload: {
-    //       name,
-    //       price,
-    //       description,
-    //       imageUrl,
-    //       menuCategoryIds: selectedMenuCatIds,
-    //     },
-    //   },
-    //   (err, data) => {
-    //     return console.log(err, data, "e:d");
-    //   }
-    // );
   };
 
   const handleDeleteMenu = async () => {
@@ -180,9 +173,6 @@ const MenuDetail = () => {
     if (!isConfirm) return;
     const res = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
     });
     if (!res.ok) {
       console.log(await res.json());
@@ -190,8 +180,8 @@ const MenuDetail = () => {
     }
     const resData = await res.json();
     console.log(resData, "resData");
-    fetchData();
-    // deleteMenu(menuId, () => router.push("/backoffice/menus"));
+    await fetchData();
+    await router.push("/backoffice/menus");
   };
   const handleChange = (event: SelectChangeEvent<number[]>) => {
     const {

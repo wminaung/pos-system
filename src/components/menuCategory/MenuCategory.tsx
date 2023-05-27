@@ -10,6 +10,7 @@ import {
 import { useAppUpdate } from "../../contexts/AppContext";
 import { MenuCategory as MenuCategoryType } from "../../typings/types";
 import Link from "next/link";
+import { config } from "@/config/config";
 
 interface Props {
   menuCategory: MenuCategoryType;
@@ -20,9 +21,18 @@ const MenuCategory = ({ menuCategory }: Props) => {
   const { fetchData } = useAppUpdate();
 
   const handleDeleteMenuCategory = async (menuCategoryId: number) => {
-    // deleteMenuCategory(menuCategoryId, (error, data) => {
-    //   console.log({ error, data });
-    // });
+    const res = await fetch(
+      `${config.apiBaseUrl}/menuCategories/${menuCategoryId}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!res.ok) {
+      console.log(await res.json());
+      return alert("you can't delete this mcat");
+    }
+    console.log(await res.json());
+    await fetchData();
   };
 
   return (

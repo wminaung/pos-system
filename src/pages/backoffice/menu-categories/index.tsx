@@ -1,49 +1,65 @@
-import { Box, Button, Divider, FormControl, TextField } from "@mui/material";
-import { useRef } from "react";
+import {
+  Box,
+  Button,
+  Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
+
+import { useState } from "react";
 import { useApp, useAppUpdate } from "@/contexts/AppContext";
 import MenuCategory from "@/components/menuCategory/MenuCategory";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
 
-// const menuCategories = [
-//   { id: 1, name: "hot dish" },
-//   { id: 2, name: "cold dish" },
-//   { id: 3, name: "most popular" },
-// ];
+import type { MenuCategory as MenuCat, ShowCatOption } from "@/typings/types";
 
 const MenuCategories = () => {
-  // const [selectedMenuCat, setSelectedMenuCat] = useState<number>(1);
-
-  const nameRef = useRef<any>(null);
+  const [menuCat, setMenuCat] = useState({
+    name: "",
+  } as MenuCat);
 
   const { menuCategories, menus, menusLocations, menusMenuCategories } =
     useApp();
-  const { accessToken, selectedLocationId } = useApp();
+  const { selectedLocationId } = useApp();
   const { fetchData } = useAppUpdate();
 
-  console.log("menu-cat", {
-    menuCategories,
-    menus,
-    menusLocations,
-    menusMenuCategories,
-    selectedLocationId,
-  });
+  const [showCat, setShowCat] = useState<ShowCatOption>("all");
 
-  const munusAtLocation = menusLocations
+  const handleChange = (event: SelectChangeEvent) => {
+    setShowCat(event.target.value as string as ShowCatOption);
+  };
+
+  const munusAtLocationIds = menusLocations
     .filter((ml) => ml.location_id === Number(selectedLocationId))
     .map((ml) => ml.menu_id);
 
   const filterMenuCategories = menuCategories.filter((mennuCategory) =>
-    munusAtLocation.some((ml) =>
+    munusAtLocationIds.some((menuAtlocationId) =>
       menusMenuCategories.some(
-        (mmc) => mmc.menu_id === ml && mmc.menu_category_id === mennuCategory.id
+        (mmc) =>
+          mmc.menu_id === menuAtlocationId &&
+          mmc.menu_category_id === mennuCategory.id
       )
     )
   );
-  console.log("filter menu cat", filterMenuCategories);
+  const notAvailableMenuCategories = menuCategories.filter(
+    (mennuCategory) =>
+      !munusAtLocationIds.some((menuAtlocationId) =>
+        menusMenuCategories.some(
+          (mmc) =>
+            mmc.menu_id === menuAtlocationId &&
+            mmc.menu_category_id === mennuCategory.id
+        )
+      )
+  );
 
   const handleCreateMenuCategory = async () => {
-    const name = nameRef.current.value.trim();
+    const { name } = menuCat;
 
     if (!name) {
       return alert("name & price are needed");
@@ -54,7 +70,6 @@ const MenuCategories = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(payload),
     });
@@ -66,17 +81,7 @@ const MenuCategories = () => {
     const data = await res.json();
     console.log("create success", data);
     fetchData();
-
-    // createMenuCategory({ name }, (error, data) => {
-    //   console.log({ error, data });
-    // });
   };
-
-  // const menuCategoryItems = menuCategories.map((mcat) => (
-  //   <MenuItem key={mcat.id} value={mcat.id}>
-  //     {mcat.name}
-  //   </MenuItem>
-  // ));
 
   return (
     <Layout title="Menu Categories">
@@ -90,10 +95,16 @@ const MenuCategories = () => {
       >
         <h2 style={{ textAlign: "center" }}>Create a new menu Category</h2>
         <TextField
-          inputRef={nameRef}
+          value={menuCat.name}
+          onChange={(e) => setMenuCat({ ...menuCat, name: e.target.value })}
           label="Name"
           variant="outlined"
           sx={{ mb: 2 }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleCreateMenuCategory();
+            }
+          }}
         />
 
         <Button variant="contained" onClick={handleCreateMenuCategory}>
@@ -101,17 +112,53 @@ const MenuCategories = () => {
         </Button>
       </Box>
       <Divider sx={{ m: 2 }} />
+      <Box sx={{ width: 220, margin: "0 auto" }}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">show Cat</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={showCat}
+            label="show Cat"
+            onChange={handleChange}
+          >
+            <MenuItem value={"all" as ShowCatOption}>show all</MenuItem>
+            <MenuItem value={"available" as ShowCatOption}>available</MenuItem>
+            <MenuItem value={"notAvailable" as ShowCatOption}>
+              not available
+            </MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
       <Box
         display={"flex"}
         flexWrap={"wrap"}
         alignItems={"center"}
         justifyContent={"center"}
       >
-        {filterMenuCategories.map((menuCategory) => {
-          return (
+        {showCat === "available" ? (
+          filterMenuCategories.map((menuCategory) => {
+            return (
+              <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
+            );
+          })
+        ) : (
+          <span></span>
+        )}
+        {showCat === "all" ? (
+          menuCategories.map((menuCategory) => (
             <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
-          );
-        })}
+          ))
+        ) : (
+          <span></span>
+        )}
+        {showCat === "notAvailable" ? (
+          notAvailableMenuCategories.map((menuCategory) => (
+            <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
+          ))
+        ) : (
+          <span></span>
+        )}
       </Box>
     </Layout>
   );
