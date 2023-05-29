@@ -44,17 +44,20 @@ const Locations = () => {
     ) {
       // todo --> update loction
       const accessToken = localStorage.getItem("accessToken");
-      const res = await fetch(`${config.apiBaseUrl}/locations/${locationId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          name: newLocation.name,
-          address: newLocation.address,
-        }),
-      });
+      const res = await fetch(
+        `${config.backofficeApiBaseUrl}/locations/${locationId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            name: newLocation.name,
+            address: newLocation.address,
+          }),
+        }
+      );
       if (res.ok) {
         const dd = await res.json();
         fetchData();
@@ -74,7 +77,7 @@ const Locations = () => {
       return alert("put all field");
     }
 
-    // const res = await fetch(`${config.apiBaseUrl}/locations`, {
+    // const res = await fetch(`${config.backofficeApiBaseUrl}/locations`, {
     //   method: "POST",
     //   headers: {
     //     "content-type": "application/json",
@@ -98,7 +101,7 @@ const Locations = () => {
       return alert("there is no location");
     }
 
-    // const res = await fetch(`${config.apiBaseUrl}/locations/${loctionId}`, {
+    // const res = await fetch(`${config.backofficeApiBaseUrl}/locations/${loctionId}`, {
     //   method: "DELETE",
 
     // });

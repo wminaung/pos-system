@@ -32,7 +32,7 @@ const MenuCategoryDetail = () => {
 
     const payload = { name: nametoUpdate };
     const res = await fetch(
-      `${config.apiBaseUrl}/menuCategories/${menuCategoryId}`,
+      `${config.backofficeApiBaseUrl}/menuCategories/${menuCategoryId}`,
       {
         method: "PUT",
         headers: {
@@ -54,7 +54,7 @@ const MenuCategoryDetail = () => {
 
   const handleDeleteMenuCategory = async () => {
     const res = await fetch(
-      `${config.apiBaseUrl}/menuCategories/${menuCategoryId}`,
+      `${config.backofficeApiBaseUrl}/menuCategories/${menuCategoryId}`,
       {
         method: "DELETE",
       }

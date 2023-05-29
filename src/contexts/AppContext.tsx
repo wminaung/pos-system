@@ -9,8 +9,7 @@ import {
   Location,
   Menu,
   MenuCategory,
-  MenuLocation,
-  MenuMenuCategory,
+  MenuMenuCategoryLocation,
   UpdateMenuCategoryQuery,
   UpdateMenuQuery,
 } from "../typings/types";
@@ -37,12 +36,10 @@ interface AppContextType {
   menuCategories: MenuCategory[];
   addons: Addon[];
   addonCategories: AddonCategory[];
-  menusMenuCategories: MenuMenuCategory[];
-  menusLocations: MenuLocation[];
+  menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
   locations: Location[];
   accessToken: string | null;
   selectedLocationId?: string | null;
-  isFetch: boolean;
 }
 
 export const defaultAppContext: AppContextType = {
@@ -50,12 +47,10 @@ export const defaultAppContext: AppContextType = {
   menuCategories: [],
   addons: [],
   addonCategories: [],
-  menusMenuCategories: [],
-  menusLocations: [],
+  menusMenuCategoriesLocations: [],
   locations: [],
   accessToken: "",
   selectedLocationId: "",
-  isFetch: false,
 };
 
 const AppContext = createContext(defaultAppContext);
@@ -94,7 +89,7 @@ export const AppProvider = ({ children }: Props) => {
   // ? fetch all data
   const fetchData = async (callback?: (error?: any, data?: any) => void) => {
     updateData({ ...data });
-    const res = await fetch(`${config.apiBaseUrl}/app`);
+    const res = await fetch(`${config.backofficeApiBaseUrl}`);
 
     if (!res.ok) return; // console.log(res.status, res.statusText);
 
@@ -104,8 +99,7 @@ export const AppProvider = ({ children }: Props) => {
       menuCategories,
       addons,
       addonCategories,
-      menusMenuCategories,
-      menusLocations,
+      menusMenuCategoriesLocations,
       locations,
       selectedLocationId,
     } = resData;
@@ -119,316 +113,15 @@ export const AppProvider = ({ children }: Props) => {
       menuCategories,
       addons,
       addonCategories,
-      menusMenuCategories,
-      menusLocations,
+      menusMenuCategoriesLocations,
       locations,
-      isFetch: false,
-      selectedLocationId: getSelectedLocationId() ?? String(selectedLocationId),
+
+      selectedLocationId: getSelectedLocationId() || String(selectedLocationId),
     });
 
     callback && callback(undefined, resData);
   };
 
-  {
-    //! ---------------------- menus ----------------------
-
-    // ? create -> Menu
-    const headersObj = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const createMenu = async (
-      payload: CreateMenuPayload,
-      callback?: (error?: any, data?: any) => void
-    ) => {
-      const { ...menu } = payload;
-
-      const res = await fetch(`${config.apiBaseUrl}/menus`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...headersObj,
-        },
-        body: JSON.stringify(menu),
-      });
-      const data = await res.json();
-      if (!data) {
-        callback && callback("fail to create");
-        return;
-      }
-      await fetchData();
-      callback && callback(undefined, data);
-    };
-
-    // ? delete -> Menu
-    const deleteMenu = async (
-      menuId: number,
-      callback?: (error?: any, data?: any) => void
-    ) => {
-      const res = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
-        method: "DELETE",
-        headers: {
-          ...headersObj,
-        },
-      });
-      const data = await res.json();
-      if (!data) {
-        callback && callback("fail to create");
-        return;
-      }
-      await fetchData();
-      callback && callback(undefined, data);
-    };
-
-    // ? update -> Menu
-    const updateMenu = async (
-      { menuId, payload }: UpdateMenuQuery,
-      callback?: (error?: any, data?: any) => void
-    ) => {
-      try {
-        const mRes = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            ...headersObj,
-          },
-          body: JSON.stringify(payload),
-        });
-        const mData = await mRes.json();
-        if (mData) {
-          await fetchData();
-          callback && callback(undefined, { mData });
-        }
-      } catch (error) {
-        callback && callback(error);
-      }
-
-      return;
-    };
-
-    // ! ---------------------- menu_categories ----------------------
-
-    // ? create
-    const createMenuCategory = async (
-      payload: CreateMenuCategoryPayload,
-      callback?: Callback<any, any>
-    ) => {
-      const res = await fetch(`${config.apiBaseUrl}/menuCategories`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...headersObj,
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!data) {
-        callback && callback("fail to create");
-        return;
-      }
-      await fetchData();
-      callback && callback(undefined, data);
-    };
-
-    // ? delete
-    const deleteMenuCategory = async (
-      menuCategoryId: number,
-      callback?: (error?: any, data?: any) => void
-    ) => {
-      const res = await fetch(
-        `${config.apiBaseUrl}/menuCategories/${menuCategoryId}`,
-        {
-          method: "DELETE",
-          headers: {
-            ...headersObj,
-          },
-        }
-      );
-      const data = await res.json();
-      if (!data) {
-        callback && callback("fail to delete");
-        return;
-      }
-      await fetchData();
-      callback && callback(undefined, data);
-    };
-
-    // ? update -> Menu
-    const updateMenuCategory = async (
-      query: UpdateMenuCategoryQuery,
-      callback?: (error?: any, data?: any) => void
-    ) => {
-      const { menuCategoryId, payload } = query;
-      try {
-        const menuCategoryRes = await fetch(
-          `${config.apiBaseUrl}/menuCategories/${menuCategoryId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              ...headersObj,
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-        const menuCategoryData = await menuCategoryRes.json();
-        if (menuCategoryData) {
-          await fetchData();
-          callback && callback(undefined, { menuCategoryData });
-        }
-      } catch (error) {
-        callback && callback(error);
-      }
-      return;
-    };
-
-    // ! ---------------------- addon_categories ----------------------
-
-    // ? create
-
-    const createAddonCategory = async (
-      payload: CreateAddonCategoryPayload,
-      callback?: Callback<any, any>
-    ) => {
-      const res = await fetch(`${config.apiBaseUrl}/addonCategories`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...headersObj,
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!data) {
-        callback && callback("fail to create");
-        return;
-      }
-      await fetchData();
-      callback && callback(undefined, data);
-    };
-
-    // ? delete
-    const deleteAddonCategory = async (
-      addonCategoryId: number,
-      callback?: (error?: any, data?: any) => void
-    ) => {
-      const res = await fetch(
-        `${config.apiBaseUrl}/addonCategories/${addonCategoryId}`,
-        {
-          method: "DELETE",
-          headers: {
-            ...headersObj,
-          },
-        }
-      );
-      const data = await res.json();
-      if (!data) {
-        callback && callback("fail to delete");
-        return;
-      }
-      await fetchData();
-      callback && callback(undefined, data);
-    };
-
-    // ? update
-    const updateAddonCategory = async (
-      query: UpdateAddonCategoryQuery,
-      callback?: (error?: any, data?: any) => void
-    ) => {
-      const { addonCategoryId, payload } = query;
-
-      try {
-        const addonCategoryRes = await fetch(
-          `${config.apiBaseUrl}/addonCategories/${addonCategoryId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              ...headersObj,
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-        const addonCategoryData = await addonCategoryRes.json();
-        if (addonCategoryData) {
-          await fetchData();
-          callback && callback(undefined, { addonCategoryData });
-        }
-      } catch (error) {
-        callback && callback(error);
-      }
-      return;
-    };
-
-    // ! ---------------------- addon ----------------------
-
-    // ? create
-    const createAddon = async (
-      payload: CreateAddonPayload,
-      callback?: Callback<any, any>
-    ) => {
-      const res = await fetch(`${config.apiBaseUrl}/addons`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...headersObj,
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!data) {
-        callback && callback("fail to create");
-        return;
-      }
-      await fetchData();
-      callback && callback(undefined, data);
-    };
-
-    // ? delete
-    const deleteAddon = async (
-      addonId: number,
-      callback?: (error?: any, data?: any) => void
-    ) => {
-      const res = await fetch(`${config.apiBaseUrl}/addons/${addonId}`, {
-        method: "DELETE",
-        headers: {
-          ...headersObj,
-        },
-      });
-      const data = await res.json();
-      if (!data) {
-        callback && callback("fail to delete");
-        return;
-      }
-      await fetchData();
-      callback && callback(undefined, data);
-    };
-
-    // ? update
-    const updateAddon = async (
-      query: UpdateAddonQuery,
-      callback?: (error?: any, data?: any) => void
-    ) => {
-      const { addonId, payload } = query;
-      try {
-        const addonRes = await fetch(`${config.apiBaseUrl}/addons/${addonId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            ...headersObj,
-          },
-          body: JSON.stringify(payload),
-        });
-        const addonData = await addonRes.json();
-        if (addonData) {
-          await fetchData();
-          callback && callback(undefined, { addonData });
-        }
-      } catch (error) {
-        callback && callback(error);
-      }
-      return;
-    };
-  }
   // console.log(
   //   data.accessToken,
   //   ":: ac ::",
@@ -451,3 +144,306 @@ export const AppProvider = ({ children }: Props) => {
     </AppContext.Provider>
   );
 };
+/*
+{
+  //! ---------------------- menus ----------------------
+
+  // ? create -> Menu
+  const headersObj = {
+    Authorization: `Bearer ${accessToken}`,
+  };
+  const createMenu = async (
+    payload: CreateMenuPayload,
+    callback?: (error?: any, data?: any) => void
+  ) => {
+    const { ...menu } = payload;
+
+    const res = await fetch(`${config.apiBaseUrl}/menus`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...headersObj,
+      },
+      body: JSON.stringify(menu),
+    });
+    const data = await res.json();
+    if (!data) {
+      callback && callback("fail to create");
+      return;
+    }
+    await fetchData();
+    callback && callback(undefined, data);
+  };
+
+  // ? delete -> Menu
+  const deleteMenu = async (
+    menuId: number,
+    callback?: (error?: any, data?: any) => void
+  ) => {
+    const res = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
+      method: "DELETE",
+      headers: {
+        ...headersObj,
+      },
+    });
+    const data = await res.json();
+    if (!data) {
+      callback && callback("fail to create");
+      return;
+    }
+    await fetchData();
+    callback && callback(undefined, data);
+  };
+
+  // ? update -> Menu
+  const updateMenu = async (
+    { menuId, payload }: UpdateMenuQuery,
+    callback?: (error?: any, data?: any) => void
+  ) => {
+    try {
+      const mRes = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...headersObj,
+        },
+        body: JSON.stringify(payload),
+      });
+      const mData = await mRes.json();
+      if (mData) {
+        await fetchData();
+        callback && callback(undefined, { mData });
+      }
+    } catch (error) {
+      callback && callback(error);
+    }
+
+    return;
+  };
+
+  // ! ---------------------- menu_categories ----------------------
+
+  // ? create
+  const createMenuCategory = async (
+    payload: CreateMenuCategoryPayload,
+    callback?: Callback<any, any>
+  ) => {
+    const res = await fetch(`${config.apiBaseUrl}/menuCategories`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...headersObj,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!data) {
+      callback && callback("fail to create");
+      return;
+    }
+    await fetchData();
+    callback && callback(undefined, data);
+  };
+
+  // ? delete
+  const deleteMenuCategory = async (
+    menuCategoryId: number,
+    callback?: (error?: any, data?: any) => void
+  ) => {
+    const res = await fetch(
+      `${config.apiBaseUrl}/menuCategories/${menuCategoryId}`,
+      {
+        method: "DELETE",
+        headers: {
+          ...headersObj,
+        },
+      }
+    );
+    const data = await res.json();
+    if (!data) {
+      callback && callback("fail to delete");
+      return;
+    }
+    await fetchData();
+    callback && callback(undefined, data);
+  };
+
+  // ? update -> Menu
+  const updateMenuCategory = async (
+    query: UpdateMenuCategoryQuery,
+    callback?: (error?: any, data?: any) => void
+  ) => {
+    const { menuCategoryId, payload } = query;
+    try {
+      const menuCategoryRes = await fetch(
+        `${config.apiBaseUrl}/menuCategories/${menuCategoryId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...headersObj,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      const menuCategoryData = await menuCategoryRes.json();
+      if (menuCategoryData) {
+        await fetchData();
+        callback && callback(undefined, { menuCategoryData });
+      }
+    } catch (error) {
+      callback && callback(error);
+    }
+    return;
+  };
+
+  // ! ---------------------- addon_categories ----------------------
+
+  // ? create
+
+  const createAddonCategory = async (
+    payload: CreateAddonCategoryPayload,
+    callback?: Callback<any, any>
+  ) => {
+    const res = await fetch(`${config.apiBaseUrl}/addonCategories`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...headersObj,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!data) {
+      callback && callback("fail to create");
+      return;
+    }
+    await fetchData();
+    callback && callback(undefined, data);
+  };
+
+  // ? delete
+  const deleteAddonCategory = async (
+    addonCategoryId: number,
+    callback?: (error?: any, data?: any) => void
+  ) => {
+    const res = await fetch(
+      `${config.apiBaseUrl}/addonCategories/${addonCategoryId}`,
+      {
+        method: "DELETE",
+        headers: {
+          ...headersObj,
+        },
+      }
+    );
+    const data = await res.json();
+    if (!data) {
+      callback && callback("fail to delete");
+      return;
+    }
+    await fetchData();
+    callback && callback(undefined, data);
+  };
+
+  // ? update
+  const updateAddonCategory = async (
+    query: UpdateAddonCategoryQuery,
+    callback?: (error?: any, data?: any) => void
+  ) => {
+    const { addonCategoryId, payload } = query;
+
+    try {
+      const addonCategoryRes = await fetch(
+        `${config.apiBaseUrl}/addonCategories/${addonCategoryId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...headersObj,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      const addonCategoryData = await addonCategoryRes.json();
+      if (addonCategoryData) {
+        await fetchData();
+        callback && callback(undefined, { addonCategoryData });
+      }
+    } catch (error) {
+      callback && callback(error);
+    }
+    return;
+  };
+
+  // ! ---------------------- addon ----------------------
+
+  // ? create
+  const createAddon = async (
+    payload: CreateAddonPayload,
+    callback?: Callback<any, any>
+  ) => {
+    const res = await fetch(`${config.apiBaseUrl}/addons`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...headersObj,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!data) {
+      callback && callback("fail to create");
+      return;
+    }
+    await fetchData();
+    callback && callback(undefined, data);
+  };
+
+  // ? delete
+  const deleteAddon = async (
+    addonId: number,
+    callback?: (error?: any, data?: any) => void
+  ) => {
+    const res = await fetch(`${config.apiBaseUrl}/addons/${addonId}`, {
+      method: "DELETE",
+      headers: {
+        ...headersObj,
+      },
+    });
+    const data = await res.json();
+    if (!data) {
+      callback && callback("fail to delete");
+      return;
+    }
+    await fetchData();
+    callback && callback(undefined, data);
+  };
+
+  // ? update
+  const updateAddon = async (
+    query: UpdateAddonQuery,
+    callback?: (error?: any, data?: any) => void
+  ) => {
+    const { addonId, payload } = query;
+    try {
+      const addonRes = await fetch(`${config.apiBaseUrl}/addons/${addonId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...headersObj,
+        },
+        body: JSON.stringify(payload),
+      });
+      const addonData = await addonRes.json();
+      if (addonData) {
+        await fetchData();
+        callback && callback(undefined, { addonData });
+      }
+    } catch (error) {
+      callback && callback(error);
+    }
+    return;
+  };
+}
+
+*/

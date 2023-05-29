@@ -53,7 +53,7 @@ const CreateMenu = () => {
 
     const formData = new FormData();
     formData.append("files", menuImage as Blob);
-    const response = await fetch(`${config.apiBaseUrl}/assets`, {
+    const response = await fetch(`${config.backofficeApiBaseUrl}/assets`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,

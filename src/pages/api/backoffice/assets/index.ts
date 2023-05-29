@@ -54,6 +54,7 @@ const handlePostRequest = async (
       return res.send({ assetUrl });
     });
   } catch (err) {
+    console.log(err);
     return res
       .status(500)
       .json({ message: "error in file upload in catch()", err });

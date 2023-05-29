@@ -22,7 +22,7 @@ const MenuCategory = ({ menuCategory }: Props) => {
 
   const handleDeleteMenuCategory = async (menuCategoryId: number) => {
     const res = await fetch(
-      `${config.apiBaseUrl}/menuCategories/${menuCategoryId}`,
+      `${config.backofficeApiBaseUrl}/menuCategories/${menuCategoryId}`,
       {
         method: "DELETE",
       }

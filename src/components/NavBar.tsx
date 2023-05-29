@@ -28,6 +28,7 @@ import { getAccessToken, getSelectedLocationId } from "@/utils";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 const sidebarMenuItems = [
   {
@@ -79,8 +80,9 @@ const NavBar = ({ title }: Props) => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const profileImageUrl = session?.user?.image ?? "";
-  const profleName = session?.user?.name ?? "no-name";
+  const profileImageUrl = session?.user?.image || "/test.png";
+
+  const profleName = session?.user?.name || "no-name";
 
   // if (!selectedLocationId || !getAccessToken()) return <h1>ahhaha</h1>;
   const selectedLocationName = "win@local";
@@ -112,7 +114,8 @@ const NavBar = ({ title }: Props) => {
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                <Avatar src={profileImageUrl} alt="Your Profile" />
+                {/* <Avatar src={profileImageUrl} alt="Your Profile" /> */}
+                <Avatar src={profileImageUrl} alt="ok"></Avatar>
               </ListItemIcon>
               <ListItemText primary={profleName} />
             </ListItemButton>
@@ -169,7 +172,7 @@ const NavBar = ({ title }: Props) => {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" component="div">
-              {selectedLocationName ?? ""}
+              {selectedLocationName || ""}
             </Typography>
           </Box>
           <Typography variant="h6" component="div">

@@ -43,8 +43,12 @@ const MenuDetail = () => {
   // **************************************************
   // **************************************************
   // **************************************************
-  const { menus, selectedLocationId, menuCategories, menusMenuCategories } =
-    useApp();
+  const {
+    menus,
+    selectedLocationId,
+    menuCategories,
+    menusMenuCategoriesLocations,
+  } = useApp();
   const { fetchData } = useAppUpdate();
   const [selectedMenuCatIds, setSelectedMenuCatIds] = useState<number[]>([]);
   const [oldSelectedMenuCatIds, setOldSelectedMenuCatIds] = useState<number[]>(
@@ -65,12 +69,12 @@ const MenuDetail = () => {
   useEffect(() => {
     if (menuCategories.length && menus.length && menuId) {
       setSelectedMenuCatIds(
-        menusMenuCategories
+        menusMenuCategoriesLocations
           .filter((menuMenuCat) => menuMenuCat.menu_id === menuId)
           .map((menuMenuCat) => menuMenuCat.menu_category_id)
       );
       setOldSelectedMenuCatIds(
-        menusMenuCategories
+        menusMenuCategoriesLocations
           .filter((menuMenuCat) => menuMenuCat.menu_id === menuId)
           .map((menuMenuCat) => menuMenuCat.menu_category_id)
       );
@@ -97,8 +101,8 @@ const MenuDetail = () => {
     description,
     image_url,
     location_ids,
-    addon_category_id,
-    menu_category_id,
+    addon_category_ids = [],
+    menu_category_ids = [],
   } = menu;
   console.log({ menu }, "adsffffffffffffffffffff");
   // todo UPDATE
@@ -117,7 +121,7 @@ const MenuDetail = () => {
     if (menuImage) {
       const formData = new FormData();
       formData.append("files", menuImage as Blob);
-      const response = await fetch(`${config.apiBaseUrl}/assets`, {
+      const response = await fetch(`${config.backofficeApiBaseUrl}/assets`, {
         method: "POST",
 
         body: formData,
@@ -153,25 +157,29 @@ const MenuDetail = () => {
       locationIds: [Number(selectedLocationId)],
     };
 
-    const menuRes = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    const menuRes = await fetch(
+      `${config.backofficeApiBaseUrl}/menus/${menuId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
     if (!menuRes.ok) {
       console.log(await menuRes.json());
       return alert("Menu Update Fail");
     }
     fetchData();
     console.log(await menuRes.json());
+    alert("updated success");
   };
 
   const handleDeleteMenu = async () => {
     const isConfirm = window.confirm("Are you sure want to delete");
     if (!isConfirm) return;
-    const res = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
+    const res = await fetch(`${config.backofficeApiBaseUrl}/menus/${menuId}`, {
       method: "DELETE",
     });
     if (!res.ok) {

@@ -21,10 +21,10 @@ import Layout from "@/components/Layout";
 const MenusPage = () => {
   // ******************** ;data.status === "loading"
 
-  const { menus, menusLocations, selectedLocationId, isFetch } = useApp();
+  const { menus, menusMenuCategoriesLocations, selectedLocationId } = useApp();
   const { fetchData } = useAppUpdate();
 
-  const validMenusLocations = menusLocations
+  const validMenusLocations = menusMenuCategoriesLocations
     .filter(
       (menuLocation) => String(menuLocation.location_id) === selectedLocationId
     )
@@ -35,7 +35,7 @@ const MenusPage = () => {
   );
 
   const handleDeleteMenu = async (menuId: number) => {
-    const res = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
+    const res = await fetch(`${config.backofficeApiBaseUrl}/menus/${menuId}`, {
       method: "DELETE",
     });
     if (!res.ok) {
@@ -46,17 +46,6 @@ const MenusPage = () => {
     console.log(resData, "resData");
     await fetchData();
   };
-
-  if (isFetch) {
-    return (
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isFetch}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
-  }
 
   return (
     <Layout title="Menus">
@@ -107,9 +96,10 @@ const MenusPage = () => {
                   <CardMedia
                     component="img"
                     height="140"
-                    image={`${menu.image_url ?? "/paella.jpg"}`}
+                    image={`${menu.image_url || "/test.png"}`}
                     alt="green iguana"
                   />
+
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                       {menu.name} / {menu.price}

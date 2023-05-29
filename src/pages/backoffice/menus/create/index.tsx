@@ -59,24 +59,23 @@ const CreateMenu = () => {
     setLoading(true);
     // todo -- need to comment out for image upload
     try {
-      // const formData = new FormData();
-      // formData.append("files", menuImage as Blob);
-      // const response = await fetch(`${config.apiBaseUrl}/assets`, {
-      //   method: "POST",
-      //   body: formData,
-      // });
+      const formData = new FormData();
+      formData.append("files", menuImage as Blob);
+      const response = await fetch(`${config.backofficeApiBaseUrl}/assets`, {
+        method: "POST",
+        body: formData,
+      });
 
-      // if (response.ok) {
-      //   const imageRes = await response.json();
-      //   const imageUrl = imageRes.assetUrl as string;
-      let imageUrl = "/test.png";
-      if (imageUrl) {
+      if (response.ok) {
+        const imageRes = await response.json();
+        const imageUrl = imageRes.assetUrl as string;
+
         console.log("imageurl", imageUrl);
         const payload = { ...menu, imageUrl: imageUrl };
 
         console.log("payload", payload);
 
-        const res = await fetch(`${config.apiBaseUrl}/menus`, {
+        const res = await fetch(`${config.backofficeApiBaseUrl}/menus`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -120,7 +119,7 @@ const CreateMenu = () => {
   };
   // const deleteMenu = async (menuId?: number) => {
   //   if (!menuId) return;
-  //   const response = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
+  //   const response = await fetch(`${config.backofficeApiBaseUrl}/menus/${menuId}`, {
   //     method: "DELETE",
   //   });
   // };

@@ -8,28 +8,23 @@ export interface Location extends BaseType {
   company_id: number;
 }
 
-export interface MenuLocation {
-  id?: number;
-  menu_id: number;
-  location_id: number;
-  is_available: boolean;
-}
-
 export interface Menu extends BaseType {
   price: number;
   description: string;
   location_ids: number[];
-  menu_category_id: number[];
-  addon_category_id: number[];
+  menu_category_ids?: number[];
+  addon_category_ids?: number[];
   image_url?: string;
 }
 
 export interface MenuCategory extends BaseType {}
 
-export interface MenuMenuCategory {
+export interface MenuMenuCategoryLocation {
   id?: number;
   menu_id: number;
   menu_category_id: number;
+  location_id: number;
+  is_available: boolean;
 }
 
 export interface Addon extends BaseType {

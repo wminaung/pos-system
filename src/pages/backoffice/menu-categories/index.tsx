@@ -23,8 +23,7 @@ const MenuCategories = () => {
     name: "",
   } as MenuCat);
 
-  const { menuCategories, menus, menusLocations, menusMenuCategories } =
-    useApp();
+  const { menuCategories, menus, menusMenuCategoriesLocations } = useApp();
   const { selectedLocationId } = useApp();
   const { fetchData } = useAppUpdate();
 
@@ -34,13 +33,13 @@ const MenuCategories = () => {
     setShowCat(event.target.value as string as ShowCatOption);
   };
 
-  const munusAtLocationIds = menusLocations
+  const munusAtLocationIds = menusMenuCategoriesLocations
     .filter((ml) => ml.location_id === Number(selectedLocationId))
     .map((ml) => ml.menu_id);
 
   const filterMenuCategories = menuCategories.filter((mennuCategory) =>
     munusAtLocationIds.some((menuAtlocationId) =>
-      menusMenuCategories.some(
+      menusMenuCategoriesLocations.some(
         (mmc) =>
           mmc.menu_id === menuAtlocationId &&
           mmc.menu_category_id === mennuCategory.id
@@ -50,7 +49,7 @@ const MenuCategories = () => {
   const notAvailableMenuCategories = menuCategories.filter(
     (mennuCategory) =>
       !munusAtLocationIds.some((menuAtlocationId) =>
-        menusMenuCategories.some(
+        menusMenuCategoriesLocations.some(
           (mmc) =>
             mmc.menu_id === menuAtlocationId &&
             mmc.menu_category_id === mennuCategory.id
@@ -66,7 +65,7 @@ const MenuCategories = () => {
     }
     const payload = { name };
 
-    const res = await fetch(`${config.apiBaseUrl}/menuCategories`, {
+    const res = await fetch(`${config.backofficeApiBaseUrl}/menuCategories`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

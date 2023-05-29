@@ -6,7 +6,8 @@ namespace Config {
     spaceEndpoint: string;
   }
   export interface Frontend {
-    apiBaseUrl: string;
+    backofficeApiBaseUrl: string;
+    orderApiBaseUrl: string;
     googleClientId: string;
     googleClientSecret: string;
     nextAuthSecret: string;
@@ -15,7 +16,8 @@ namespace Config {
 }
 
 export const config: Config.Frontend & Config.Backend = {
-  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "",
+  backofficeApiBaseUrl: process.env.NEXT_PUBLIC_BACKOFFICE_API_BASE_URL || "",
+  orderApiBaseUrl: process.env.NEXT_PUBLIC_ORDER_API_BASE_URL || "",
   jwtSecret: process.env.JWT_SECRET || "",
   spaceAccessKeyId: process.env.SPACE_ACCESS_KEY_ID || "",
   spaceSecretAccessKey: process.env.SPACE_SECRET_ACCESS_KEY || "",

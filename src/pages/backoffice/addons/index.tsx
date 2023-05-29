@@ -51,9 +51,9 @@ const Addons = () => {
       name,
       price,
       required: isChecked,
-      addonCategoryId: selectedId ?? null,
+      addonCategoryId: selectedId || null,
     };
-    const res = await fetch(`${config.apiBaseUrl}/addons`, {
+    const res = await fetch(`${config.backofficeApiBaseUrl}/addons`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const Addons = () => {
     console.log("created success", data);
     fetchData();
     // createAddon(
-    //   { name, price, required: isChecked, addonCategoryId: selectedId ?? null },
+    //   { name, price, required: isChecked, addonCategoryId: selectedId || null },
     //   (err, data) => {
     //     if (data) setCreatedAlert(true);
     //   }
@@ -87,12 +87,15 @@ const Addons = () => {
   );
 
   const handleDeleteAddon = async (addonId: number) => {
-    const res = await fetch(`${config.apiBaseUrl}/addons/${addonId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const res = await fetch(
+      `${config.backofficeApiBaseUrl}/addons/${addonId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
     if (!res.ok) {
       return alert("not ok");
     }

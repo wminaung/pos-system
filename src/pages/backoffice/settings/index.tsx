@@ -60,13 +60,10 @@ const Settings = () => {
     localStorage.setItem("selectedLocation", String(selectedLocation.id));
     const accessToken = localStorage.getItem("accessToken");
     const res = await fetch(
-      `${config.apiBaseUrl}/locations/${selectedLocationId}`,
+      `${config.backofficeApiBaseUrl}/locations/${selectedLocationId}`,
       {
         method: "PUT",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "content-type": "application/json",
-        },
+
         body: JSON.stringify(newLocation),
       }
     );
@@ -90,7 +87,7 @@ const Settings = () => {
         <TextField
           label="Name"
           variant="outlined"
-          value={newLocation.name ?? ""}
+          value={newLocation.name || ""}
           sx={{ mb: 2 }}
           onChange={(evt) => {
             setNewLocation({ ...newLocation, name: evt.target.value });
@@ -99,7 +96,7 @@ const Settings = () => {
         <TextField
           label="Address"
           variant="outlined"
-          value={newLocation.address ?? ""}
+          value={newLocation.address || ""}
           sx={{ mb: 2 }}
           onChange={(evt) => {
             setNewLocation({ ...newLocation, address: evt.target.value });

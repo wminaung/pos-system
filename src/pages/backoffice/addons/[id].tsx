@@ -49,7 +49,7 @@ const AddonDetail = () => {
     //       name,
     //       price,
     //       required: isChecked,
-    //       addonCategoryId: selectedId ?? null,
+    //       addonCategoryId: selectedId || null,
     //     },
     //   },
     //   (error, data) => {
@@ -80,8 +80,8 @@ const AddonDetail = () => {
 
   useEffect(() => {
     if (addons.length > 0) {
-      setIsChecked(addon?.required ?? isChecked);
-      setSelectedId(addon?.addon_category_id ?? 0);
+      setIsChecked(addon?.required || isChecked);
+      setSelectedId(addon?.addon_category_id || 0);
     }
   }, [addons]);
 

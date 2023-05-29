@@ -52,8 +52,8 @@ const handleGetRequest = async (
   });
   if (!user) {
     const newUserEmail = session.user.email;
-    const newUserImage = session.user.image ?? "";
-    const newUserName = session.user.name ?? "";
+    const newUserImage = session.user.image || "";
+    const newUserName = session.user.name || "";
 
     const newCompany = await prisma.company.create({
       data: {
@@ -97,16 +97,6 @@ const handleGetRequest = async (
       newMenusData.map((menu) => prisma.menu.create({ data: menu }))
     );
 
-    const menuLocationsData = [
-      { location_id: newLocation.id, menu_id: newMenus[0].id },
-      { location_id: newLocation.id, menu_id: newMenus[1].id },
-    ];
-    await prisma.$transaction(
-      menuLocationsData.map((menuLocation) =>
-        prisma.menu_location.create({ data: menuLocation })
-      )
-    );
-
     const newMenuCategoriesData = [{ name: "hot-dish" }, { name: "popular" }];
     const newMenuCategories = await prisma.$transaction(
       newMenuCategoriesData.map((menuCategory) =>
@@ -114,13 +104,24 @@ const handleGetRequest = async (
       )
     );
 
-    const newMenuMenuCategoriesData = [
-      { menu_category_id: newMenuCategories[0].id, menu_id: newMenus[0].id },
-      { menu_category_id: newMenuCategories[1].id, menu_id: newMenus[1].id },
+    const newMenuMenuCategoryLocationsData = [
+      {
+        location_id: newLocation.id,
+        menu_id: newMenus[0].id,
+        menu_category_id: newMenuCategories[0].id,
+      },
+      {
+        location_id: newLocation.id,
+        menu_id: newMenus[1].id,
+        menu_category_id: newMenuCategories[1].id,
+      },
     ];
-    await prisma.$transaction(
-      newMenuMenuCategoriesData.map((menuMenuCategory) =>
-        prisma.menu_menu_category.create({ data: menuMenuCategory })
+
+    const newMenuMenuCategoryLocations = await prisma.$transaction(
+      newMenuMenuCategoryLocationsData.map((menuMenuCategoryLocation) =>
+        prisma.menu_menu_category_location.create({
+          data: menuMenuCategoryLocation,
+        })
       )
     );
 
@@ -196,15 +197,18 @@ const getData = async (user: User) => {
     },
   });
   const locationIds = locations.map((location) => location.id);
-  const menusLocations = await prisma.menu_location.findMany({
-    where: {
-      location_id: {
-        in: locationIds,
+  const menusMenuCategoriesLocations =
+    await prisma.menu_menu_category_location.findMany({
+      where: {
+        location_id: {
+          in: locationIds,
+        },
       },
-    },
-    orderBy: { id: "asc" },
-  });
-  const menuIds = menusLocations.map((menuLocation) => menuLocation.menu_id);
+      orderBy: { id: "asc" },
+    });
+  const menuIds = menusMenuCategoriesLocations.map(
+    (menuLocation) => menuLocation.menu_id
+  );
   const menus = await prisma.menu.findMany({
     where: {
       id: {
@@ -214,14 +218,16 @@ const getData = async (user: User) => {
     orderBy: { id: "asc" },
   });
 
-  const menusMenuCategories = await prisma.menu_menu_category.findMany({
-    where: {
-      menu_id: {
-        in: menuIds,
+  const menusMenuCategories = await prisma.menu_menu_category_location.findMany(
+    {
+      where: {
+        menu_id: {
+          in: menuIds,
+        },
       },
-    },
-    orderBy: { id: "asc" },
-  });
+      orderBy: { id: "asc" },
+    }
+  );
   const menuCategories = await prisma.menu_category.findMany({
     orderBy: { id: "asc" },
   });
@@ -238,7 +244,7 @@ const getData = async (user: User) => {
     addons,
     addonCategories,
     locations,
-    menusLocations,
+    menusMenuCategoriesLocations,
     menusMenuCategories,
     selectedLocationId: locations[0].id,
   };

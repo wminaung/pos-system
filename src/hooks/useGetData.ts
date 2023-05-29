@@ -13,7 +13,7 @@ export const useGetData = (session: Session | null): FetchStatus => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${config.apiBaseUrl}/app`);
+        const response = await fetch(`${config.backofficeApiBaseUrl}/app`);
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
