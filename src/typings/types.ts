@@ -1,40 +1,45 @@
-interface BaseType {
-  id?: number;
-  name: string;
+import type {
+  addon,
+  addon_category,
+  company,
+  location,
+  menu,
+  menu_addon_category,
+  menu_category,
+  menu_menu_category_location,
+} from "@prisma/client";
+
+export interface Company extends company {
+  location: location[];
 }
 
-export interface Location extends BaseType {
-  address: string;
-  company_id: number;
+export interface Location extends location {
+  company: company;
+  menu_menu_category_location: menu_menu_category_location[];
 }
 
-export interface Menu extends BaseType {
-  price: number;
-  description: string;
-  location_ids: number[];
-  menu_category_ids?: number[];
-  addon_category_ids?: number[];
-  image_url?: string;
+export interface Menu extends menu {
+  menu_addon_category: menu_addon_category[];
+  menu_menu_category_location: menu_menu_category_location[];
 }
 
-export interface MenuCategory extends BaseType {}
-
-export interface MenuMenuCategoryLocation {
-  id?: number;
-  menu_id: number;
-  menu_category_id: number;
-  location_id: number;
-  is_available: boolean;
+export interface MenuCategory extends menu_category {
+  menu_menu_category_location: menu_menu_category_location[];
 }
 
-export interface Addon extends BaseType {
-  price: number;
-  required: boolean;
-  addon_category_id: number;
+export interface MenuMenuCategoryLocation extends menu_menu_category_location {
+  menu: menu | null;
+  menu_category: menu_category;
+  location: location;
 }
 
-export interface AddonCategory extends BaseType {
-  // isRequired: boolean;
+export interface Addon extends addon {
+  addon_category: addon_category | null;
+}
+
+export interface AddonCategory extends addon_category {
+  addon: addon[];
+  menu_addon_category: menu_addon_category[];
 }
 
 //////////////
@@ -61,21 +66,6 @@ export interface UpdateMenuPayload {
 export interface UpdateMenuQuery {
   menuId: number;
   payload: UpdateMenuPayload;
-}
-
-// ! Menu Categories
-
-export interface CreateMenuCategoryPayload {
-  name: string;
-}
-
-export interface UpdateMenuCategoryPayload extends CreateMenuCategoryPayload {}
-
-export type Callback<error, data> = (error?: error, data?: data) => void;
-
-export interface UpdateMenuCategoryQuery {
-  menuCategoryId: number;
-  payload: UpdateMenuCategoryPayload;
 }
 
 //! api types

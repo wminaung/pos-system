@@ -76,7 +76,7 @@ interface Props {
 const NavBar = ({ title }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
 
-  const { locations } = useApp();
+  const { locations, selectedLocationId } = useApp();
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -85,7 +85,9 @@ const NavBar = ({ title }: Props) => {
   const profleName = session?.user?.name || "no-name";
 
   // if (!selectedLocationId || !getAccessToken()) return <h1>ahhaha</h1>;
-  const selectedLocationName = "win@local";
+  const selectedLocationName = locations.find(
+    (location) => String(location.id) === selectedLocationId
+  )?.name;
   // const selectedLocation = locations.find(
   //   (location) => String(location.id) === selectedLocationId
   // );
@@ -172,7 +174,7 @@ const NavBar = ({ title }: Props) => {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" component="div">
-              {selectedLocationName || ""}
+              {selectedLocationName ? selectedLocationName : ""}
             </Typography>
           </Box>
           <Typography variant="h6" component="div">

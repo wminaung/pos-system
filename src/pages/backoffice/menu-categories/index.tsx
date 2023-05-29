@@ -23,7 +23,7 @@ const MenuCategories = () => {
     name: "",
   } as MenuCat);
 
-  const { menuCategories, menus, menusMenuCategoriesLocations } = useApp();
+  const { menuCategories } = useApp();
   const { selectedLocationId } = useApp();
   const { fetchData } = useAppUpdate();
 
@@ -33,28 +33,10 @@ const MenuCategories = () => {
     setShowCat(event.target.value as string as ShowCatOption);
   };
 
-  const munusAtLocationIds = menusMenuCategoriesLocations
-    .filter((ml) => ml.location_id === Number(selectedLocationId))
-    .map((ml) => ml.menu_id);
-
   const filterMenuCategories = menuCategories.filter((mennuCategory) =>
-    munusAtLocationIds.some((menuAtlocationId) =>
-      menusMenuCategoriesLocations.some(
-        (mmc) =>
-          mmc.menu_id === menuAtlocationId &&
-          mmc.menu_category_id === mennuCategory.id
-      )
+    mennuCategory.menu_menu_category_location.find(
+      (menuLocation) => String(menuLocation.location_id) === selectedLocationId
     )
-  );
-  const notAvailableMenuCategories = menuCategories.filter(
-    (mennuCategory) =>
-      !munusAtLocationIds.some((menuAtlocationId) =>
-        menusMenuCategoriesLocations.some(
-          (mmc) =>
-            mmc.menu_id === menuAtlocationId &&
-            mmc.menu_category_id === mennuCategory.id
-        )
-      )
   );
 
   const handleCreateMenuCategory = async () => {
@@ -135,29 +117,9 @@ const MenuCategories = () => {
         alignItems={"center"}
         justifyContent={"center"}
       >
-        {showCat === "available" ? (
-          filterMenuCategories.map((menuCategory) => {
-            return (
-              <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
-            );
-          })
-        ) : (
-          <span></span>
-        )}
-        {showCat === "all" ? (
-          menuCategories.map((menuCategory) => (
-            <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
-          ))
-        ) : (
-          <span></span>
-        )}
-        {showCat === "notAvailable" ? (
-          notAvailableMenuCategories.map((menuCategory) => (
-            <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
-          ))
-        ) : (
-          <span></span>
-        )}
+        {filterMenuCategories.map((menuCategory) => (
+          <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
+        ))}
       </Box>
     </Layout>
   );

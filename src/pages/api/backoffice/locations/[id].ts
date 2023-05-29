@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/utils/db";
+
 type Data = {
   message: string;
 };
@@ -33,56 +34,68 @@ const handleGetRequest = async (
 };
 
 // TODO -
-const handlePostRequest = (req: NextApiRequest, res: NextApiResponse<any>) => {
+const handlePostRequest = async (
+  req: NextApiRequest,
+  res: NextApiResponse<any>
+) => {
   return res.status(200).json({ message: `${req.method} ok!!` });
 };
 
-// TODO - update menu category
+// TODO - update Location
 const handlePutRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name } = req.body;
-  const menuCatIdStr = req.query.id as string;
-  console.log("delete :", menuCatIdStr);
-  const menuCatId = Number(menuCatIdStr);
+  const locationId = Number(req.query.id as string);
+  const { name, address } = req.body;
+
+  if (!name || !address) {
+    return res.status(500).json({ message: "err: name : email !!!" });
+  }
+
   try {
-    const updatedMenu = await prisma.menu_category.update({
+    const updatedLocation = await prisma.location.update({
+      where: {
+        id: locationId,
+      },
       data: {
         name,
-      },
-      where: {
-        id: menuCatId,
+        address,
       },
     });
 
-    return res.status(200).json({ updatedMenu, message: `${req.method} ok!!` });
+    return res
+      .status(200)
+      .json({ updatedLocation, message: `location update success!!` });
   } catch (error) {
     console.log({ error });
-    return res.status(500).json({ message: " check query update fail", error });
+    return res
+      .status(200)
+      .json({ message: ` check! location update prisma`, error });
   }
 };
 
-// TODO - delete menu category
+// TODO - dlete location
 const handleDeleteRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const menuCatIdStr = req.query.id as string;
-  console.log("delete :", menuCatIdStr);
-  const menuCatId = Number(menuCatIdStr);
+  const locationId = Number(req.query.id as string);
 
   try {
-    const deletedMenuCat = await prisma.menu_category.delete({
-      where: { id: menuCatId },
+    const deletedLocation = await prisma.location.delete({
+      where: {
+        id: locationId,
+      },
     });
+
     return res
       .status(200)
-      .json({ deletedMenuCat, message: "deleted successfully" });
+      .json({ deletedLocation, message: `${req.method} ok!!` });
   } catch (error) {
     console.log({ error });
     return res
-      .status(500)
-      .json({ message: "You can't delete this mcat", error });
+      .status(200)
+      .json({ message: ` check! location delete prisma`, error });
   }
 };

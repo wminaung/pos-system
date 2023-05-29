@@ -32,7 +32,6 @@ const Locations = () => {
 
   const handleUpdateLocation = async (newLocation: Location) => {
     const locationId = newLocation.id;
-    console.log(updateLocations, "ul");
 
     const oldLocation = locations.find(
       (location) => location.id === locationId
@@ -43,13 +42,12 @@ const Locations = () => {
       oldLocation.address !== newLocation.address
     ) {
       // todo --> update loction
-      const accessToken = localStorage.getItem("accessToken");
+
       const res = await fetch(
         `${config.backofficeApiBaseUrl}/locations/${locationId}`,
         {
           method: "PUT",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
             "content-type": "application/json",
           },
           body: JSON.stringify({
@@ -77,21 +75,23 @@ const Locations = () => {
       return alert("put all field");
     }
 
-    // const res = await fetch(`${config.backofficeApiBaseUrl}/locations`, {
-    //   method: "POST",
-    //   headers: {
-    //     "content-type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     name,
-    //     address,
-    //     companyId,
-    //   }),
-    // });
+    const res = await fetch(`${config.backofficeApiBaseUrl}/locations`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        address,
+        companyId,
+      }),
+    });
 
-    // if (res.ok) {
-    //   fetchData();
-    // }
+    if (res.ok) {
+      fetchData();
+    } else {
+      alert("fail");
+    }
   };
 
   const handleDeleteLocation = async (locationToDelete: Location) => {
@@ -101,18 +101,20 @@ const Locations = () => {
       return alert("there is no location");
     }
 
-    // const res = await fetch(`${config.backofficeApiBaseUrl}/locations/${loctionId}`, {
-    //   method: "DELETE",
-
-    // });
-    // if (res.ok) {
-    //   console.log(await res.json());
-    //   return fetchData();
-    // } else {
-    //   alert(
-    //     "You can't delete this location Please delete first menu form this location"
-    //   );
-    // }
+    const res = await fetch(
+      `${config.backofficeApiBaseUrl}/locations/${loctionId}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (res.ok) {
+      console.log(await res.json());
+      return fetchData();
+    } else {
+      alert(
+        "You can't delete this location Please delete first menu form this location"
+      );
+    }
   };
 
   return (

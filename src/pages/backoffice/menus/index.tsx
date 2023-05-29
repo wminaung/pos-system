@@ -21,17 +21,14 @@ import Layout from "@/components/Layout";
 const MenusPage = () => {
   // ******************** ;data.status === "loading"
 
-  const { menus, menusMenuCategoriesLocations, selectedLocationId } = useApp();
+  const { menus, selectedLocationId } = useApp();
   const { fetchData } = useAppUpdate();
 
-  const validMenusLocations = menusMenuCategoriesLocations
-    .filter(
-      (menuLocation) => String(menuLocation.location_id) === selectedLocationId
-    )
-    .map((menuLocation) => menuLocation.menu_id);
-
   const filteredMenu = menus.filter((menu) =>
-    validMenusLocations.includes(menu.id as number)
+    menu.menu_menu_category_location.find(
+      (menuMenuCatLocation) =>
+        String(menuMenuCatLocation.location_id) === selectedLocationId
+    )
   );
 
   const handleDeleteMenu = async (menuId: number) => {

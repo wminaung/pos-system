@@ -35,7 +35,8 @@ const handleGetRequest = async (
   const session = await getSession({ req });
   console.log(
     colors.bold.bgGreen("<server session>\n"),
-    session,
+    req.query.location as string,
+    (session?.user && session.user.email) || "",
     colors.bold.bgGreen("\n</server session>\n")
   );
 
@@ -177,17 +178,28 @@ const handleGetRequest = async (
     await prisma.$transaction(
       newAddonsData.map((addon) => prisma.addon.create({ data: addon }))
     );
-    const data = await getData(newUser);
+    const data = await getData(newUser, newLocation.id);
     return res.status(200).json(data);
   }
-
-  const data = await getData(user);
+  const selectedLocationId = Number(req.query.location as string);
+  console.log(selectedLocationId, "selectedLocationId -> location=?");
+  const data = await getData(user, selectedLocationId);
   return res.status(200).json(data);
 };
 
 // TODO
-const getData = async (user: User) => {
+const getData = async (user: User, selectedLocationId?: number) => {
   const companyId = user.company_id;
+
+  const company = await prisma.company.findUnique({
+    where: {
+      id: companyId,
+    },
+    include: {
+      location: true,
+    },
+  });
+
   const locations = await prisma.location.findMany({
     where: {
       company_id: companyId,
@@ -195,58 +207,73 @@ const getData = async (user: User) => {
     orderBy: {
       id: "asc",
     },
-  });
-  const locationIds = locations.map((location) => location.id);
-  const menusMenuCategoriesLocations =
-    await prisma.menu_menu_category_location.findMany({
-      where: {
-        location_id: {
-          in: locationIds,
-        },
-      },
-      orderBy: { id: "asc" },
-    });
-  const menuIds = menusMenuCategoriesLocations.map(
-    (menuLocation) => menuLocation.menu_id
-  );
-  const menus = await prisma.menu.findMany({
-    where: {
-      id: {
-        in: menuIds,
-      },
+    include: {
+      company: true,
+      menu_menu_category_location: true,
     },
-    orderBy: { id: "asc" },
   });
 
-  const menusMenuCategories = await prisma.menu_menu_category_location.findMany(
-    {
-      where: {
-        menu_id: {
-          in: menuIds,
+  const menusMenuCategoriesLocations =
+    await prisma.menu_menu_category_location.findMany({
+      include: {
+        menu: true,
+        location: true,
+        menu_category: true,
+      },
+    });
+
+  const menus = await prisma.menu.findMany({
+    orderBy: {
+      id: "asc",
+    },
+    include: {
+      menu_addon_category: true,
+      menu_menu_category_location: {
+        where: {
+          location_id: {
+            in: locations.map((location) => location.id),
+          },
         },
       },
-      orderBy: { id: "asc" },
-    }
-  );
-  const menuCategories = await prisma.menu_category.findMany({
-    orderBy: { id: "asc" },
+    },
   });
-  const addonCategories = await prisma.addon_category.findMany({
-    orderBy: { id: "asc" },
+
+  const menuCategories = await prisma.menu_category.findMany({
+    orderBy: {
+      id: "asc",
+    },
+    include: {
+      menu_menu_category_location: true,
+    },
   });
   const addons = await prisma.addon.findMany({
-    orderBy: { id: "asc" },
+    orderBy: {
+      id: "asc",
+    },
+    include: {
+      addon_category: true,
+    },
+  });
+
+  const addonCategories = await prisma.addon_category.findMany({
+    orderBy: {
+      id: "asc",
+    },
+    include: {
+      addon: true,
+      menu_addon_category: true,
+    },
   });
 
   return {
+    company,
     menus,
     menuCategories,
     addons,
     addonCategories,
     locations,
     menusMenuCategoriesLocations,
-    menusMenuCategories,
-    selectedLocationId: locations[0].id,
+    selectedLocationId: selectedLocationId || locations[0].id,
   };
 };
 

@@ -3,53 +3,37 @@ import {
   Addon,
   AddonCategory,
   BaseProps,
-  Callback,
-  CreateMenuCategoryPayload,
-  CreateMenuPayload,
+  Company,
   Location,
   Menu,
   MenuCategory,
   MenuMenuCategoryLocation,
-  UpdateMenuCategoryQuery,
-  UpdateMenuQuery,
 } from "../typings/types";
 import { useContext, useState } from "react";
 import { config } from "@/config/config";
-import {
-  AppUpdateContext,
-  CreateAddonCategoryPayload,
-  CreateAddonPayload,
-  UpdateAddonCategoryQuery,
-  UpdateAddonQuery,
-  defaultAppUpdateContext,
-} from "./AppUpdateContext";
-import {
-  getAccessToken,
-  getSelectedLocationId,
-  setSelectedLocationId,
-} from "@/utils";
+import { AppUpdateContext, defaultAppUpdateContext } from "./AppUpdateContext";
+import { getSelectedLocationId, setSelectedLocationId } from "@/utils";
 import { useSession } from "next-auth/react";
-import { useGetData } from "@/hooks/useGetData";
 
 interface AppContextType {
+  company: Company | null;
   menus: Menu[];
   menuCategories: MenuCategory[];
   addons: Addon[];
   addonCategories: AddonCategory[];
   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
   locations: Location[];
-  accessToken: string | null;
   selectedLocationId?: string | null;
 }
 
 export const defaultAppContext: AppContextType = {
+  company: null,
   menus: [],
   menuCategories: [],
   addons: [],
   addonCategories: [],
   menusMenuCategoriesLocations: [],
   locations: [],
-  accessToken: "",
   selectedLocationId: "",
 };
 
@@ -71,30 +55,30 @@ export const AppProvider = ({ children }: Props) => {
   // **********************************
   const [data, updateData] = useState(defaultAppContext);
 
-  const { accessToken, selectedLocationId } = data;
+  const { selectedLocationId } = data;
 
   const { data: session, status } = useSession();
   console.log("session", session);
   console.log("AllData", { data });
 
   useEffect(() => {
-    // session && fetchData();
-    session && fetchData();
-  }, [session]);
-
-  useEffect(() => {
+    console.log(selectedLocationId);
     selectedLocationId && setSelectedLocationId(selectedLocationId);
-  }, [selectedLocationId]);
+    session && fetchData();
+  }, [session, selectedLocationId]);
 
   // ? fetch all data
   const fetchData = async (callback?: (error?: any, data?: any) => void) => {
     updateData({ ...data });
-    const res = await fetch(`${config.backofficeApiBaseUrl}`);
+    const res = await fetch(
+      `${config.backofficeApiBaseUrl}?location=${getSelectedLocationId()}`
+    );
 
     if (!res.ok) return; // console.log(res.status, res.statusText);
 
     const resData = await res.json();
     const {
+      company,
       menus,
       menuCategories,
       addons,
@@ -109,26 +93,18 @@ export const AppProvider = ({ children }: Props) => {
     */
     updateData({
       ...data,
+      company,
       menus,
       menuCategories,
       addons,
       addonCategories,
       menusMenuCategoriesLocations,
       locations,
-
       selectedLocationId: getSelectedLocationId() || String(selectedLocationId),
     });
 
     callback && callback(undefined, resData);
   };
-
-  // console.log(
-  //   data.accessToken,
-  //   ":: ac ::",
-  //   data.selectedLocationId,
-  //   ":: ld ::",
-  //   data.menus
-  // );
 
   return (
     <AppContext.Provider value={{ ...data }}>

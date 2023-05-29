@@ -65,14 +65,16 @@ model menu_category {
 }
 
 model menu_menu_category_location {
-  id               Int           @id @default(autoincrement())
-  menu             menu?         @relation(fields: [menu_id], references: [id])
+  id Int @id @default(autoincrement())
+
   menu_id          Int?
-  menu_category    menu_category @relation(fields: [menu_category_id], references: [id])
   menu_category_id Int
-  location         location      @relation(fields: [location_id], references: [id])
   location_id      Int
-  is_available     Boolean       @default(true)
+  is_available     Boolean @default(true)
+
+  menu          menu?         @relation(fields: [menu_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  menu_category menu_category @relation(fields: [menu_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  location      location      @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model user {

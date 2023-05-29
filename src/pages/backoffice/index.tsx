@@ -4,6 +4,7 @@ import { styled } from "@mui/system";
 import { signIn, signOut, useSession } from "next-auth/react";
 import GoogleIcon from "@mui/icons-material/Google";
 import Layout from "@/components/Layout";
+import { useApp } from "@/contexts/AppContext";
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   height: "100vh",
@@ -25,6 +26,8 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const BackOffice = () => {
   const { data: session } = useSession();
   console.log("session : ", session);
+  const data = useApp();
+
   return (
     <Layout>
       <StyledGrid container justifyContent="center" alignItems="center">
