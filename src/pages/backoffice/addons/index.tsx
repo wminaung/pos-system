@@ -19,7 +19,10 @@ import {
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { useRef, useState } from "react";
-import { useApp, useAppUpdate } from "@/contexts/AppContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import { DeleteForever, EditNote } from "@mui/icons-material";
 import Alertor from "@/components/Alertor";
 import Link from "next/link";
@@ -32,8 +35,8 @@ const Addons = () => {
   const [createdAlert, setCreatedAlert] = useState(false);
   const [deletedAlert, setDeletedAlert] = useState(false);
 
-  const { addons, addonCategories, accessToken } = useApp();
-  const { fetchData } = useAppUpdate();
+  const { addons, addonCategories } = useBackoffice();
+  const { fetchData } = useBackofficeUpdate();
 
   const [selectedId, setSelectedId] = useState<number>();
   const [isChecked, setIsChecked] = useState(false);
@@ -57,7 +60,6 @@ const Addons = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(payload),
     });

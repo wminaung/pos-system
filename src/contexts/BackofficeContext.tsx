@@ -11,11 +11,15 @@ import {
 } from "../typings/types";
 import { useContext, useState } from "react";
 import { config } from "@/config/config";
-import { AppUpdateContext, defaultAppUpdateContext } from "./AppUpdateContext";
+import {
+  BackofficeUpdateContextType,
+  BackofficeUpdateContext,
+  defaultBackofficeUpdateContext,
+} from "./BackofficeUpdateContext";
 import { getSelectedLocationId, setSelectedLocationId } from "@/utils";
 import { useSession } from "next-auth/react";
 
-interface AppContextType {
+interface BackofficeContextType {
   company: Company | null;
   menus: Menu[];
   menuCategories: MenuCategory[];
@@ -26,7 +30,7 @@ interface AppContextType {
   selectedLocationId?: string | null;
 }
 
-export const defaultAppContext: AppContextType = {
+export const defaultBackofficeContext: BackofficeContextType = {
   company: null,
   menus: [],
   menuCategories: [],
@@ -37,23 +41,23 @@ export const defaultAppContext: AppContextType = {
   selectedLocationId: "",
 };
 
-const AppContext = createContext(defaultAppContext);
+const BackofficeContext = createContext(defaultBackofficeContext);
 
-export const useApp = () => {
-  return useContext(AppContext);
+export const useBackoffice = () => {
+  return useContext(BackofficeContext);
 };
 
-export const useAppUpdate = () => {
-  return useContext(AppUpdateContext);
+export const useBackofficeUpdate = () => {
+  return useContext(BackofficeUpdateContext);
 };
 
-// ******** <AppProvider />
+// ******** <BackofficeProvider />
 
 interface Props extends BaseProps {}
 
-export const AppProvider = ({ children }: Props) => {
+export const BackofficeProvider = ({ children }: Props) => {
   // **********************************
-  const [data, updateData] = useState(defaultAppContext);
+  const [data, updateData] = useState(defaultBackofficeContext);
 
   const { selectedLocationId } = data;
 
@@ -107,17 +111,17 @@ export const AppProvider = ({ children }: Props) => {
   };
 
   return (
-    <AppContext.Provider value={{ ...data }}>
-      <AppUpdateContext.Provider
+    <BackofficeContext.Provider value={{ ...data }}>
+      <BackofficeUpdateContext.Provider
         value={{
-          ...defaultAppUpdateContext,
+          ...defaultBackofficeUpdateContext,
           updateData,
           fetchData,
         }}
       >
         {children}
-      </AppUpdateContext.Provider>
-    </AppContext.Provider>
+      </BackofficeUpdateContext.Provider>
+    </BackofficeContext.Provider>
   );
 };
 /*

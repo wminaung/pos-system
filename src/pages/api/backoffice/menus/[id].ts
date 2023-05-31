@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { MenuUpdatePayload } from "@/typings/types";
 import { prisma } from "@/utils/db";
 
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -43,47 +44,39 @@ const handlePutRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const {
-    name,
-    price,
-    description,
-    imageUrl,
-    menuCategoryIds = [],
-    locationIds = [],
-    addonCategoryIds = [],
-  } = req.body;
+  const { name, price, description, image_url, menuCatIds } =
+    req.body as MenuUpdatePayload;
   const menuIdStr = req.query.id as string;
+  const locationId = Number(req.query.locationId as string);
   console.log("update :", menuIdStr);
   const menuId = Number(menuIdStr);
+  console.log({ body: req.body });
+
+  if (!name || price < 0 || !description || !image_url) {
+    return res
+      .status(400)
+      .json({ message: "!name || price < 0 || !description || !image_url" });
+  }
+  if (!locationId || !menuCatIds.length) {
+    return res
+      .status(400)
+      .json({ message: "locationIds and menuCatIds are needed" });
+  }
 
   const updatedMenu = await prisma.menu.update({
     data: {
-      description,
-      image_url: imageUrl,
       name,
       price,
-
-      menu_location: {
-        deleteMany: {},
-        createMany: {
-          data: locationIds.map((location_id: number) => ({
-            location_id,
-          })),
+      description,
+      image_url,
+      menu_menu_category_location: {
+        deleteMany: {
+          location_id: locationId,
         },
-      },
-      menu_addon_category: {
-        deleteMany: {},
         createMany: {
-          data: addonCategoryIds.map((addon_category_id: number) => ({
-            addon_category_id,
-          })),
-        },
-      },
-      menu_menu_category: {
-        deleteMany: {},
-        createMany: {
-          data: menuCategoryIds.map((menu_category_id: number) => ({
-            menu_category_id,
+          data: menuCatIds.map((menuCat) => ({
+            location_id: locationId,
+            menu_category_id: menuCat,
           })),
         },
       },
@@ -92,6 +85,42 @@ const handlePutRequest = async (
       id: menuId,
     },
   });
+  // const updatedMenu = await prisma.menu.update({
+  //   data: {
+  //     description,
+  //     image_url: imageUrl,
+  //     name,
+  //     price,
+
+  //     // menu_location: {
+  //     //   deleteMany: {},
+  //     //   createMany: {
+  //     //     data: locationIds.map((location_id: number) => ({
+  //     //       location_id,
+  //     //     })),
+  //     //   },
+  //     // },
+  //     menu_addon_category: {
+  //       deleteMany: {},
+  //       createMany: {
+  //         data: addonCategoryIds.map((addon_category_id: number) => ({
+  //           addon_category_id,
+  //         })),
+  //       },
+  //     },
+  //     // menu_menu_category: {
+  //     //   deleteMany: {},
+  //     //   createMany: {
+  //     //     data: menuCategoryIds.map((menu_category_id: number) => ({
+  //     //       menu_category_id,
+  //     //     })),
+  //     //   },
+  //     // },
+  //   },
+  //   where: {
+  //     id: menuId,
+  //   },
+  // });
 
   return res.status(200).json({ updatedMenu, message: `${req.method} ok!!` });
 };
@@ -106,7 +135,7 @@ const handleDeleteRequest = async (
   const menuId = Number(menuIdStr);
 
   try {
-    await prisma.menu_location.deleteMany({
+    await prisma.menu_menu_category_location.deleteMany({
       where: {
         menu_id: menuId,
       },
@@ -117,11 +146,7 @@ const handleDeleteRequest = async (
         menu_id: menuId,
       },
     });
-    await prisma.menu_menu_category.deleteMany({
-      where: {
-        menu_id: menuId,
-      },
-    });
+
     const deletedMenu = await prisma.menu.delete({
       where: {
         id: menuId,

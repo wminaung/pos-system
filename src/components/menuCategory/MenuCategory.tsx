@@ -7,7 +7,7 @@ import {
   IconButton,
   Button,
 } from "@mui/material";
-import { useAppUpdate } from "../../contexts/AppContext";
+import { useBackofficeUpdate } from "../../contexts/BackofficeContext";
 import { MenuCategory as MenuCategoryType } from "../../typings/types";
 import Link from "next/link";
 import { config } from "@/config/config";
@@ -18,7 +18,7 @@ interface Props {
 const MenuCategory = ({ menuCategory }: Props) => {
   // ************************
 
-  const { fetchData } = useAppUpdate();
+  const { fetchData } = useBackofficeUpdate();
 
   const handleDeleteMenuCategory = async (menuCategoryId: number) => {
     const res = await fetch(

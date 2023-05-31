@@ -29,7 +29,7 @@ export interface MenuCategory extends menu_category {
 
 export interface MenuMenuCategoryLocation extends menu_menu_category_location {
   menu: menu | null;
-  menu_category: menu_category;
+  menu_category: menu_category | null;
   location: location;
 }
 
@@ -47,28 +47,15 @@ export interface BaseProps {
   children: React.ReactNode;
 }
 
-export interface CreateMenuPayload {
-  name: string;
-  price: number;
-  description: string;
-  imageUrl?: string;
-  locationIds: number[];
-}
-
-export interface UpdateMenuPayload {
-  name: string;
-  price: number;
-  description: string;
-  menuCategoryIds?: number[];
-  imageUrl?: string;
-}
-
-export interface UpdateMenuQuery {
-  menuId: number;
-  payload: UpdateMenuPayload;
-}
-
-//! api types
-
 //!ENUM
 export type ShowCatOption = "all" | "available" | "notAvailable";
+
+export interface MenuUpdatePayload {
+  name: string;
+  price: number;
+  description: string;
+  image_url: string | null;
+  menuCatIds: number[];
+}
+
+export interface MenuCreatePayload extends MenuUpdatePayload {}

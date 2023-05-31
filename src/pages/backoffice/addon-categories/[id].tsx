@@ -1,12 +1,15 @@
 import { Box, Button, TextField } from "@mui/material";
 import { useRef } from "react";
-import { useApp, useAppUpdate } from "@/contexts/AppContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
 const AddonCategoryDetail = (props: any) => {
-  const { addonCategories } = useApp();
-  const { fetchData } = useAppUpdate();
+  const { addonCategories } = useBackoffice();
+  const { fetchData } = useBackofficeUpdate();
 
   console.log("Props", props);
   const router = useRouter();

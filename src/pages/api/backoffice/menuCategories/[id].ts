@@ -81,8 +81,5 @@ const handleDeleteRequest = async (
       .json({ deletedMenuCat, message: "deleted successfully" });
   } catch (error) {
     console.log({ error });
-    return res
-      .status(500)
-      .json({ message: "You can't delete this mcat", error });
   }
 };

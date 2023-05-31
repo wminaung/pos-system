@@ -1,5 +1,8 @@
 import Layout from "@/components/Layout";
-import { defaultAppContext, useApp, useAppUpdate } from "@/contexts/AppContext";
+import {
+  defaultBackofficeContext,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import {
   Alert,
   Box,
@@ -15,13 +18,13 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 const Logout = () => {
-  const { updateData } = useAppUpdate();
+  const { updateData } = useBackofficeUpdate();
 
   const { data: session } = useSession();
   useEffect(() => {
     if (session) {
       localStorage.removeItem("accessToken");
-      updateData(defaultAppContext);
+      updateData(defaultBackofficeContext);
       signOut({ callbackUrl: "/auth/login" });
     }
   }, []);

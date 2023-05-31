@@ -14,7 +14,10 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
-import { useApp, useAppUpdate } from "@/contexts/AppContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import Alertor from "@/components/Alertor";
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
@@ -22,8 +25,8 @@ import Layout from "@/components/Layout";
 const AddonDetail = () => {
   // ********************************
 
-  const { addons, addonCategories } = useApp();
-  const { fetchData } = useAppUpdate();
+  const { addons, addonCategories } = useBackoffice();
+  const { fetchData } = useBackofficeUpdate();
 
   const router = useRouter();
 

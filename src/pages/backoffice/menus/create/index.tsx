@@ -1,6 +1,7 @@
 import {
   Box,
   Checkbox,
+  Chip,
   FormControl,
   InputLabel,
   ListItemText,
@@ -14,41 +15,34 @@ import Textarea from "@mui/joy/Textarea";
 import { useEffect, useState } from "react";
 import FileDropZone from "@/components/FileDropZone";
 import { config } from "@/config/config";
-import { useApp, useAppUpdate } from "@/contexts/AppContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { CreateMenuPayload, Menu } from "@/typings/types";
+import { Menu, MenuCreatePayload } from "@/typings/types";
 import Layout from "@/components/Layout";
+
+const defaultMenu: MenuCreatePayload = {
+  description: "",
+  name: "",
+  price: 0,
+  image_url: "",
+  menuCatIds: [],
+};
 
 const CreateMenu = () => {
   const [loading, setLoading] = useState(false);
   const [menuImage, setMenuImage] = useState<File>();
-  const [menu, setMenu] = useState<Menu>({
-    description: "",
-    location_ids: [],
-    name: "",
-    price: 0,
-    image_url: "",
-  } as Menu);
+  const [menu, setMenu] = useState<MenuCreatePayload>(defaultMenu);
 
-  const { selectedLocationId } = useApp();
+  const { selectedLocationId, locations, menus, menuCategories } =
+    useBackoffice();
 
-  useEffect(() => {
-    setMenu({
-      ...menu,
-      location_ids: selectedLocationId ? [Number(selectedLocationId)] : [],
-    });
-  }, [selectedLocationId]);
+  const { fetchData } = useBackofficeUpdate();
 
-  useEffect(() => {
-    console.log("menu : ", menu);
-  }, [menu]);
-
-  const isDisabled =
-    !menu.name || !menu.description || !menu.location_ids.length || !menuImage;
+  const isDisabled = !menu.name || !menu.description || !menuImage;
   console.log(isDisabled);
-
-  const { fetchData } = useAppUpdate();
-  const { locations } = useApp();
 
   const onFileSelected = (files: File[]) => {
     setMenuImage(files[0]);
@@ -71,63 +65,43 @@ const CreateMenu = () => {
         const imageUrl = imageRes.assetUrl as string;
 
         console.log("imageurl", imageUrl);
-        const payload = { ...menu, imageUrl: imageUrl };
+        const payload = { ...menu, image_url: imageUrl } as MenuCreatePayload;
 
         console.log("payload", payload);
 
-        const res = await fetch(`${config.backofficeApiBaseUrl}/menus`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+        const res = await fetch(
+          `${config.backofficeApiBaseUrl}/menus?locationId=${selectedLocationId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
         if (!res.ok) throw new Error("fail res.ok");
         console.log(await res.json());
         await fetchData();
         setLoading(false);
-        //   createMenu(
-        //     {
-        //       description,
-        //       locationIds: location_ids,
-        //       name,
-        //       price,
-        //       imageUrl: imageUrl,
-        //     },
-        //     (error, data) => {
-        //       setLoading(false);
-        //       if (error) console.log({ error });
-        //       console.log("menu created", data);
-        //     }
-        //   );
-        // } else {
-        //   setLoading(false);
+        setMenu({ ...defaultMenu });
+        setMenuImage(undefined);
       }
     } catch (error) {
       setLoading(false);
+      alert("fail");
     }
   };
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
-  // const deleteMenu = async (menuId?: number) => {
-  //   if (!menuId) return;
-  //   const response = await fetch(`${config.backofficeApiBaseUrl}/menus/${menuId}`, {
-  //     method: "DELETE",
-  //   });
-  // };
 
-  const handleChange = (event: SelectChangeEvent<any>) => {
-    const changeValues = event.target.value as number[];
+  const handleChange = (event: SelectChangeEvent<number[]>) => {
+    const {
+      target: { value },
+    } = event;
+    console.log(value, "value");
+    if (typeof value === "string") return;
 
-    setMenu({ ...menu, location_ids: changeValues });
+    setMenu({ ...menu, menuCatIds: value });
   };
 
   return (
@@ -172,38 +146,45 @@ const CreateMenu = () => {
             }
           />
           <FormControl sx={{ mb: 2 }}>
-            <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+            <InputLabel id="demo-multiple-chip-label">Menu Category</InputLabel>
             <Select
-              labelId="demo-multiple-checkbox-label"
-              id="demo-multiple-checkbox"
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
               multiple
-              value={menu.location_ids}
               onChange={handleChange}
-              input={<OutlinedInput label="Tag" />}
-              renderValue={(values) => {
-                const locationNames = menu.location_ids.map(
-                  (selectedLocationId) =>
-                    locations.find(
-                      (location) => location.id === selectedLocationId
-                    )?.name as string
+              value={menu.menuCatIds}
+              input={
+                <OutlinedInput
+                  id="select-multiple-chip"
+                  label="Menu Category"
+                />
+              }
+              renderValue={(selected) => {
+                const selectedCategories = selected.map((id) =>
+                  menuCategories.find((mcat) => mcat.id === id)
                 );
-
-                return locationNames.join(", ");
-              }}
-              MenuProps={MenuProps}
-            >
-              {locations.map((location) => {
-                const isChecked = menu.location_ids.includes(
-                  location.id as number
-                );
-
                 return (
-                  <MenuItem key={location.id} value={location.id as number}>
-                    <Checkbox checked={isChecked} />
-                    <ListItemText primary={location.name} />
-                  </MenuItem>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {selectedCategories.map((item, idx) => {
+                      return <Chip key={item?.id} label={item?.name} />;
+                    })}
+                  </Box>
                 );
-              })}
+              }}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                    width: 250,
+                  },
+                },
+              }}
+            >
+              {menuCategories.map((menuCategory) => (
+                <MenuItem key={menuCategory.id} value={menuCategory.id}>
+                  {menuCategory.name} {menuCategory.id}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <FileDropZone onFileSelected={onFileSelected} />

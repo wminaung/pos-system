@@ -1,15 +1,18 @@
 import { Box, Button, TextField } from "@mui/material";
 import React, { useRef } from "react";
 
-import { useApp, useAppUpdate } from "@/contexts/AppContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
 import { config } from "@/config/config";
 
 const MenuCategoryDetail = () => {
   //********************* */
-  const { menuCategories } = useApp();
-  const { fetchData } = useAppUpdate();
+  const { menuCategories } = useBackoffice();
+  const { fetchData } = useBackofficeUpdate();
 
   const router = useRouter();
   const { id: menuCategoryIdStr } = router.query;

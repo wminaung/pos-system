@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/utils/db";
+import { MenuCreatePayload } from "@/typings/types";
 type Data = {
   name: string;
 };
@@ -34,10 +35,11 @@ const handlePostRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name, price, description, location_ids, imageUrl } = req.body;
-
+  const { name, price, description, menuCatIds, image_url } =
+    req.body as MenuCreatePayload;
+  const locationId = Number(req.query.locationId as string);
   console.log(req.body, "reg");
-  if (!name || price < 0 || !description || !imageUrl)
+  if (!name || price < 0 || !description || !image_url)
     return res
       .status(404)
       .json({ error: "name,description,imageUrl & price are needed" });
@@ -48,10 +50,13 @@ const handlePostRequest = async (
         name,
         price,
         description,
-        image_url: imageUrl,
-        menu_location: {
+        image_url: image_url,
+        menu_menu_category_location: {
           createMany: {
-            data: location_ids.map((location_id: number) => ({ location_id })),
+            data: menuCatIds.map((mcatId) => ({
+              menu_category_id: mcatId,
+              location_id: locationId,
+            })),
           },
         },
       },

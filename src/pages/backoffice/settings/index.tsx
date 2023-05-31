@@ -8,24 +8,27 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import { useApp, useAppUpdate } from "@/contexts/AppContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import { Location } from "@/typings/types";
 import { LoadingButton } from "@mui/lab";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
+import { setSelectedLocationId } from "@/utils";
 
 const Settings = () => {
   const [selectedLocation, setSelectedLocation] = useState<Location>();
   const [newLocation, setNewLocation] = useState<Location>({} as Location);
-  const allData = useApp();
-  const { locations } = allData;
-  const { fetchData } = useAppUpdate();
+  const allData = useBackoffice();
+  const { locations, selectedLocationId } = allData;
+  const { fetchData } = useBackofficeUpdate();
 
   useEffect(() => {
     if (locations.length) {
-      const selectedLocationId = localStorage.getItem("selectedLocation");
       if (!selectedLocationId) {
-        localStorage.setItem("selectedLocation", String(locations[0].id));
+        setSelectedLocationId(String(locations[0].id));
         setSelectedLocation(locations[0]);
       } else {
         const selectedLocation = locations.find(
@@ -35,8 +38,6 @@ const Settings = () => {
       }
     }
   }, [locations]);
-
-  const isDisabled = !newLocation.name || !newLocation.address;
 
   useEffect(() => {
     selectedLocation && setNewLocation(selectedLocation);
@@ -54,22 +55,37 @@ const Settings = () => {
   }
 
   const handleUpdate = async () => {
-    const selectedLocationId = selectedLocation.id;
-    if (!selectedLocationId) return alert("need selectedLocationId");
+    if (!selectedLocation.id) return alert("need selectedLocationId");
+    setSelectedLocationId(String(selectedLocation.id));
 
-    localStorage.setItem("selectedLocation", String(selectedLocation.id));
-    const accessToken = localStorage.getItem("accessToken");
+    const isCanUpdate =
+      selectedLocation.name !== newLocation.name ||
+      selectedLocation.address !== newLocation.address ||
+      String(selectedLocation.id) !== selectedLocationId;
+    if (!isCanUpdate) {
+      return alert("can't updated");
+    }
+
     const res = await fetch(
-      `${config.backofficeApiBaseUrl}/locations/${selectedLocationId}`,
+      `${config.backofficeApiBaseUrl}/locations/${selectedLocation.id}`,
       {
         method: "PUT",
-
+        headers: {
+          "content-type": "application/json",
+        },
         body: JSON.stringify(newLocation),
       }
     );
-    if (res.ok) return fetchData();
+    if (!res.ok) {
+      console.log(await res.json());
+      return alert("cant't fetch");
+    }
+    return fetchData();
   };
-
+  const isDisabled =
+    selectedLocation.name === newLocation.name &&
+    selectedLocation.address === newLocation.address &&
+    String(newLocation.id) === selectedLocationId;
   return (
     <Layout title="Settings">
       <Box

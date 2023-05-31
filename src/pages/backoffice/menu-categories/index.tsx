@@ -11,7 +11,10 @@ import {
 } from "@mui/material";
 
 import { useState } from "react";
-import { useApp, useAppUpdate } from "@/contexts/AppContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import MenuCategory from "@/components/menuCategory/MenuCategory";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
@@ -23,9 +26,9 @@ const MenuCategories = () => {
     name: "",
   } as MenuCat);
 
-  const { menuCategories } = useApp();
-  const { selectedLocationId } = useApp();
-  const { fetchData } = useAppUpdate();
+  const { menuCategories, selectedLocationId } = useBackoffice();
+
+  const { fetchData } = useBackofficeUpdate();
 
   const [showCat, setShowCat] = useState<ShowCatOption>("all");
 
@@ -117,9 +120,13 @@ const MenuCategories = () => {
         alignItems={"center"}
         justifyContent={"center"}
       >
-        {filterMenuCategories.map((menuCategory) => (
-          <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
-        ))}
+        {showCat === "all"
+          ? menuCategories.map((menuCategory) => (
+              <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
+            ))
+          : filterMenuCategories.map((menuCategory) => (
+              <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
+            ))}
       </Box>
     </Layout>
   );

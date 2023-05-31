@@ -1,13 +1,16 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useApp, useAppUpdate } from "@/contexts/AppContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import { Location } from "@/typings/types";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
 
 const Locations = () => {
-  const { locations, selectedLocationId } = useApp();
-  const { fetchData } = useAppUpdate();
+  const { locations, selectedLocationId } = useBackoffice();
+  const { fetchData } = useBackofficeUpdate();
 
   const [newLocation, setNewLocation] = useState({
     address: "",

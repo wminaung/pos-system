@@ -1,14 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 
-type Data = {
-  message: string;
-};
-
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<any>
-) {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const method = req.method;
 
   if (method === "GET") {
@@ -43,17 +36,23 @@ const handleGetRequest = async (
 };
 
 // TODO -
-const handlePostRequest = (req: NextApiRequest, res: NextApiResponse<any>) => {
+const handlePostRequest = async (
+  req: NextApiRequest,
+  res: NextApiResponse<any>
+) => {
   return res.status(200).json({ message: `${req.method} ok!!` });
 };
 
 // TODO -
-const handlePutRequest = (req: NextApiRequest, res: NextApiResponse<any>) => {
+const handlePutRequest = async (
+  req: NextApiRequest,
+  res: NextApiResponse<any>
+) => {
   return res.status(200).json({ message: `${req.method} ok!!` });
 };
 
 // TODO -
-const handleDeleteRequest = (
+const handleDeleteRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {

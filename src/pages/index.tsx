@@ -3,7 +3,10 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { GetStaticProps } from "next";
-import { useApp, useAppUpdate } from "@/contexts/AppContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import { useSession } from "next-auth/react";
 import Layout from "@/components/Layout";
 import { Backdrop, CircularProgress } from "@mui/material";
@@ -11,23 +14,10 @@ import { Backdrop, CircularProgress } from "@mui/material";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const { fetchData } = useAppUpdate();
-
-  const { isFetch } = useApp();
+  const { fetchData } = useBackofficeUpdate();
 
   return (
     <Layout>
-      {isFetch ? (
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isFetch}
-          timeout={3000}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      ) : (
-        <span></span>
-      )}
       <button onClick={() => fetchData()}>click</button>
     </Layout>
   );

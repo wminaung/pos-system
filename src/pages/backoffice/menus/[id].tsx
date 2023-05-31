@@ -3,88 +3,73 @@ import {
   Button,
   Chip,
   FormControl,
-  ImageListItem,
   InputLabel,
   LinearProgress,
   MenuItem,
   OutlinedInput,
   Select,
   SelectChangeEvent,
-  Skeleton,
   Stack,
   TextField,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import { useApp, useAppUpdate } from "@/contexts/AppContext";
+import { use, useEffect, useState } from "react";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import { Textarea } from "@mui/joy";
 import FileDropZone from "@/components/FileDropZone";
 import AspectRatio from "@mui/joy/AspectRatio";
-import { Menu, MenuCategory } from "@/typings/types";
+import { Menu } from "@/typings/types";
 import { config } from "@/config/config";
 import { Theme, useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { GetStaticPaths, GetStaticProps } from "next";
 import Layout from "@/components/Layout";
+import { menu } from "@prisma/client";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+interface UpdateMenu extends menu {
+  menuCatIds: number[];
+}
 
 const MenuDetail = () => {
   // **************************************************
-  // **************************************************
-  // **************************************************
-  const {
-    menus,
-    selectedLocationId,
-    menuCategories,
-    menusMenuCategoriesLocations,
-  } = useApp();
-  const { fetchData } = useAppUpdate();
-  const [selectedMenuCatIds, setSelectedMenuCatIds] = useState<number[]>([]);
-  const [oldSelectedMenuCatIds, setOldSelectedMenuCatIds] = useState<number[]>(
-    []
-  );
+
+  const { menus, menuCategories, selectedLocationId } = useBackoffice();
+  const { fetchData } = useBackofficeUpdate();
+  // const [selectedMenuCatIds, setSelectedMenuCatIds] = useState<number[]>([]);
+  // const [oldSelectedMenuCatIds, setOldSelectedMenuCatIds] = useState<number[]>(
+  //   []
+  // );
+  console.log("menus :::", menus);
 
   const router = useRouter();
   const { id: menuIdStr } = router.query;
-  const [menu, setMenu] = useState<Menu>();
-  const [oldMenu, setOldMenu] = useState<Menu>();
+  const [menu, setMenu] = useState<UpdateMenu>();
+  const [oldMenu, setOldMenu] = useState<UpdateMenu>();
   const [menuImage, setMenuImage] = useState<File>();
   const theme = useTheme();
 
   const menuId = parseInt(menuIdStr as string, 10);
-
   const hasMenu = menus.find((menu) => menu.id === menuId);
 
   useEffect(() => {
-    if (menuCategories.length && menus.length && menuId) {
-      setSelectedMenuCatIds(
-        menusMenuCategoriesLocations
-          .filter((menuMenuCat) => menuMenuCat.menu_id === menuId)
-          .map((menuMenuCat) => menuMenuCat.menu_category_id)
-      );
-      setOldSelectedMenuCatIds(
-        menusMenuCategoriesLocations
-          .filter((menuMenuCat) => menuMenuCat.menu_id === menuId)
-          .map((menuMenuCat) => menuMenuCat.menu_category_id)
-      );
-    }
-  }, [menuCategories, menus]);
+    if (hasMenu && selectedLocationId) {
+      const menuCatIds = hasMenu.menu_menu_category_location
+        .filter((menuCat) => menuCat.location_id === Number(selectedLocationId))
+        .map((menuCat) => menuCat.menu_category_id) as number[];
 
-  useEffect(() => {
-    if (hasMenu) {
-      setMenu(hasMenu);
-      setOldMenu(hasMenu);
+      setMenu({
+        ...hasMenu,
+        menuCatIds: menuCatIds,
+      });
+      setOldMenu({
+        ...hasMenu,
+        menuCatIds: menuCatIds,
+      });
     }
   }, [hasMenu]);
 
@@ -95,38 +80,37 @@ const MenuDetail = () => {
       </Stack>
     );
   }
-  const {
-    name,
-    price,
-    description,
-    image_url,
-    location_ids,
-    addon_category_ids = [],
-    menu_category_ids = [],
-  } = menu;
-  console.log({ menu }, "adsffffffffffffffffffff");
+
+  const handleChange = (event: SelectChangeEvent<number[]>) => {
+    const {
+      target: { value },
+    } = event;
+    console.log(value, "value");
+    if (typeof value === "string") return;
+
+    setMenu({ ...menu, menuCatIds: value });
+  };
   // todo UPDATE
   const handleUpdateMenu = async () => {
     // console.log(menu, selectedMenuCatIds);
-    const { name, price, description, location_ids, image_url } = menu;
     const {
       name: oldName,
       price: oldPrice,
       description: oldDescription,
-      location_ids: oldLocationIds,
+      menuCatIds: oldMenuCatIds,
       image_url: oldImageUrl,
     } = oldMenu;
 
-    let imageUrl: string | undefined = "";
+    const { name, price, description, menuCatIds, image_url } = menu;
+    console.log({ menuCatIds });
+    let imageUrl: string | null = "";
     if (menuImage) {
       const formData = new FormData();
       formData.append("files", menuImage as Blob);
       const response = await fetch(`${config.backofficeApiBaseUrl}/assets`, {
         method: "POST",
-
         body: formData,
       });
-
       if (response.ok) {
         const imageRes = await response.json();
         imageUrl = imageRes.assetUrl as string;
@@ -136,13 +120,11 @@ const MenuDetail = () => {
     } else {
       imageUrl = oldImageUrl;
     }
-
     if (
       name === oldName &&
       price === oldPrice &&
       description === oldDescription &&
-      String(location_ids) === String(oldLocationIds) &&
-      String(selectedMenuCatIds) === String(oldSelectedMenuCatIds) &&
+      String(menuCatIds) === String(oldMenuCatIds) &&
       imageUrl === oldImageUrl
     ) {
       return alert("you can't update");
@@ -152,13 +134,12 @@ const MenuDetail = () => {
       name,
       price,
       description,
-      imageUrl,
-      menuCategoryIds: selectedMenuCatIds,
-      locationIds: [Number(selectedLocationId)],
+      image_url: imageUrl,
+      menuCatIds,
     };
 
     const menuRes = await fetch(
-      `${config.backofficeApiBaseUrl}/menus/${menuId}`,
+      `${config.backofficeApiBaseUrl}/menus/${menuId}?locationId=${selectedLocationId}`,
       {
         method: "PUT",
         headers: {
@@ -191,15 +172,6 @@ const MenuDetail = () => {
     await fetchData();
     await router.push("/backoffice/menus");
   };
-  const handleChange = (event: SelectChangeEvent<number[]>) => {
-    const {
-      target: { value },
-    } = event;
-    console.log(value, "value");
-    if (typeof value === "string") return;
-
-    setSelectedMenuCatIds(value);
-  };
 
   const onFileSelected = (files: File[]) => {
     setMenuImage(files[0]);
@@ -209,7 +181,7 @@ const MenuDetail = () => {
     menuCategoryId: number,
     theme: Theme
   ): React.CSSProperties | undefined => {
-    const isSelected = selectedMenuCatIds.includes(menuCategoryId);
+    const isSelected = menu.menuCatIds.includes(menuCategoryId);
     return {
       fontWeight: isSelected
         ? theme.typography.fontWeightBold
@@ -219,7 +191,7 @@ const MenuDetail = () => {
       borderBottom: "1px dashed  black",
     };
   };
-
+  const { name, price, description, image_url } = menu;
   return (
     <Layout title="Edit Menu">
       <Box
@@ -281,7 +253,7 @@ const MenuDetail = () => {
             id="demo-multiple-chip"
             multiple
             onChange={handleChange}
-            value={selectedMenuCatIds}
+            value={menu.menuCatIds}
             input={
               <OutlinedInput id="select-multiple-chip" label="Menu Category" />
             }
