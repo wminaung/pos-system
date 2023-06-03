@@ -73,7 +73,6 @@ export const BackofficeProvider = ({ children }: Props) => {
 
   // ? fetch all data
   const fetchData = async (callback?: (error?: any, data?: any) => void) => {
-    updateData({ ...data });
     const res = await fetch(
       `${config.backofficeApiBaseUrl}?location=${getSelectedLocationId()}`
     );
@@ -95,7 +94,7 @@ export const BackofficeProvider = ({ children }: Props) => {
     /*
     todo test
     */
-    if (getSelectedLocationId()) {
+    if (!getSelectedLocationId()) {
       selectedLocationId(String(selectedLocationId));
     }
     updateData({
@@ -107,7 +106,7 @@ export const BackofficeProvider = ({ children }: Props) => {
       addonCategories,
       menusMenuCategoriesLocations,
       locations,
-      selectedLocationId: getSelectedLocationId() || String(selectedLocationId),
+      selectedLocationId: getSelectedLocationId(),
     });
 
     callback && callback(undefined, resData);
