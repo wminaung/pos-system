@@ -44,7 +44,7 @@ const handlePutRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name, price, description, image_url, menuCatIds } =
+  const { name, price, description, image_url, menuCatIds, isRequired } =
     req.body as MenuUpdatePayload;
   const menuIdStr = req.query.id as string;
   const locationId = Number(req.query.locationId as string);
@@ -52,7 +52,13 @@ const handlePutRequest = async (
   const menuId = Number(menuIdStr);
   console.log({ body: req.body });
 
-  if (!name || price < 0 || !description || !image_url) {
+  if (
+    !name ||
+    price < 0 ||
+    !description ||
+    !image_url ||
+    typeof isRequired !== "boolean"
+  ) {
     return res
       .status(400)
       .json({ message: "!name || price < 0 || !description || !image_url" });
@@ -77,6 +83,7 @@ const handlePutRequest = async (
           data: menuCatIds.map((menuCat) => ({
             location_id: locationId,
             menu_category_id: menuCat,
+            is_available: isRequired,
           })),
         },
       },

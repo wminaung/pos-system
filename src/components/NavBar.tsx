@@ -76,12 +76,21 @@ const NavBar = ({ title }: Props) => {
 
   return (
     <Box>
-      <AppBar position="static" sx={{ backgroundColor: theme.main }}>
+      <AppBar
+        position="static"
+        sx={{ backgroundColor: theme.main, color: "#F8F1F1" }}
+      >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Typography variant="h6" component="div">
-              {selectedLocationName ? selectedLocationName : ""}
-            </Typography>
+          <Box
+            sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
+          >
+            <Image
+              width={800}
+              height={800}
+              style={{ objectFit: "contain", width: "80px", height: "auto" }}
+              src={"/logo_transparent.png"}
+              alt="happy pos logo"
+            />
           </Box>
           <Typography variant="h6" component="div">
             {title}
@@ -92,6 +101,7 @@ const NavBar = ({ title }: Props) => {
           >  </Link> */}
           <Button
             color="inherit"
+            size="large"
             onClick={() => {
               status === "authenticated"
                 ? router.push("/auth/logout")
@@ -102,9 +112,6 @@ const NavBar = ({ title }: Props) => {
           </Button>
         </Toolbar>
       </AppBar>
-      {/* <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
-        {drawerContent()}
-      </Drawer> */}
     </Box>
   );
 };

@@ -1,5 +1,5 @@
-import { Box, Button, TextField } from "@mui/material";
-import React, { useRef } from "react";
+import { Autocomplete, Box, Button, Checkbox, TextField } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   useBackoffice,
@@ -8,15 +8,28 @@ import {
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
 import { config } from "@/config/config";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
+interface CreateMenuCat {
+  name: string;
+}
 const MenuCategoryDetail = () => {
   //********************* */
-  const { menuCategories } = useBackoffice();
+  const [menuCat, setMenuCat] = useState({
+    name: "",
+  } as CreateMenuCat);
+  const [oldMenuCat, setOldMenuCat] = useState({
+    name: "",
+  } as CreateMenuCat);
+  const { menuCategories, locations } = useBackoffice();
   const { fetchData } = useBackofficeUpdate();
 
   const router = useRouter();
   const { id: menuCategoryIdStr } = router.query;
-  const nameRef = useRef<HTMLInputElement>(null);
 
   const menuCategoryId = parseInt(menuCategoryIdStr as string, 10);
 
@@ -24,16 +37,30 @@ const MenuCategoryDetail = () => {
     (menuCategory) => menuCategory.id === menuCategoryId
   );
 
+  useEffect(() => {
+    if (menuCategory) {
+      setMenuCat({
+        ...menuCat,
+        name: menuCategory.name,
+      });
+      setOldMenuCat({
+        ...menuCat,
+        name: menuCategory.name,
+      });
+    }
+  }, [menuCategory]);
+  console.log("mcat", menuCat);
+
   if (!menuCategory) return null;
 
-  const { id, name } = menuCategory;
-
-  console.log({ id, name });
-
   const handeleUpdateMenuCategory = async () => {
-    const nametoUpdate = nameRef.current?.value || "";
+    const { name } = menuCat;
 
-    const payload = { name: nametoUpdate };
+    if (!name) {
+      return alert("put all feild");
+    }
+
+    const payload = { name };
     const res = await fetch(
       `${config.backofficeApiBaseUrl}/menuCategories/${menuCategoryId}`,
       {
@@ -50,9 +77,6 @@ const MenuCategoryDetail = () => {
     }
     console.log(await res.json());
     await fetchData();
-    // updateMenuCategory({ menuCategoryId, payload }, (error, data) => {
-    //   console.log({ error, data }, "updatemcat");
-    // });
   };
 
   const handleDeleteMenuCategory = async () => {
@@ -70,6 +94,7 @@ const MenuCategoryDetail = () => {
     await fetchData();
     router.push("/backoffice/menu-categories");
   };
+
   return (
     <Layout title="Edit Menu Category">
       <Box
@@ -80,14 +105,48 @@ const MenuCategoryDetail = () => {
         mt={5}
       >
         <TextField
-          defaultValue={name}
-          inputRef={nameRef}
+          value={menuCat.name}
+          onChange={(e) => setMenuCat({ ...menuCat, name: e.target.value })}
           label="Name"
           type="text"
           variant="outlined"
+          focused
+          autoFocus
           sx={{ mb: 2 }}
         />
-
+        {/* <Autocomplete
+          sx={{ my: 2 }}
+          multiple
+          id="checkboxes-tags-demo"
+          options={locationsOption}
+          disableCloseOnSelect
+          onChange={(e, values) => {
+            const selectedIds = values.map((value) => value.id);
+            setMenuCat({ ...menuCat, locationIds: selectedIds });
+          }}
+          value={locationsOption.filter((locationOption) =>
+            menuCat.locationIds.find(
+              (mCatLocatinId) => mCatLocatinId === locationOption.id
+            )
+          )}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          getOptionLabel={(option) => option.name}
+          renderOption={(props, option, { selected }) => (
+            <li {...props}>
+              <Checkbox
+                icon={icon}
+                checkedIcon={checkedIcon}
+                style={{ marginRight: 8 }}
+                checked={selected}
+              />
+              {option.name}
+            </li>
+          )}
+          style={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Locations" placeholder="Favorites" />
+          )}
+        /> */}
         <Button variant="contained" onClick={handeleUpdateMenuCategory}>
           Update
         </Button>

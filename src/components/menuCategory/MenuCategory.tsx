@@ -7,7 +7,10 @@ import {
   IconButton,
   Button,
 } from "@mui/material";
-import { useBackofficeUpdate } from "../../contexts/BackofficeContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "../../contexts/BackofficeContext";
 import { MenuCategory as MenuCategoryType } from "../../typings/types";
 import Link from "next/link";
 import { config } from "@/config/config";
@@ -19,10 +22,11 @@ const MenuCategory = ({ menuCategory }: Props) => {
   // ************************
 
   const { fetchData } = useBackofficeUpdate();
+  const { selectedLocationId } = useBackoffice();
 
   const handleDeleteMenuCategory = async (menuCategoryId: number) => {
     const res = await fetch(
-      `${config.backofficeApiBaseUrl}/menuCategories/${menuCategoryId}`,
+      `${config.backofficeApiBaseUrl}/menuCategories/${menuCategoryId}?locationId=${selectedLocationId}`,
       {
         method: "DELETE",
       }

@@ -1,4 +1,4 @@
-namespace Config {
+export namespace Config {
   export interface Backend {
     jwtSecret: string;
     spaceAccessKeyId: string;

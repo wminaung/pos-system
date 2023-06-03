@@ -55,7 +55,35 @@ export interface MenuUpdatePayload {
   price: number;
   description: string;
   image_url: string | null;
+  isRequired: boolean;
   menuCatIds: number[];
 }
 
 export interface MenuCreatePayload extends MenuUpdatePayload {}
+
+export namespace Payload {
+  export namespace Menu {
+    export interface Create {
+      name: string;
+      price: number;
+      description: string;
+      image_url: string | null;
+      menuCatIds: number[];
+    }
+    export interface Update extends Create {}
+  }
+
+  export namespace MenuCategory {
+    export interface Create {
+      name: string;
+    }
+    export interface Update extends Create {}
+  }
+
+  export namespace Addon {
+    export interface Create {
+      name: string;
+    }
+    export interface Update extends Create {}
+  }
+}

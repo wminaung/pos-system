@@ -1,8 +1,10 @@
 import {
   Box,
   Button,
+  Checkbox,
   Chip,
   FormControl,
+  FormControlLabel,
   InputLabel,
   LinearProgress,
   MenuItem,
@@ -10,6 +12,7 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
+  Switch,
   TextField,
 } from "@mui/material";
 import { use, useEffect, useState } from "react";
@@ -33,12 +36,18 @@ const ITEM_PADDING_TOP = 8;
 
 interface UpdateMenu extends menu {
   menuCatIds: number[];
+  isRequired: boolean;
 }
 
 const MenuDetail = () => {
   // **************************************************
 
-  const { menus, menuCategories, selectedLocationId } = useBackoffice();
+  const {
+    menus,
+    menusMenuCategoriesLocations,
+    menuCategories,
+    selectedLocationId,
+  } = useBackoffice();
   const { fetchData } = useBackofficeUpdate();
   // const [selectedMenuCatIds, setSelectedMenuCatIds] = useState<number[]>([]);
   // const [oldSelectedMenuCatIds, setOldSelectedMenuCatIds] = useState<number[]>(
@@ -55,6 +64,12 @@ const MenuDetail = () => {
 
   const menuId = parseInt(menuIdStr as string, 10);
   const hasMenu = menus.find((menu) => menu.id === menuId);
+  const isRequired = !!menusMenuCategoriesLocations.find(
+    (m) =>
+      menu &&
+      m.menu_id === menu.id &&
+      String(m.location_id) === selectedLocationId
+  )?.is_available;
 
   useEffect(() => {
     if (hasMenu && selectedLocationId) {
@@ -65,10 +80,12 @@ const MenuDetail = () => {
       setMenu({
         ...hasMenu,
         menuCatIds: menuCatIds,
+        isRequired,
       });
       setOldMenu({
         ...hasMenu,
         menuCatIds: menuCatIds,
+        isRequired,
       });
     }
   }, [hasMenu]);
@@ -80,6 +97,12 @@ const MenuDetail = () => {
       </Stack>
     );
   }
+
+  const menuCategoriesByLocation = menuCategories.filter((mcat) =>
+    mcat.menu_menu_category_location.find(
+      (mmcl) => String(mmcl.location_id) === selectedLocationId
+    )
+  );
 
   const handleChange = (event: SelectChangeEvent<number[]>) => {
     const {
@@ -99,9 +122,11 @@ const MenuDetail = () => {
       description: oldDescription,
       menuCatIds: oldMenuCatIds,
       image_url: oldImageUrl,
+      isRequired: oldIsRequired,
     } = oldMenu;
 
-    const { name, price, description, menuCatIds, image_url } = menu;
+    const { name, price, description, menuCatIds, isRequired, image_url } =
+      menu;
     console.log({ menuCatIds });
     let imageUrl: string | null = "";
     if (menuImage) {
@@ -123,6 +148,7 @@ const MenuDetail = () => {
     if (
       name === oldName &&
       price === oldPrice &&
+      isRequired === oldIsRequired &&
       description === oldDescription &&
       String(menuCatIds) === String(oldMenuCatIds) &&
       imageUrl === oldImageUrl
@@ -136,6 +162,7 @@ const MenuDetail = () => {
       description,
       image_url: imageUrl,
       menuCatIds,
+      isRequired,
     };
 
     const menuRes = await fetch(
@@ -219,7 +246,6 @@ const MenuDetail = () => {
             <h3>There is no image </h3>
           )}
         </AspectRatio>
-
         <TextField
           label="Name"
           value={name}
@@ -245,7 +271,7 @@ const MenuDetail = () => {
           minRows={2}
           placeholder="Description..."
           size="lg"
-        />
+        />{" "}
         <FormControl sx={{ mb: 2 }}>
           <InputLabel id="demo-multiple-chip-label">Menu Category</InputLabel>
           <Select
@@ -259,7 +285,7 @@ const MenuDetail = () => {
             }
             renderValue={(selected) => {
               const selectedCategories = selected.map((id) =>
-                menuCategories.find((mcat) => mcat.id === id)
+                menuCategoriesByLocation.find((mcat) => mcat.id === id)
               );
               return (
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
@@ -278,7 +304,7 @@ const MenuDetail = () => {
               },
             }}
           >
-            {menuCategories.map((menuCategory) => (
+            {menuCategoriesByLocation.map((menuCategory) => (
               <MenuItem
                 key={menuCategory.id}
                 value={menuCategory.id}
@@ -288,7 +314,19 @@ const MenuDetail = () => {
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl>{" "}
+        <FormControlLabel
+          sx={{ mb: 2 }}
+          control={
+            <Switch
+              checked={menu.isRequired}
+              onChange={(e, checked) =>
+                setMenu({ ...menu, isRequired: checked })
+              }
+            />
+          }
+          label="required"
+        />
         <Box sx={{ mb: 2 }}>
           <FileDropZone onFileSelected={onFileSelected} />
         </Box>

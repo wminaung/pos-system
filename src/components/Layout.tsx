@@ -21,10 +21,12 @@ import {
   ListItemIcon,
   ListItemText,
   Stack,
+  Typography,
 } from "@mui/material";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { theme } from "@/config/myTheme";
+import Image from "next/image";
 
 const sidebarMenuItems = [
   {
@@ -80,7 +82,7 @@ const Layout = (props: Props) => {
   const { data: session, status } = useSession();
   const profileImageUrl = session?.user?.image || "/test.png";
 
-  const profleName = session?.user?.name || "no-name";
+  const profileName = session?.user?.name || "no-name";
   return (
     <Box>
       <NavBar title={props.title} />
@@ -92,9 +94,21 @@ const Layout = (props: Props) => {
                 <ListItemButton>
                   <ListItemIcon>
                     {/* <Avatar src={profileImageUrl} alt="Your Profile" /> */}
-                    <Avatar src={profileImageUrl} alt="ok"></Avatar>
+                    <Avatar
+                      sx={{ border: "5px solid #E8AA42" }}
+                      src={profileImageUrl}
+                      alt="ok"
+                    ></Avatar>
                   </ListItemIcon>
-                  <ListItemText primary={profleName} />
+                  <ListItemText
+                    primaryTypographyProps={{
+                      color: "#E8AA42",
+                      fontStyle: "oblique",
+                      fontWeight: "bold !important",
+                    }}
+                  >
+                    {profileName}
+                  </ListItemText>
                 </ListItemButton>
               </ListItem>
               {sidebarMenuItems
@@ -107,8 +121,13 @@ const Layout = (props: Props) => {
                   >
                     <ListItem disablePadding>
                       <ListItemButton>
-                        <ListItemIcon>{item.icon}</ListItemIcon>
-                        <ListItemText primary={item.label} />
+                        <ListItemIcon sx={{ color: "#E8AA42" }}>
+                          {item.icon}
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={item.label}
+                          sx={{ color: "#F8F1F1" }}
+                        />
                       </ListItemButton>
                     </ListItem>
                   </Link>
@@ -124,8 +143,13 @@ const Layout = (props: Props) => {
                 >
                   <ListItem disablePadding>
                     <ListItemButton>
-                      <ListItemIcon>{item.icon}</ListItemIcon>
-                      <ListItemText primary={item.label} />
+                      <ListItemIcon sx={{ color: "#E8AA42" }}>
+                        {item.icon}
+                      </ListItemIcon>
+                      <ListItemText
+                        sx={{ color: "#F8F1F1" }}
+                        primary={item.label}
+                      />
                     </ListItemButton>
                   </ListItem>
                 </Link>

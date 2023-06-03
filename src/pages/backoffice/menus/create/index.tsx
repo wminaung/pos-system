@@ -3,12 +3,14 @@ import {
   Checkbox,
   Chip,
   FormControl,
+  FormControlLabel,
   InputLabel,
   ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
   SelectChangeEvent,
+  Switch,
   TextField,
 } from "@mui/material";
 import Textarea from "@mui/joy/Textarea";
@@ -28,6 +30,7 @@ const defaultMenu: MenuCreatePayload = {
   name: "",
   price: 0,
   image_url: "",
+  isRequired: true,
   menuCatIds: [],
 };
 
@@ -187,6 +190,18 @@ const CreateMenu = () => {
               ))}
             </Select>
           </FormControl>
+          <FormControlLabel
+            sx={{ mb: 2 }}
+            control={
+              <Switch
+                checked={menu.isRequired}
+                onChange={(e, checked) =>
+                  setMenu({ ...menu, isRequired: checked })
+                }
+              />
+            }
+            label="required"
+          />
           <FileDropZone onFileSelected={onFileSelected} />
 
           <LoadingButton

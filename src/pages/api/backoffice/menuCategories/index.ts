@@ -34,19 +34,28 @@ const handlePostRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name } = req.body;
-
+  const { name } = req.body as {
+    name: string;
+  };
+  const locationId = Number(req.query.locationId as string);
   console.log(req.body, "reg");
-  if (!name) return res.status(404).json({ error: "name are needed" });
+  if (!name)
+    return res.status(404).json({ error: "name and locationids are needed" });
 
   try {
-    const newMenus = await prisma.menu_category.create({
+    const newMenuCat = await prisma.menu_category.create({
       data: {
         name,
+        menu_menu_category_location: {
+          create: {
+            location_id: locationId,
+            menu_id: null,
+          },
+        },
       },
     });
 
-    return res.status(200).json({ message: `${req.method} ok!!`, newMenus });
+    return res.status(200).json({ message: `${req.method} ok!!`, newMenuCat });
   } catch (error) {
     console.error({ error });
     return res.status(500).json({ message: "check prisma query", error });

@@ -35,7 +35,7 @@ const handlePostRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name, price, description, menuCatIds, image_url } =
+  const { name, price, description, menuCatIds, image_url, isRequired } =
     req.body as MenuCreatePayload;
   const locationId = Number(req.query.locationId as string);
   console.log(req.body, "reg");
@@ -56,6 +56,7 @@ const handlePostRequest = async (
             data: menuCatIds.map((mcatId) => ({
               menu_category_id: mcatId,
               location_id: locationId,
+              is_available: isRequired,
             })),
           },
         },

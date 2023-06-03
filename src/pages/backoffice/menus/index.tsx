@@ -20,6 +20,8 @@ import { getAccessToken, getSelectedLocationId } from "@/utils";
 import { useEffect, useState } from "react";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
+import DialogBox from "@/components/DialogBox";
+import CreateMenu from "@/components/CreateMenu";
 
 const MenusPage = () => {
   // ******************** ;data.status === "loading"
@@ -49,84 +51,65 @@ const MenusPage = () => {
 
   return (
     <Layout title="Menus">
-      <Box display={"flex"} alignItems={"center"} flexWrap={"wrap"} padding={6}>
-        <Link
-          href={"/backoffice/menus/create"}
-          style={{ textDecoration: "none", color: "black" }}
+      <Box display={"flex"}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
         >
-          <Box
-            sx={{
-              my: 1,
-              mx: 3,
-              width: 245,
-              border: "2px dotted  lightgrey",
-              borderRadius: "5px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-              userSelect: "none",
-              opacity: 1,
-              height: "245px",
+          {!filteredMenu.length ? (
+            <h3>There is no Menu</h3>
+          ) : (
+            filteredMenu.map((menu) => (
+              <Box sx={{ mx: 3, my: 1 }} key={menu.id}>
+                <Card sx={{ width: 245, zIndex: 1, bgcolor: "#c490e272" }}>
+                  <CardActionArea
+                    component={Link}
+                    href={`/backoffice/menus/${menu.id}`}
+                    passHref
+                  >
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={`${menu.image_url || "/test.png"}`}
+                      alt="green iguana"
+                    />
 
-              ":hover": {
-                opacity: 0.8,
-              },
-              ":active": {
-                opacity: 1,
-              },
-            }}
-          >
-            <AddIcon fontSize="large" />
-            <Typography>Add new dish</Typography>
-          </Box>
-        </Link>
-        {!filteredMenu.length ? (
-          <h3>There is no Menu</h3>
-        ) : (
-          filteredMenu.map((menu) => (
-            <Box sx={{ mx: 3, my: 1 }} key={menu.id}>
-              <Card sx={{ width: 245, zIndex: 1, bgcolor: "#c490e272" }}>
-                <CardActionArea
-                  component={Link}
-                  href={`/backoffice/menus/${menu.id}`}
-                  passHref
-                >
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={`${menu.image_url || "/test.png"}`}
-                    alt="green iguana"
-                  />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {menu.name} / {menu.price}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {menu.description.slice(0, 50)}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
 
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {menu.name} / {menu.price}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {menu.description.slice(0, 50)}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-
-                <CardActions
-                  onClick={() => menu.id && handleDeleteMenu(menu.id)}
-                  sx={{
-                    zIndex: 999,
-                    display: "flex",
-                    justifyContent: "center",
-                    bgcolor: "#a85cd376",
-                    borderRadius: 1,
-                    cursor: "pointer",
-                  }}
-                >
-                  Delete Dish {menu.id}
-                </CardActions>
-              </Card>
-            </Box>
-          ))
-        )}
+                  <CardActions
+                    onClick={() => menu.id && handleDeleteMenu(menu.id)}
+                    sx={{
+                      zIndex: 999,
+                      display: "flex",
+                      justifyContent: "center",
+                      bgcolor: "#a85cd376",
+                      borderRadius: 1,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Delete Dish {menu.id}
+                  </CardActions>
+                </Card>
+              </Box>
+            ))
+          )}
+        </Box>
+        <Box>
+          <DialogBox btnText="create menu" title="create menu">
+            <CreateMenu />
+          </DialogBox>
+        </Box>
       </Box>
     </Layout>
   );

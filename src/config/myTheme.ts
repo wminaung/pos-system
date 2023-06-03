@@ -1,3 +1,3 @@
 export const theme = {
-  main: "#6D9886",
+  main: "#025464",
 };

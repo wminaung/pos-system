@@ -42,14 +42,33 @@ const handlePutRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name } = req.body;
+  const { name } = req.body as {
+    name: string;
+  };
+
+  if (!name) {
+    return res.status(404).json({ error: "name are needed" });
+  }
+
   const menuCatIdStr = req.query.id as string;
-  console.log("delete :", menuCatIdStr);
+  console.log("updated :", menuCatIdStr);
   const menuCatId = Number(menuCatIdStr);
   try {
     const updatedMenu = await prisma.menu_category.update({
       data: {
         name,
+
+        // menu_menu_category_location: {
+        //   deleteMany: {
+        //     menu_id: {
+        //       not: null,
+        //     },
+        //   },
+        //   createMany: {
+        //     // data: [{ location_id, is_available }],
+        //     // data: locationIds.map((id) => ({ location_id: id })),
+        //   },
+        // },
       },
       where: {
         id: menuCatId,
@@ -71,15 +90,24 @@ const handleDeleteRequest = async (
   const menuCatIdStr = req.query.id as string;
   console.log("delete :", menuCatIdStr);
   const menuCatId = Number(menuCatIdStr);
-
+  const locationId = Number(req.query.locationId as string);
   try {
+    const deletMenu = await prisma.menu_menu_category_location.deleteMany({
+      where: {
+        menu_category_id: menuCatId,
+        menu_id: null,
+        location_id: locationId,
+      },
+    });
+
     const deletedMenuCat = await prisma.menu_category.delete({
       where: { id: menuCatId },
     });
     return res
       .status(200)
-      .json({ deletedMenuCat, message: "deleted successfully" });
+      .json({ deletedMenuCat, deletMenu, message: "deleted successfully" });
   } catch (error) {
     console.log({ error });
+    return res.status(500).json({ message: " check query delete fail", error });
   }
 };
