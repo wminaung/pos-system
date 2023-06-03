@@ -22,8 +22,7 @@ import {
   useBackofficeUpdate,
 } from "@/contexts/BackofficeContext";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { Menu, MenuCreatePayload } from "@/typings/types";
-import Layout from "@/components/Layout";
+import { MenuCreatePayload } from "@/typings/types";
 
 const defaultMenu: MenuCreatePayload = {
   description: "",

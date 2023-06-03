@@ -8,7 +8,10 @@ import {
   IconButton,
 } from "@mui/material";
 import { useRef, useState } from "react";
-import { useApp, useAppUpdate } from "@/contexts/BackofficeContext";
+import {
+  useBackoffice,
+  useBackofficeUpdate,
+} from "@/contexts/BackofficeContext";
 import { DeleteForever, EditNote } from "@mui/icons-material";
 import Link from "next/link";
 import Layout from "@/components/Layout";
@@ -16,8 +19,8 @@ import Layout from "@/components/Layout";
 const AddonCategories = () => {
   //*********************** */
   const nameRef = useRef<any>(null);
-  const { addonCategories } = useApp();
-  const { fetchData } = useAppUpdate();
+  const { addonCategories } = useBackoffice();
+  const { fetchData } = useBackofficeUpdate();
 
   const handleCreateAddonCategory = async () => {
     const name = nameRef.current.value.trim();

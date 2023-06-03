@@ -83,7 +83,6 @@ const AddonDetail = () => {
 
   useEffect(() => {
     if (addons.length > 0) {
-      setIsChecked(addon?.required || isChecked);
       setSelectedId(addon?.addon_category_id || 0);
     }
   }, [addons]);
@@ -140,17 +139,6 @@ const AddonDetail = () => {
             ))}
           </Select>
         </FormControl>
-
-        <FormControlLabel
-          control={
-            <Checkbox
-              defaultChecked={addon.required}
-              onChange={(e, checked) => setIsChecked(checked)}
-            />
-          }
-          label="required"
-          labelPlacement="end"
-        />
 
         <Button variant="contained" onClick={handleUpdateAddon}>
           Update

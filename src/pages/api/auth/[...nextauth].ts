@@ -9,8 +9,8 @@ export const authOptions: NextAuthOptions = {
       clientId: config.googleClientId,
       clientSecret: config.googleClientSecret,
     }),
-    // ...add more providers here
   ],
+  secret: config.nextAuthSecret,
 
   pages: {
     signIn: "/auth/login",

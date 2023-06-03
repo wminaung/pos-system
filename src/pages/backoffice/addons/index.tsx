@@ -93,9 +93,6 @@ const Addons = () => {
       `${config.backofficeApiBaseUrl}/addons/${addonId}`,
       {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       }
     );
     if (!res.ok) {

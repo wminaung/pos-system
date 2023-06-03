@@ -95,6 +95,9 @@ export const BackofficeProvider = ({ children }: Props) => {
     /*
     todo test
     */
+    if (getSelectedLocationId()) {
+      selectedLocationId(String(selectedLocationId));
+    }
     updateData({
       ...data,
       company,
