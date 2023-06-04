@@ -88,16 +88,23 @@ const CreateMenu = () => {
             body: JSON.stringify(payload),
           }
         );
-        if (!res.ok) throw new Error("fail res.ok");
+        if (!res.ok) {
+          const {
+            error: { details },
+          } = await res.json();
+          console.error(details[0].message);
+          throw new Error(details[0].message);
+        }
         console.log(await res.json());
         await fetchData();
         setLoading(false);
         setMenu({ ...defaultMenu });
         setMenuImage(undefined);
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
-      alert("fail");
+
+      alert(String(error));
     }
   };
   const ITEM_HEIGHT = 48;

@@ -57,18 +57,6 @@ const handlePutRequest = async (
     const updatedMenu = await prisma.menu_category.update({
       data: {
         name,
-
-        // menu_menu_category_location: {
-        //   deleteMany: {
-        //     menu_id: {
-        //       not: null,
-        //     },
-        //   },
-        //   createMany: {
-        //     // data: [{ location_id, is_available }],
-        //     // data: locationIds.map((id) => ({ location_id: id })),
-        //   },
-        // },
       },
       where: {
         id: menuCatId,
