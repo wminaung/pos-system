@@ -8,6 +8,8 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
+import { theme } from "@/config/myTheme";
+import { Box } from "@mui/material";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -28,7 +30,10 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
   const { children, onClose, ...other } = props;
 
   return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+    <DialogTitle
+      sx={{ m: 0, p: 2, backgroundColor: theme.main, color: theme.white }}
+      {...other}
+    >
       {children}
       {onClose ? (
         <IconButton
@@ -64,7 +69,7 @@ export default function DialogBox({ children, btnText, title, width }: Props) {
   };
 
   return (
-    <div>
+    <Box>
       <Button
         variant="contained"
         style={{ backgroundColor: "#025464" }}
@@ -87,6 +92,6 @@ export default function DialogBox({ children, btnText, title, width }: Props) {
           <Button onClick={handleClose}>close</Button>
         </DialogActions>
       </BootstrapDialog>
-    </div>
+    </Box>
   );
 }

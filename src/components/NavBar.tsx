@@ -18,45 +18,6 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { theme } from "@/config/myTheme";
 
-const sidebarMenuItems = [
-  {
-    id: 1,
-    label: "Menus",
-    icon: <LocalDiningIcon />,
-    route: "/backoffice/menus",
-  },
-  {
-    id: 2,
-    label: "Menu Categories",
-    icon: <CategoryIcon />,
-    route: "/backoffice/menu-categories",
-  },
-  {
-    id: 3,
-    label: "Addons",
-    icon: <LunchDiningIcon />,
-    route: "/backoffice/addons",
-  },
-  {
-    id: 4,
-    label: "Addon Categories",
-    icon: <ClassIcon />,
-    route: "/backoffice/addon-categories",
-  },
-  {
-    id: 5,
-    label: "Locations",
-    icon: <LocationOnIcon />,
-    route: "/backoffice/locations",
-  },
-  {
-    id: 6,
-    label: "Settings",
-    icon: <SettingsIcon />,
-    route: "/backoffice/settings",
-  },
-];
-
 interface Props {
   title?: string;
 }
@@ -78,7 +39,7 @@ const NavBar = ({ title }: Props) => {
     <Box>
       <AppBar
         position="static"
-        sx={{ backgroundColor: theme.main, color: "#F8F1F1" }}
+        sx={{ backgroundColor: theme.main, color: theme.white }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box

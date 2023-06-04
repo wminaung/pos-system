@@ -4,9 +4,11 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  Paper,
   Select,
   SelectChangeEvent,
   TextField,
+  Typography,
 } from "@mui/material";
 import {
   useBackoffice,
@@ -17,6 +19,7 @@ import { LoadingButton } from "@mui/lab";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
 import { setSelectedLocationId } from "@/utils";
+import { theme } from "@/config/myTheme";
 
 const Settings = () => {
   const [selectedLocation, setSelectedLocation] = useState<Location>();
@@ -95,11 +98,15 @@ const Settings = () => {
           maxWidth: 300,
           m: "0 auto",
           mt: 3,
+          p: 8,
+          backgroundColor: theme.white,
         }}
+        component={Paper}
+        elevation={3}
       >
-        <h3>
-          {selectedLocation.id} : {selectedLocation.name}
-        </h3>
+        <Typography textAlign="center" variant="h6" sx={{ mb: 2 }}>
+          Choose Your Location
+        </Typography>
         <TextField
           label="Name"
           variant="outlined"
@@ -124,7 +131,7 @@ const Settings = () => {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={selectedLocation ? selectedLocation.id : ""}
-            label="Chooose Location"
+            label="Location"
             onChange={handleOnChange}
           >
             {locations.map((location) => (
@@ -136,7 +143,6 @@ const Settings = () => {
         </FormControl>{" "}
         <LoadingButton
           sx={{ mt: 2 }}
-          color="secondary"
           size="large"
           onClick={handleUpdate}
           variant="contained"

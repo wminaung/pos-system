@@ -8,6 +8,7 @@ import {
   CardContent,
   CardMedia,
   CircularProgress,
+  Paper,
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -22,6 +23,8 @@ import { config } from "@/config/config";
 import Layout from "@/components/Layout";
 import DialogBox from "@/components/DialogBox";
 import CreateMenu from "@/components/CreateMenu";
+import { theme } from "@/config/myTheme";
+import MenuCard from "@/components/MenuCard";
 
 const MenusPage = () => {
   // ******************** ;data.status === "loading"
@@ -37,6 +40,8 @@ const MenusPage = () => {
   );
 
   const handleDeleteMenu = async (menuId: number) => {
+    if (!window.confirm("Are you sure want to delete!")) return;
+
     const res = await fetch(`${config.backofficeApiBaseUrl}/menus/${menuId}`, {
       method: "DELETE",
     });
@@ -63,44 +68,13 @@ const MenusPage = () => {
             <h3>There is no Menu</h3>
           ) : (
             filteredMenu.map((menu) => (
-              <Box sx={{ mx: 3, my: 1 }} key={menu.id}>
-                <Card sx={{ width: 245, zIndex: 1, bgcolor: "#c490e272" }}>
-                  <CardActionArea
-                    component={Link}
-                    href={`/backoffice/menus/${menu.id}`}
-                    passHref
-                  >
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image={`${menu.image_url || "/test.png"}`}
-                      alt="green iguana"
-                    />
-
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {menu.name} / {menu.price}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {menu.description.slice(0, 50)}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-
-                  <CardActions
-                    onClick={() => menu.id && handleDeleteMenu(menu.id)}
-                    sx={{
-                      zIndex: 999,
-                      display: "flex",
-                      justifyContent: "center",
-                      bgcolor: "#a85cd376",
-                      borderRadius: 1,
-                      cursor: "pointer",
-                    }}
-                  >
-                    Delete Dish {menu.id}
-                  </CardActions>
-                </Card>
+              <Box
+                component={Paper}
+                elevation={2}
+                sx={{ mx: 2, my: 1 }}
+                key={menu.id}
+              >
+                <MenuCard handleDeleteMenu={handleDeleteMenu} menu={menu} />
               </Box>
             ))
           )}

@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
   useBackoffice,
@@ -7,6 +7,7 @@ import {
 import { Location } from "@/typings/types";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
+import { theme } from "@/config/myTheme";
 
 const Locations = () => {
   const { locations, selectedLocationId } = useBackoffice();
@@ -122,89 +123,99 @@ const Locations = () => {
 
   return (
     <Layout title="Locations">
-      <Box sx={{ px: 2, mt: 5 }}>
-        {updateLocations.map((location, index) => {
-          return (
-            <Box
-              sx={{ display: "flex", alignItems: "center", mb: 3 }}
-              key={location.id}
-            >
-              <Typography variant="h5" sx={{ mr: 1 }}>
-                {index + 1}.
-              </Typography>
-              <TextField
-                value={location.name}
-                label="name"
-                onChange={(e) => {
-                  const newLocations = updateLocations.map((updateLocation) => {
-                    if (updateLocation.id === location.id) {
-                      return { ...updateLocation, name: e.target.value };
-                    }
-                    return updateLocation;
-                  });
-                  setUpdateLocations(newLocations);
+      <Paper sx={{ py: 3 }} elevation={3}>
+        <Box sx={{ px: 2, mt: 5 }}>
+          {updateLocations.map((location, index) => {
+            return (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mb: 3,
                 }}
-                sx={{ mr: 3 }}
-              />
-
-              <TextField
-                value={location.address}
-                sx={{ mr: 3 }}
-                label="address"
-                onChange={(e) => {
-                  const newLocations = updateLocations.map((updateLocation) => {
-                    if (updateLocation.id === location.id) {
-                      return { ...updateLocation, address: e.target.value };
-                    }
-                    return updateLocation;
-                  });
-                  setUpdateLocations(newLocations);
-                }}
-              />
-              <Button
-                variant="contained"
-                sx={{ mr: 2 }}
-                color="error"
-                onClick={() => handleDeleteLocation(location)}
+                key={location.id}
               >
-                Delete
-              </Button>
+                <Typography variant="h5" sx={{ mr: 1 }}>
+                  {index + 1}.
+                </Typography>
+                <TextField
+                  value={location.name}
+                  label="name"
+                  onChange={(e) => {
+                    const newLocations = updateLocations.map(
+                      (updateLocation) => {
+                        if (updateLocation.id === location.id) {
+                          return { ...updateLocation, name: e.target.value };
+                        }
+                        return updateLocation;
+                      }
+                    );
+                    setUpdateLocations(newLocations);
+                  }}
+                  sx={{ mr: 3 }}
+                />
 
-              <Button
-                variant="contained"
-                onClick={() => handleUpdateLocation(location)}
-              >
-                Update
-              </Button>
-            </Box>
-          );
-        })}
-      </Box>
-      <Box sx={{ px: 2, mt: 5 }}>
-        <Box sx={{ display: "flex", alignItems: "center", mb: 3, ml: 3 }}>
-          <TextField
-            label="name"
-            sx={{ mr: 3 }}
-            value={newLocation.name}
-            onChange={(e) => {
-              setNewLocation({ ...newLocation, name: e.target.value });
-            }}
-          />
+                <TextField
+                  value={location.address}
+                  sx={{ mr: 3 }}
+                  label="address"
+                  onChange={(e) => {
+                    const newLocations = updateLocations.map(
+                      (updateLocation) => {
+                        if (updateLocation.id === location.id) {
+                          return { ...updateLocation, address: e.target.value };
+                        }
+                        return updateLocation;
+                      }
+                    );
+                    setUpdateLocations(newLocations);
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  sx={{ mr: 2 }}
+                  color="error"
+                  onClick={() => handleDeleteLocation(location)}
+                >
+                  Delete
+                </Button>
 
-          <TextField
-            sx={{ mr: 3 }}
-            label="address"
-            value={newLocation.address}
-            onChange={(e) => {
-              setNewLocation({ ...newLocation, address: e.target.value });
-            }}
-          />
-
-          <Button variant="contained" onClick={handleCreateLocation}>
-            Create
-          </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => handleUpdateLocation(location)}
+                >
+                  Update
+                </Button>
+              </Box>
+            );
+          })}
         </Box>
-      </Box>
+        <Box sx={{ px: 2, mt: 5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 3, ml: 3 }}>
+            <TextField
+              label="name"
+              sx={{ mr: 3 }}
+              value={newLocation.name}
+              onChange={(e) => {
+                setNewLocation({ ...newLocation, name: e.target.value });
+              }}
+            />
+
+            <TextField
+              sx={{ mr: 3 }}
+              label="address"
+              value={newLocation.address}
+              onChange={(e) => {
+                setNewLocation({ ...newLocation, address: e.target.value });
+              }}
+            />
+
+            <Button variant="contained" onClick={handleCreateLocation}>
+              Create
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
     </Layout>
   );
 };
