@@ -4,6 +4,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import colors from "colors";
 import type { user as User } from "@prisma/client";
+import { schema } from "@/utils/schema";
+import joi from "joi";
 
 export default async function handler(
   req: NextApiRequest,
@@ -33,9 +35,11 @@ const handleGetRequest = async (
   res: NextApiResponse<any>
 ) => {
   const session = await getSession({ req });
+
   console.log(
     colors.bold.bgGreen("<server session>\n"),
     req.query.location as string,
+
     (session?.user && session.user.email) || "",
     colors.bold.bgGreen("\n</server session>\n")
   );

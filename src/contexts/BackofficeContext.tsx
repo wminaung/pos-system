@@ -61,7 +61,7 @@ export const BackofficeProvider = ({ children }: Props) => {
 
   const { selectedLocationId } = data;
 
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   console.log("session", session);
   console.log("AllData", { data });
 
@@ -95,7 +95,7 @@ export const BackofficeProvider = ({ children }: Props) => {
     todo test
     */
     if (!getSelectedLocationId()) {
-      selectedLocationId(String(selectedLocationId));
+      setSelectedLocationId(String(selectedLocationId));
     }
     updateData({
       ...data,
