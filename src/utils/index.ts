@@ -15,3 +15,37 @@ export const setSelectedLocationId = (selectedLocationId: string) => {
     );
   return "";
 };
+export const selectMuiStyle = {
+  ITEM_HEIGHT: 48,
+  ITEM_PADDING_TOP: 8,
+};
+
+/**
+ * return is number[] update from db
+ * @param oldIds number[]
+ * @param newIds number[]
+ * @returns number[]
+ *
+ * @example
+ * let oldIds = [3, 4, 5, 2];
+ * let newIds = [3, 5, 6, 1];
+ * idsToUpdate(oldIds, newIds) -> // updateIds 6,1
+ */
+export const idsToUpdate = (oldIds: number[], newIds: number[]): number[] => {
+  return newIds.filter((newId) => !oldIds.includes(newId));
+};
+
+/**
+ * return is number[] delete from db
+ * @param oldIds number[]
+ * @param newIds number[]
+ * @returns number[]
+ *
+ * @example
+ * let oldIds = [3, 4, 5, 2];
+ * let newIds = [3, 5, 6, 1];
+ * idsToDelete(oldIds, newIds) -> //  deleteIds 4,2
+ */
+export const idsToDelete = (oldIds: number[], newIds: number[]) => {
+  return oldIds.filter((oldId) => !newIds.includes(oldId));
+};

@@ -1,15 +1,10 @@
 import {
-  Autocomplete,
   Box,
-  Button,
-  Checkbox,
-  Divider,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
-  TextField,
 } from "@mui/material";
 
 import { useState } from "react";
@@ -89,7 +84,7 @@ const MenuCategories = () => {
           <DialogBox
             btnText="create menu category"
             title="create menu category"
-            width="280px"
+            width="230px"
           >
             <CreateMenuCat />
           </DialogBox>

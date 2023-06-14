@@ -1,20 +1,49 @@
-import { Box, Button, FormControl, TextField } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-import type { MenuCategory, ShowCatOption } from "@/typings/types";
+import {
+  Box,
+  Button,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import type { MenuCategory } from "@/typings/types";
 import { config } from "@/config/config";
 import {
   useBackoffice,
   useBackofficeUpdate,
 } from "@/contexts/BackofficeContext";
 import { LoadingButton } from "@mui/lab";
-
+import { location } from "@prisma/client";
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
 const defaultMenuCat = { name: "" } as MenuCategory;
+
+////***** */
 const CreateMenuCat = () => {
+  ////***** */
   const [menuCat, setMenuCat] = useState<MenuCategory>(defaultMenuCat);
+  const [selectedLocations, setSelectedLocations] = useState<location[]>([]);
   const [loading, setLoading] = useState(false);
   const { fetchData } = useBackofficeUpdate();
-  const { selectedLocationId } = useBackoffice();
+  const { selectedLocationId, locations } = useBackoffice();
 
+  useEffect(() => {
+    selectedLocationId &&
+      setSelectedLocations([
+        locations.find(
+          (location) => selectedLocationId === String(location.id)
+        ) as location,
+      ]);
+  }, [selectedLocationId]);
+
+  if (!selectedLocationId) {
+    return <span>Selected Location Id is missing</span>;
+  }
   const handleCreateMenuCategory = async () => {
     const { name } = menuCat;
     setLoading(true);
@@ -23,7 +52,7 @@ const CreateMenuCat = () => {
       return alert("name  are needed");
     }
 
-    const payload = { name };
+    const payload = { name, selectedLocations };
 
     const res = await fetch(
       `${config.backofficeApiBaseUrl}/menuCategories?locationId=${selectedLocationId}`,
@@ -49,6 +78,13 @@ const CreateMenuCat = () => {
   };
   const isDisabled = !menuCat.name;
 
+  const handleChange = (e: SelectChangeEvent<number[]>) => {
+    const newIds = e.target.value as number[];
+    const newSelectedLocations = locations.filter((location) =>
+      newIds.find((newId) => newId === location.id)
+    ) as location[];
+    setSelectedLocations(newSelectedLocations);
+  };
   return (
     <div>
       <Box
@@ -73,8 +109,47 @@ const CreateMenuCat = () => {
               handleCreateMenuCategory();
             }
           }}
-        />
+        />{" "}
+        <FormControl sx={{ mb: 2 }}>
+          <InputLabel id="demo-multiple-chip-label">Menu Category</InputLabel>
+          <Select
+            labelId="demo-multiple-chip-label"
+            id="demo-multiple-chip"
+            multiple
+            onChange={handleChange}
+            value={selectedLocations.map((sl) => sl.id)}
+            input={
+              <OutlinedInput id="select-multiple-chip" label="Locations" />
+            }
+            renderValue={(selectedIds) => {
+              const selected = selectedIds.map((selectedId) =>
+                locations.find((location) => location.id === selectedId)
+              ) as location[];
 
+              return (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((select) => (
+                    <Chip key={select.id} label={select.name} />
+                  ))}
+                </Box>
+              );
+            }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                  width: 250,
+                },
+              },
+            }}
+          >
+            {locations.map((location) => (
+              <MenuItem key={location.id} value={location.id}>
+                {location.name} {location.id}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <LoadingButton
           sx={{ mt: 2 }}
           autoFocus

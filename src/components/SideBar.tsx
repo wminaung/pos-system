@@ -83,6 +83,7 @@ const SideBar = ({ profileImageUrl, profileName }: Props) => {
                 sx={{ border: `5px solid ${theme.thrid}` }}
                 src={profileImageUrl}
                 alt="ok"
+                property="true"
               ></Avatar>
             </ListItemIcon>
             <ListItemText

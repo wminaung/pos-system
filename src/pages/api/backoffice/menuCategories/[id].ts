@@ -1,6 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/utils/db";
+import { Payload } from "@/typings/types";
+import { idsToDelete, idsToUpdate } from "@/utils";
 type Data = {
   message: string;
 };
@@ -42,11 +44,8 @@ const handlePutRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name } = req.body as {
-    name: string;
-  };
-
-  if (!name) {
+  const { name, selectedLocations } = req.body as Payload.MenuCategory.Update;
+  if (!name || !selectedLocations.length) {
     return res.status(404).json({ error: "name are needed" });
   }
 
@@ -58,11 +57,56 @@ const handlePutRequest = async (
       data: {
         name,
       },
+
       where: {
         id: menuCatId,
       },
     });
 
+    const existingLocation = await prisma.menu_menu_category_location.findMany({
+      where: {
+        menu_category_id: menuCatId,
+      },
+      select: {
+        location_id: true,
+      },
+      distinct: ["location_id"],
+    });
+    const existingLocationIds = existingLocation.map(
+      (item) => item.location_id
+    );
+    const selectedLocationIds = selectedLocations.map((item) => item.id);
+
+    const toDeletedLocationIds = idsToDelete(
+      existingLocationIds,
+      selectedLocationIds
+    );
+    const toUpdatedLocationIds = idsToUpdate(
+      existingLocationIds,
+      selectedLocationIds
+    );
+
+    await prisma.menu_menu_category_location.deleteMany({
+      where: {
+        menu_category_id: menuCatId,
+        location_id: {
+          in: toDeletedLocationIds,
+        },
+        menu_id: {
+          equals: null,
+        },
+      },
+    });
+
+    await prisma.menu_menu_category_location.createMany({
+      data: toUpdatedLocationIds.map((locationId) => ({
+        location_id: locationId,
+        menu_id: null,
+        menu_category_id: menuCatId,
+      })),
+    });
+
+    console.log({ toDeletedLocationIds, toUpdatedLocationIds });
     return res.status(200).json({ updatedMenu, message: `${req.method} ok!!` });
   } catch (error) {
     console.log({ error });

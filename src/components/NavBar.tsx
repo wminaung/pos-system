@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { theme } from "@/config/myTheme";
+import { config } from "@/config/config";
 
 interface Props {
   title?: string;
@@ -46,11 +47,11 @@ const NavBar = ({ title }: Props) => {
             sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
           >
             <Image
-              width={800}
-              height={800}
-              style={{ objectFit: "contain", width: "80px", height: "auto" }}
-              src={"/logo_transparent.png"}
-              alt="happy pos logo"
+              width={280}
+              height={280}
+              src={`/logo_transparent.png`}
+              alt="happy_pos_logo"
+              style={{ width: "80px", height: "80px" }}
             />
           </Box>
           <Typography variant="h6" component="div">

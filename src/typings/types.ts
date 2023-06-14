@@ -76,6 +76,7 @@ export namespace Payload {
   export namespace MenuCategory {
     export interface Create {
       name: string;
+      selectedLocations: location[];
     }
     export interface Update extends Create {}
   }

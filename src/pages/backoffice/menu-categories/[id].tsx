@@ -1,4 +1,17 @@
-import { Autocomplete, Box, Button, Checkbox, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 
 import {
@@ -8,24 +21,23 @@ import {
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
 import { config } from "@/config/config";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
+import { location } from "@prisma/client";
+import { selectMuiStyle } from "@/utils";
+import { Payload } from "@/typings/types";
 
-interface CreateMenuCat {
-  name: string;
-}
+const { ITEM_HEIGHT, ITEM_PADDING_TOP } = selectMuiStyle;
+
 const MenuCategoryDetail = () => {
   //********************* */
-  const [menuCat, setMenuCat] = useState({
-    name: "",
-  } as CreateMenuCat);
-  const [oldMenuCat, setOldMenuCat] = useState({
-    name: "",
-  } as CreateMenuCat);
-  const { menuCategories, locations } = useBackoffice();
+
+  const [menuCat, setMenuCat] = useState<Payload.MenuCategory.Update>(
+    {} as Payload.MenuCategory.Update
+  );
+  const [oldMenuCat, setOldMenuCat] = useState(
+    {} as Payload.MenuCategory.Update
+  );
+  const { menuCategories, locations, selectedLocationId } = useBackoffice();
   const { fetchData } = useBackofficeUpdate();
 
   const router = useRouter();
@@ -37,30 +49,41 @@ const MenuCategoryDetail = () => {
     (menuCategory) => menuCategory.id === menuCategoryId
   );
 
+  // useEffect(() => {
+  //   selectedLocationId &&
+  //     console.log(oldMenuCat, "****************************");
+  // }, [selectedLocationId]);
   useEffect(() => {
     if (menuCategory) {
+      const defaultLocations = locations.filter((location) =>
+        menuCategory.menu_menu_category_location.find(
+          (mmcl) => mmcl.location_id === location.id
+        )
+      );
       setMenuCat({
         ...menuCat,
         name: menuCategory.name,
+        selectedLocations: defaultLocations,
       });
       setOldMenuCat({
         ...menuCat,
         name: menuCategory.name,
+        selectedLocations: defaultLocations,
       });
     }
   }, [menuCategory]);
   console.log("mcat", menuCat);
 
-  if (!menuCategory) return null;
+  if (!menuCategory || !menuCat.selectedLocations) return null;
 
   const handeleUpdateMenuCategory = async () => {
-    const { name } = menuCat;
+    const { name, selectedLocations } = menuCat;
 
-    if (!name) {
+    if (!name || !selectedLocations.length) {
       return alert("put all feild");
     }
 
-    const payload = { name };
+    const payload = { name, selectedLocations };
     const res = await fetch(
       `${config.backofficeApiBaseUrl}/menuCategories/${menuCategoryId}`,
       {
@@ -95,6 +118,16 @@ const MenuCategoryDetail = () => {
     router.push("/backoffice/menu-categories");
   };
 
+  const handleChange = (e: SelectChangeEvent<number[]>) => {
+    const newIds = e.target.value as number[];
+    setMenuCat({
+      ...menuCat,
+      selectedLocations: locations.filter((location) =>
+        newIds.find((newId) => newId === location.id)
+      ),
+    });
+  };
+
   return (
     <Layout title="Edit Menu Category">
       <Box
@@ -114,39 +147,47 @@ const MenuCategoryDetail = () => {
           autoFocus
           sx={{ mb: 2 }}
         />
-        {/* <Autocomplete
-          sx={{ my: 2 }}
-          multiple
-          id="checkboxes-tags-demo"
-          options={locationsOption}
-          disableCloseOnSelect
-          onChange={(e, values) => {
-            const selectedIds = values.map((value) => value.id);
-            setMenuCat({ ...menuCat, locationIds: selectedIds });
-          }}
-          value={locationsOption.filter((locationOption) =>
-            menuCat.locationIds.find(
-              (mCatLocatinId) => mCatLocatinId === locationOption.id
-            )
-          )}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionLabel={(option) => option.name}
-          renderOption={(props, option, { selected }) => (
-            <li {...props}>
-              <Checkbox
-                icon={icon}
-                checkedIcon={checkedIcon}
-                style={{ marginRight: 8 }}
-                checked={selected}
-              />
-              {option.name}
-            </li>
-          )}
-          style={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Locations" placeholder="Favorites" />
-          )}
-        /> */}
+        <FormControl sx={{ mb: 2 }}>
+          <InputLabel id="demo-multiple-chip-label">Locations</InputLabel>
+          <Select
+            labelId="demo-multiple-chip-label"
+            id="demo-multiple-chip"
+            multiple
+            onChange={handleChange}
+            value={menuCat.selectedLocations.map((sl) => sl.id)}
+            input={
+              <OutlinedInput id="select-multiple-chip" label="Locations" />
+            }
+            renderValue={(selectedIds) => {
+              const selected = selectedIds.map((selectedId) =>
+                locations.find((location) => location.id === selectedId)
+              ) as location[];
+
+              return (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((select) => (
+                    <Chip key={select.id} label={select.name} />
+                  ))}
+                </Box>
+              );
+            }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                  width: 250,
+                },
+              },
+            }}
+          >
+            {locations.map((location) => (
+              <MenuItem key={location.id} value={location.id}>
+                {location.name} {location.id}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <Button variant="contained" onClick={handeleUpdateMenuCategory}>
           Update
         </Button>

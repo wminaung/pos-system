@@ -45,9 +45,7 @@ const handleGetRequest = async (
   );
 
   if (!session || !session?.user || !session.user.email) {
-    return res
-      .status(404)
-      .json({ message: "email not exists--> check middleware header" });
+    return res.status(404).json({ message: "session not exists" });
   }
 
   const user = await prisma.user.findUnique({

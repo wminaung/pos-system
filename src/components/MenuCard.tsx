@@ -17,6 +17,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { menu } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
+import Image from "next/image";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -54,9 +55,9 @@ const MenuCard = ({ menu, handleDeleteMenu }: Props) => {
         passHref
       >
         <CardMedia
-          component="img"
+          component={"img"}
           height="120"
-          image={`${menu.image_url || "/test.png"}`}
+          image={`${menu.image_url}`}
           alt="green iguana"
         />
 
