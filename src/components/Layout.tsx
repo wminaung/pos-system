@@ -55,7 +55,7 @@ const Layout = (props: Props) => {
             width: "100%",
             overflowY: "auto",
             height: "100vh",
-            background: theme.second,
+            background: theme.main,
             "&::-webkit-scrollbar": {
               width: "0.4em", // Adjust the width as needed
             },

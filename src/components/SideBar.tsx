@@ -68,11 +68,13 @@ interface Props {
   profileName: string;
 }
 const SideBar = ({ profileImageUrl, profileName }: Props) => {
+  const textColor = theme.text;
   return (
     <Box
       sx={{ width: 250, borderTopRightRadius: 1 }}
       role="presentation"
-      bgcolor={theme.main}
+      bgcolor={theme.second}
+      color={textColor}
     >
       <List>
         <ListItem disablePadding>
@@ -80,7 +82,7 @@ const SideBar = ({ profileImageUrl, profileName }: Props) => {
             <ListItemIcon>
               {/* <Avatar src={profileImageUrl} alt="Your Profile" /> */}
               <Avatar
-                sx={{ border: `5px solid ${theme.thrid}` }}
+                sx={{ border: `5px solid ${theme.third}` }}
                 src={profileImageUrl}
                 alt="ok"
                 property="true"
@@ -88,7 +90,7 @@ const SideBar = ({ profileImageUrl, profileName }: Props) => {
             </ListItemIcon>
             <ListItemText
               primaryTypographyProps={{
-                color: theme.second,
+                color: textColor,
                 fontStyle: "oblique",
                 fontWeight: "bold !important",
               }}
@@ -101,17 +103,14 @@ const SideBar = ({ profileImageUrl, profileName }: Props) => {
           <Link
             key={item.id}
             href={item.route}
-            style={{ textDecoration: "none", color: theme.thrid }}
+            style={{ textDecoration: "none", color: textColor }}
           >
             <ListItem disablePadding>
               <ListItemButton>
-                <ListItemIcon sx={{ color: theme.thrid }}>
+                <ListItemIcon sx={{ color: textColor }}>
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  sx={{ color: theme.thrid }}
-                />
+                <ListItemText primary={item.label} sx={{ color: textColor }} />
               </ListItemButton>
             </ListItem>
           </Link>
@@ -123,17 +122,14 @@ const SideBar = ({ profileImageUrl, profileName }: Props) => {
           <Link
             key={item.id}
             href={item.route}
-            style={{ textDecoration: "none", color: theme.thrid }}
+            style={{ textDecoration: "none", color: textColor }}
           >
             <ListItem disablePadding>
               <ListItemButton>
-                <ListItemIcon sx={{ color: theme.thrid }}>
+                <ListItemIcon sx={{ color: textColor }}>
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText
-                  sx={{ color: theme.thrid }}
-                  primary={item.label}
-                />
+                <ListItemText sx={{ color: textColor }} primary={item.label} />
               </ListItemButton>
             </ListItem>
           </Link>

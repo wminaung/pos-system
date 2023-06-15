@@ -54,7 +54,7 @@ export interface MenuUpdatePayload {
   name: string;
   price: number;
   description: string;
-  image_url: string | null;
+  asset_url: string | null;
   isRequired: boolean;
   menuCatIds: number[];
 }
@@ -67,7 +67,8 @@ export namespace Payload {
       name: string;
       price: number;
       description: string;
-      image_url: string | null;
+      asset_url: string | null;
+      isRequired: boolean;
       menuCatIds: number[];
     }
     export interface Update extends Create {}
@@ -87,4 +88,11 @@ export namespace Payload {
     }
     export interface Update extends Create {}
   }
+}
+
+export interface MenuCreateInput {
+  name: string;
+  price: number;
+  asset_url?: string;
+  description: string;
 }

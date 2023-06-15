@@ -73,7 +73,9 @@ export default function DialogBox({ children, btnText, title, width }: Props) {
       <Button
         variant="contained"
         style={{ backgroundColor: "#025464" }}
-        sx={{ width: width || "180px" }}
+        sx={{
+          width: width || "180px",
+        }}
         startIcon={<AddIcon fontSize="large" />}
         onClick={handleClickOpen}
       >

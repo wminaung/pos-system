@@ -40,40 +40,38 @@ const MenuCategory = ({ menuCategory }: Props) => {
   };
 
   return (
-    <>
-      <Box sx={{ m: 2 }}>
-        <Card
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            background: "#e1e1e1",
-            boxShadow: 3,
-          }}
-        >
-          <Box sx={{ display: "flex", flexDirection: "column", width: 230 }}>
-            <CardContent sx={{ flex: "1 0 auto" }}>
-              <Typography component="div" variant="overline">
-                {menuCategory.name}
-              </Typography>
-            </CardContent>
+    <Box sx={{ m: 2 }}>
+      <Card
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          background: "#e1e1e1",
+          boxShadow: 3,
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", width: 230 }}>
+          <CardContent sx={{ flex: "1 0 auto" }}>
+            <Typography component="div" variant="overline">
+              {menuCategory.name}
+            </Typography>
+          </CardContent>
 
-            <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
-              <IconButton
-                aria-label="deleteMenuCat"
-                onClick={() =>
-                  menuCategory.id && handleDeleteMenuCategory(menuCategory.id)
-                }
-              >
-                <DeleteForever sx={{ height: 38, width: 38 }} />
-              </IconButton>
-              <Link href={`/backoffice/menu-categories/${menuCategory.id}`}>
-                Edit
-              </Link>
-            </Box>
+          <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
+            <IconButton
+              aria-label="deleteMenuCat"
+              onClick={() =>
+                menuCategory.id && handleDeleteMenuCategory(menuCategory.id)
+              }
+            >
+              <DeleteForever sx={{ height: 38, width: 38 }} />
+            </IconButton>
+            <Link href={`/backoffice/menu-categories/${menuCategory.id}`}>
+              Edit
+            </Link>
           </Box>
-        </Card>
-      </Box>
-    </>
+        </Box>
+      </Card>
+    </Box>
   );
 };
 

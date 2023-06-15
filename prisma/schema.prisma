@@ -38,13 +38,14 @@ model location {
   company    company @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   menu_menu_category_location menu_menu_category_location[]
+  table                       table[]
 }
 
 model menu {
   id                          Int                           @id @default(autoincrement())
   name                        String
   price                       Int
-  image_url                   String?
+  asset_url                   String?
   description                 String                        @default("")
   menu_addon_category         menu_addon_category[]
   menu_menu_category_location menu_menu_category_location[]
@@ -78,7 +79,7 @@ model menu_menu_category_location {
 }
 
 model user {
-  id         Int     @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   email      String  @unique(map: "unique_email")
   name       String
   password   String  @default("")
@@ -86,6 +87,15 @@ model user {
   image      String?
   role       Role    @default(admin)
   company    company @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model table {
+  id          Int     @id @default(autoincrement())
+  name        String
+  asset_url   String?
+  location_id Int
+
+  location location? @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum Role {

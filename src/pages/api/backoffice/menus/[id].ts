@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { MenuUpdatePayload } from "@/typings/types";
+import { MenuUpdatePayload, Payload } from "@/typings/types";
 import { prisma } from "@/utils/db";
 
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -44,8 +44,8 @@ const handlePutRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name, price, description, image_url, menuCatIds, isRequired } =
-    req.body as MenuUpdatePayload;
+  const { name, price, description, asset_url, menuCatIds, isRequired } =
+    req.body as Payload.Menu.Update;
   const menuIdStr = req.query.id as string;
   const locationId = Number(req.query.locationId as string);
   console.log("update :", menuIdStr);
@@ -56,12 +56,12 @@ const handlePutRequest = async (
     !name ||
     price < 0 ||
     !description ||
-    !image_url ||
+    !asset_url ||
     typeof isRequired !== "boolean"
   ) {
     return res
       .status(400)
-      .json({ message: "!name || price < 0 || !description || !image_url" });
+      .json({ message: "!name || price < 0 || !description || !asset_url" });
   }
   if (!locationId || !menuCatIds.length) {
     return res
@@ -74,7 +74,7 @@ const handlePutRequest = async (
       name,
       price,
       description,
-      image_url,
+      asset_url,
       menu_menu_category_location: {
         deleteMany: {
           location_id: locationId,

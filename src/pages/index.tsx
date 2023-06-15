@@ -10,15 +10,22 @@ import {
 import { useSession } from "next-auth/react";
 import Layout from "@/components/Layout";
 import { Backdrop, CircularProgress } from "@mui/material";
+import { config } from "@/config/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { fetchData } = useBackofficeUpdate();
 
+  const gg = async () => {
+    const res = await fetch(`http://localhost:3000/api/hello`, {
+      method: "DELETE",
+      body: JSON.stringify({ name: "ddd" }),
+    });
+  };
   return (
     <Layout>
-      <button onClick={() => fetchData()}>click</button>
+      <button onClick={() => gg()}>click</button>
     </Layout>
   );
 }

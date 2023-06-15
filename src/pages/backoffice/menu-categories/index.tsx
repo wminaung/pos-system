@@ -36,7 +36,16 @@ const MenuCategories = () => {
 
   return (
     <Layout title="Menu Categories">
-      <Box display={"flex"} justifyContent={"space-between"} padding={6}>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box sx={{ m: 2, alignSelf: "flex-end" }}>
+          <DialogBox
+            btnText="create menu category"
+            title="create menu category"
+            width="230px"
+          >
+            <CreateMenuCat />
+          </DialogBox>
+        </Box>
         <Box>
           <Box sx={{ width: 220, margin: "0 auto" }}>
             <FormControl fullWidth>
@@ -79,15 +88,6 @@ const MenuCategories = () => {
                   />
                 ))}
           </Box>
-        </Box>
-        <Box>
-          <DialogBox
-            btnText="create menu category"
-            title="create menu category"
-            width="230px"
-          >
-            <CreateMenuCat />
-          </DialogBox>
         </Box>
       </Box>
     </Layout>

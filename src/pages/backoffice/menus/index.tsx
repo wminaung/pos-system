@@ -56,33 +56,27 @@ const MenusPage = () => {
 
   return (
     <Layout title="Menus">
-      <Box display={"flex"}>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box sx={{ m: 2, alignSelf: "flex-end" }}>
+          <DialogBox btnText="create menu" title="create menu" width="137px">
+            <CreateMenu />
+          </DialogBox>
+        </Box>
         <Box
           sx={{
             display: "flex",
             flexWrap: "wrap",
-            alignItems: "center",
           }}
         >
           {!filteredMenu.length ? (
             <h3>There is no Menu</h3>
           ) : (
             filteredMenu.map((menu) => (
-              <Box
-                component={Paper}
-                elevation={2}
-                sx={{ mx: 2, my: 1 }}
-                key={menu.id}
-              >
+              <Box sx={{ mx: 2, my: 1 }} key={menu.id}>
                 <MenuCard handleDeleteMenu={handleDeleteMenu} menu={menu} />
               </Box>
             ))
           )}
-        </Box>
-        <Box>
-          <DialogBox btnText="create menu" title="create menu">
-            <CreateMenu />
-          </DialogBox>
         </Box>
       </Box>
     </Layout>

@@ -1,5 +1,4 @@
 import { theme } from "@/config/myTheme";
-
 import {
   Box,
   Card,
@@ -8,6 +7,7 @@ import {
   CardContent,
   CardMedia,
   Collapse,
+  Divider,
   IconButton,
   IconButtonProps,
   Typography,
@@ -17,7 +17,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { menu } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
-import Image from "next/image";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -35,41 +34,66 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 interface Props {
   menu: menu;
-  handleDeleteMenu: (menuId: number) => Promise<void>;
+  handleDeleteMenu?: (menuId: number) => Promise<void>;
+  handleRemoveMenu?: (menuId: number) => void;
 }
-const MenuCard = ({ menu, handleDeleteMenu }: Props) => {
+const MenuCard = ({ menu, handleDeleteMenu, handleRemoveMenu }: Props) => {
   const [expanded, setExpanded] = useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  console.warn(menu.asset_url);
+  const bgCard = theme.second;
   return (
     <Card
       sx={{
-        zIndex: 1,
-        color: theme.white,
+        zIndex: 0,
+        position: "relative",
+        boxShadow: "none",
+        overflow: "",
+        width: 180,
       }}
+      style={{ overflow: "hidden" }}
     >
       <CardActionArea
         component={Link}
         href={`/backoffice/menus/${menu.id}`}
         passHref
+        sx={{
+          zIndex: 0,
+          position: "relative",
+        }}
       >
         <CardMedia
           component={"img"}
           height="120"
-          image={`${menu.image_url}`}
+          image={`${menu.asset_url}`}
           alt="green iguana"
+          sx={{
+            transition: "0.3s",
+            ":hover": {
+              transform: "scale(1.03)",
+            },
+          }}
         />
 
         <CardContent
           sx={{
-            width: 140,
             height: 30,
             maxHeight: 500,
-            bgcolor: theme.main,
+            bgcolor: bgCard,
+            color: theme.text,
           }}
         >
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography
+            gutterBottom
+            variant="h5"
+            textOverflow={"ellipsis"}
+            overflow={"hidden"}
+            whiteSpace={"nowrap"}
+            component="div"
+            title={menu.name}
+          >
             {menu.name}
           </Typography>
           <Typography gutterBottom variant="body1" component="div">
@@ -77,7 +101,13 @@ const MenuCard = ({ menu, handleDeleteMenu }: Props) => {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <Box sx={{ backgroundColor: theme.main, textAlign: "right" }}>
+
+      <Box
+        sx={{
+          backgroundColor: bgCard,
+          width: "auto",
+        }}
+      >
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
@@ -86,28 +116,46 @@ const MenuCard = ({ menu, handleDeleteMenu }: Props) => {
         >
           <ExpandMoreIcon />
         </ExpandMore>
-
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <Typography variant="body2">
-            {menu.description.slice(0, 50)}
+          <Typography sx={{ textJustify: "auto" }} variant="caption">
+            {menu.description}
           </Typography>
         </Collapse>
       </Box>
-      <CardActions
-        onClick={() => menu.id && handleDeleteMenu(menu.id)}
-        sx={{
-          zIndex: 999,
-          display: "flex",
-          justifyContent: "center",
-          backgroundColor: theme.thrid,
-          color: theme.main,
-          fontWeight: "bold",
-          borderRadius: 1,
-          cursor: "pointer",
-        }}
-      >
-        Delete Dish {menu.id}
-      </CardActions>
+      <Divider orientation="horizontal" />
+      {handleDeleteMenu && (
+        <CardActions
+          onClick={() => menu.id && handleDeleteMenu(menu.id)}
+          sx={{
+            zIndex: 999,
+            display: "flex",
+            justifyContent: "center",
+            backgroundColor: theme.second,
+            color: theme.text,
+            fontWeight: "bold",
+            cursor: "pointer",
+            fontFamily: "cursive",
+          }}
+        >
+          Delete Dish {menu.id}
+        </CardActions>
+      )}
+      {handleRemoveMenu && (
+        <CardActions
+          onClick={() => menu.id && handleRemoveMenu(menu.id)}
+          sx={{
+            zIndex: 999,
+            display: "flex",
+            justifyContent: "center",
+            backgroundColor: theme.third,
+            color: theme.text,
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          Remove Dish {menu.id}
+        </CardActions>
+      )}
     </Card>
   );
 };

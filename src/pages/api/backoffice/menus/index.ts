@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/utils/db";
-import { MenuCreatePayload } from "@/typings/types";
+import { MenuCreatePayload, Payload } from "@/typings/types";
 import { schema } from "@/utils/schema";
 
 //{ name, price, description, menuCatIds, image_url, isRequired }
@@ -46,14 +46,15 @@ const handlePostRequest = async (
 
   try {
     const joiResult = await schema.menu.payload.create.validateAsync(req.body);
-    const { name, price, description, menuCatIds, image_url, isRequired } =
-      joiResult as MenuCreatePayload;
+    const { name, price, description, menuCatIds, asset_url, isRequired } =
+      joiResult as Payload.Menu.Create;
+    console.log("body", req.body);
     const newMenus = await prisma.menu.create({
       data: {
         name,
         price,
         description,
-        image_url,
+        asset_url,
         menu_menu_category_location: {
           createMany: {
             data: menuCatIds.map((mcatId) => ({

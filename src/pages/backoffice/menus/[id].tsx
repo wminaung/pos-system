@@ -121,14 +121,14 @@ const MenuDetail = () => {
       price: oldPrice,
       description: oldDescription,
       menuCatIds: oldMenuCatIds,
-      image_url: oldImageUrl,
+      asset_url: oldAssetUrl,
       isRequired: oldIsRequired,
     } = oldMenu;
 
-    const { name, price, description, menuCatIds, isRequired, image_url } =
+    const { name, price, description, menuCatIds, isRequired, asset_url } =
       menu;
     console.log({ menuCatIds });
-    let imageUrl: string | null = "";
+    let assetUrl: string | null = "";
     if (menuImage) {
       const formData = new FormData();
       formData.append("files", menuImage as Blob);
@@ -138,12 +138,12 @@ const MenuDetail = () => {
       });
       if (response.ok) {
         const imageRes = await response.json();
-        imageUrl = imageRes.assetUrl as string;
+        assetUrl = imageRes.assetUrl as string;
       } else {
-        imageUrl = oldImageUrl;
+        assetUrl = oldAssetUrl;
       }
     } else {
-      imageUrl = oldImageUrl;
+      assetUrl = oldAssetUrl;
     }
     if (
       name === oldName &&
@@ -151,7 +151,7 @@ const MenuDetail = () => {
       isRequired === oldIsRequired &&
       description === oldDescription &&
       String(menuCatIds) === String(oldMenuCatIds) &&
-      imageUrl === oldImageUrl
+      assetUrl === oldAssetUrl
     ) {
       return alert("you can't update");
     }
@@ -160,7 +160,7 @@ const MenuDetail = () => {
       name,
       price,
       description,
-      image_url: imageUrl,
+      asset_url: assetUrl,
       menuCatIds,
       isRequired,
     };
@@ -218,7 +218,7 @@ const MenuDetail = () => {
       borderBottom: "1px dashed  black",
     };
   };
-  const { name, price, description, image_url } = menu;
+  const { name, price, description, asset_url } = menu;
   return (
     <Layout title="Edit Menu">
       <Box
@@ -234,9 +234,9 @@ const MenuDetail = () => {
           objectFit="scale-down"
           sx={{ mb: 2 }}
         >
-          {image_url ? (
+          {asset_url ? (
             <Image
-              src={image_url}
+              src={asset_url}
               alt={name}
               width={300}
               height={300}

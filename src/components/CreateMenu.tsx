@@ -22,18 +22,19 @@ import {
   useBackofficeUpdate,
 } from "@/contexts/BackofficeContext";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { MenuCreatePayload } from "@/typings/types";
+import { MenuCreatePayload, Payload } from "@/typings/types";
 import { theme } from "@/config/myTheme";
+import { selectMuiStyle } from "@/utils";
 
-const defaultMenu: MenuCreatePayload = {
+const defaultMenu: Payload.Menu.Create = {
   description: "",
   name: "",
   price: 0,
-  image_url: "",
+  asset_url: "",
   isRequired: true,
   menuCatIds: [],
 };
-
+const { ITEM_HEIGHT, ITEM_PADDING_TOP } = selectMuiStyle;
 const CreateMenu = () => {
   const [loading, setLoading] = useState(false);
   const [menuImage, setMenuImage] = useState<File>();
@@ -71,10 +72,10 @@ const CreateMenu = () => {
 
       if (response.ok) {
         const imageRes = await response.json();
-        const imageUrl = imageRes.assetUrl as string;
+        const assetUrl = imageRes.assetUrl as string;
 
-        console.log("imageurl", imageUrl);
-        const payload = { ...menu, image_url: imageUrl } as MenuCreatePayload;
+        console.log("assetUrl", assetUrl);
+        const payload = { ...menu, asset_url: assetUrl } as Payload.Menu.Create;
 
         console.log("payload", payload);
 
@@ -107,8 +108,6 @@ const CreateMenu = () => {
       alert(String(error));
     }
   };
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
 
   const handleChange = (event: SelectChangeEvent<number[]>) => {
     const {

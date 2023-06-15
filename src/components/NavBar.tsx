@@ -40,7 +40,7 @@ const NavBar = ({ title }: Props) => {
     <Box>
       <AppBar
         position="static"
-        sx={{ backgroundColor: theme.main, color: theme.white }}
+        sx={{ backgroundColor: theme.second, color: theme.text }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box

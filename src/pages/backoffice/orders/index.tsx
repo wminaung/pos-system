@@ -7,6 +7,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Layout from "@/components/Layout";
+import { Box } from "@mui/material";
+import Link from "next/link";
 
 function createData(
   name: string,
@@ -27,8 +29,30 @@ const rows = [
 ];
 
 const OrdersPage = () => {
+  const handleButtonClick = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log("Button pressed");
+    // Perform additional action here
+  };
   return (
     <Layout title="Order">
+      <Box>
+        <div>
+          <Link href="/" style={{ position: "relative", zIndex: 0 }}>
+            <p>Some content that will redirect to '/'</p>
+            <button
+              onClick={handleButtonClick}
+              style={{ position: "relative", zIndex: 1 }}
+            >
+              Show description
+            </button>
+          </Link>
+
+          {/* Description content */}
+          <p>Description content to be shown</p>
+        </div>
+      </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

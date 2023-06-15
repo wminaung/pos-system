@@ -4,8 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import colors from "colors";
 import type { user as User } from "@prisma/client";
-import { schema } from "@/utils/schema";
-import joi from "joi";
+import { MenuCreateInput } from "@/typings/types";
 
 export default async function handler(
   req: NextApiRequest,
@@ -82,17 +81,17 @@ const handleGetRequest = async (
       },
     });
 
-    const newMenusData = [
+    const newMenusData: MenuCreateInput[] = [
       {
         name: "shan-khout-swell",
         price: 300,
-        image_url: "",
+        asset_url: "",
         description: "s-k-w desc",
       },
       {
         name: "mote-hin-khar",
         price: 500,
-        image_url: "",
+        asset_url: "",
         description: "m-h-k desc",
       },
     ];
