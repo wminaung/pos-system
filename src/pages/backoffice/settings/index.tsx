@@ -97,9 +97,10 @@ const Settings = () => {
           flexDirection: "column",
           maxWidth: 300,
           m: "0 auto",
+          color: theme.text,
           mt: 3,
           p: 8,
-          backgroundColor: theme.white,
+          backgroundColor: theme.second,
         }}
         component={Paper}
         elevation={3}

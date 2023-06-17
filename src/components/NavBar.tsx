@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -46,7 +47,7 @@ const NavBar = ({ title }: Props) => {
           <Box
             sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
           >
-            <Image
+            <img
               width={280}
               height={280}
               src={`/logo_transparent.png`}

@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { deleteQrCode } from "@/utils/fileUpload";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -14,7 +15,8 @@ export default async function handler(
   } else if (method === "PUT") {
     handlePutRequest(req, res);
   } else if (method === "DELETE") {
-    handleDeleteRequest(req, res);
+    await deleteQrCode();
+    return res.status(200).json({ message: `${req.method} ok!!` });
   } else {
     res.status(405).json({ message: `${method} not allow!!` });
   }

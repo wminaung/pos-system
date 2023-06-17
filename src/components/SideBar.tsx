@@ -18,6 +18,9 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FastfoodIcon from "@mui/icons-material/Fastfood";
 import ClassIcon from "@mui/icons-material/Class";
 import CategoryIcon from "@mui/icons-material/Category";
+import TableBarIcon from "@mui/icons-material/TableBar";
+import { useBackoffice } from "@/contexts/BackofficeContext";
+
 const sidebarMenuItems = [
   {
     id: 1,
@@ -57,6 +60,12 @@ const sidebarMenuItems = [
   },
   {
     id: 7,
+    label: "Tables",
+    icon: <TableBarIcon />,
+    route: "/backoffice/tables",
+  },
+  {
+    id: 8,
     label: "Settings",
     icon: <SettingsIcon />,
     route: "/backoffice/settings",
@@ -69,6 +78,13 @@ interface Props {
 }
 const SideBar = ({ profileImageUrl, profileName }: Props) => {
   const textColor = theme.text;
+
+  const { locations, selectedLocationId } = useBackoffice();
+
+  const locationName =
+    locations.find((locl) => String(locl.id) === selectedLocationId)?.name ||
+    "?";
+
   return (
     <Box
       sx={{ width: 250, borderTopRightRadius: 1 }}
@@ -96,6 +112,8 @@ const SideBar = ({ profileImageUrl, profileName }: Props) => {
               }}
             >
               {profileName}
+              <br />
+              {locationName}
             </ListItemText>
           </ListItemButton>
         </ListItem>

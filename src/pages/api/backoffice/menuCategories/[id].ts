@@ -92,9 +92,6 @@ const handlePutRequest = async (
         location_id: {
           in: toDeletedLocationIds,
         },
-        menu_id: {
-          equals: null,
-        },
       },
     });
 

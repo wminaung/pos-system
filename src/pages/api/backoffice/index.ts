@@ -81,6 +81,15 @@ const handleGetRequest = async (
       },
     });
 
+    // create new table
+    await prisma.table.create({
+      data: {
+        name: "table 1",
+        asset_url: "",
+        location_id: newLocation.id,
+      },
+    });
+
     const newMenusData: MenuCreateInput[] = [
       {
         name: "shan-khout-swell",
@@ -266,6 +275,15 @@ const getData = async (user: User, selectedLocationId?: number) => {
     },
   });
 
+  const tables = await prisma.table.findMany({
+    orderBy: {
+      id: "asc",
+    },
+    include: {
+      location: true,
+    },
+  });
+
   return {
     company,
     menus,
@@ -274,6 +292,7 @@ const getData = async (user: User, selectedLocationId?: number) => {
     addonCategories,
     locations,
     menusMenuCategoriesLocations,
+    tables,
     selectedLocationId: selectedLocationId || locations[0].id,
   };
 };

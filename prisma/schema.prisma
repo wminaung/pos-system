@@ -13,6 +13,7 @@ model addon {
   addon_category_id Int?
   price             Int
   addon_category    addon_category? @relation(fields: [addon_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  is_archived       Boolean         @default(false)
 }
 
 model addon_category {
@@ -21,13 +22,15 @@ model addon_category {
   is_required         Boolean               @default(true)
   addon               addon[]
   menu_addon_category menu_addon_category[]
+  is_archived         Boolean               @default(false)
 }
 
 model company {
-  id       Int        @id @default(autoincrement())
-  name     String?
-  location location[]
-  user     user[]
+  id          Int        @id @default(autoincrement())
+  name        String?
+  location    location[]
+  user        user[]
+  is_archived Boolean    @default(false)
 }
 
 model location {
@@ -39,6 +42,7 @@ model location {
 
   menu_menu_category_location menu_menu_category_location[]
   table                       table[]
+  is_archived                 Boolean                       @default(false)
 }
 
 model menu {
@@ -49,6 +53,7 @@ model menu {
   description                 String                        @default("")
   menu_addon_category         menu_addon_category[]
   menu_menu_category_location menu_menu_category_location[]
+  is_archived                 Boolean                       @default(false)
 }
 
 model menu_addon_category {
@@ -63,6 +68,7 @@ model menu_category {
   id                          Int                           @id @default(autoincrement())
   name                        String
   menu_menu_category_location menu_menu_category_location[]
+  is_archived                 Boolean                       @default(false)
 }
 
 model menu_menu_category_location {
@@ -95,7 +101,8 @@ model table {
   asset_url   String?
   location_id Int
 
-  location location? @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  location    location? @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  is_archived Boolean   @default(false)
 }
 
 enum Role {

@@ -18,6 +18,7 @@ import {
 } from "./BackofficeUpdateContext";
 import { getSelectedLocationId, setSelectedLocationId } from "@/utils";
 import { useSession } from "next-auth/react";
+import { table } from "@prisma/client";
 
 interface BackofficeContextType {
   company: Company | null;
@@ -27,6 +28,7 @@ interface BackofficeContextType {
   addonCategories: AddonCategory[];
   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
   locations: Location[];
+  tables: table[];
   selectedLocationId?: string | null;
 }
 
@@ -38,6 +40,7 @@ export const defaultBackofficeContext: BackofficeContextType = {
   addonCategories: [],
   menusMenuCategoriesLocations: [],
   locations: [],
+  tables: [],
   selectedLocationId: "",
 };
 
@@ -88,6 +91,7 @@ export const BackofficeProvider = ({ children }: Props) => {
       addonCategories,
       menusMenuCategoriesLocations,
       locations,
+      tables,
       selectedLocationId,
     } = resData;
 
@@ -106,6 +110,7 @@ export const BackofficeProvider = ({ children }: Props) => {
       addonCategories,
       menusMenuCategoriesLocations,
       locations,
+      tables,
       selectedLocationId: getSelectedLocationId(),
     });
 

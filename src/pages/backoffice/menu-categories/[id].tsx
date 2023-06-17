@@ -2,9 +2,11 @@ import {
   Autocomplete,
   Box,
   Button,
+  Card,
   Checkbox,
   Chip,
   FormControl,
+  FormLabel,
   InputLabel,
   MenuItem,
   OutlinedInput,
@@ -27,6 +29,8 @@ import { location } from "@prisma/client";
 import { selectMuiStyle } from "@/utils";
 import { Payload } from "@/typings/types";
 import MenuCard from "@/components/MenuCard";
+import ShowMenus from "@/components/menuCategory/ShowMenus";
+import { theme } from "@/config/myTheme";
 
 const { ITEM_HEIGHT, ITEM_PADDING_TOP } = selectMuiStyle;
 
@@ -75,7 +79,6 @@ const MenuCategoryDetail = () => {
       });
     }
   }, [menuCategory]);
-  console.log("mcat", menuCat);
 
   if (!menuCategory || !menuCat.selectedLocations) return null;
 
@@ -104,28 +107,7 @@ const MenuCategoryDetail = () => {
     console.log(await res.json());
     await fetchData();
   };
-  const handleRemoveMenu = async (menuId: number) => {
-    const res = await fetch(
-      `${config.backofficeApiBaseUrl}/menuCategories/removeMenu`,
-      {
-        method: "PUT",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          menuId,
-          locationId: Number(selectedLocationId),
-          menuCategoryId,
-        }),
-      }
-    );
-    if (res.ok) {
-      fetchData();
-      console.log(await res.json());
-    } else {
-      alert("check err");
-    }
-  };
+
   const handleDeleteMenuCategory = async () => {
     const res = await fetch(
       `${config.backofficeApiBaseUrl}/menuCategories/${menuCategoryId}`,
@@ -152,12 +134,6 @@ const MenuCategoryDetail = () => {
     });
   };
 
-  const filteredMenu = menus.filter((menu) =>
-    menuCategory.menu_menu_category_location.find(
-      (mmcl) => mmcl.menu_id === menu.id
-    )
-  );
-
   console.log(
     " menuCategory.menu_menu_category_location",
     menuCategory.menu_menu_category_location
@@ -165,12 +141,18 @@ const MenuCategoryDetail = () => {
   return (
     <Layout title="Edit Menu Category">
       <Box
+        component={Paper}
+        elevation={3}
+        p={3}
+        bgcolor={theme.second}
         display={"flex"}
         flexDirection={"column"}
         width={500}
         margin={"0 auto"}
-        mt={5}
+        mt={3}
       >
+        <FormLabel sx={{ mb: 3 }}>Edit Menu Category</FormLabel>
+
         <TextField
           value={menuCat.name}
           onChange={(e) => setMenuCat({ ...menuCat, name: e.target.value })}
@@ -225,7 +207,7 @@ const MenuCategoryDetail = () => {
         <Button variant="contained" onClick={handeleUpdateMenuCategory}>
           Update
         </Button>
-        <Button
+        {/* <Button
           sx={{
             mt: 3,
           }}
@@ -233,25 +215,9 @@ const MenuCategoryDetail = () => {
           onClick={handleDeleteMenuCategory}
         >
           Delete
-        </Button>
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-          }}
-        >
-          {!filteredMenu.length ? (
-            <h3>There is no Menu</h3>
-          ) : (
-            filteredMenu.map((menu) => (
-              <Box sx={{ mx: 2, my: 1 }} key={menu.id}>
-                <MenuCard menu={menu} handleRemoveMenu={handleRemoveMenu} />
-              </Box>
-            ))
-          )}
-        </Box>
+        </Button> */}
       </Box>
+      <ShowMenus menus={menus} menuCategory={menuCategory} />
     </Layout>
   );
 };

@@ -10,6 +10,7 @@ import {
   Divider,
   IconButton,
   IconButtonProps,
+  Skeleton,
   Typography,
   styled,
 } from "@mui/material";
@@ -17,20 +18,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { menu } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
-
-interface ExpandMoreProps extends IconButtonProps {
-  expand: boolean;
-}
-const ExpandMore = styled((props: ExpandMoreProps) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
+import { defaultMenuSrc } from "@/utils";
+import Image from "next/image";
 
 interface Props {
   menu: menu;
@@ -38,90 +27,82 @@ interface Props {
   handleRemoveMenu?: (menuId: number) => void;
 }
 const MenuCard = ({ menu, handleDeleteMenu, handleRemoveMenu }: Props) => {
-  const [expanded, setExpanded] = useState(false);
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-  console.warn(menu.asset_url);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const bgCard = theme.second;
+  console.warn(isLoading);
   return (
     <Card
+      component={Card}
+      elevation={3}
       sx={{
         zIndex: 0,
         position: "relative",
         boxShadow: "none",
         overflow: "",
         width: 180,
+        maxHeight: 800,
+        mx: 2,
+        my: 1,
+        backgroundColor: "#000",
       }}
-      style={{ overflow: "hidden" }}
     >
       <CardActionArea
         component={Link}
         href={`/backoffice/menus/${menu.id}`}
         passHref
-        sx={{
-          zIndex: 0,
-          position: "relative",
-        }}
       >
+        {isLoading && (
+          <Skeleton
+            sx={{ bgcolor: theme.third }}
+            variant="rectangular"
+            height={120}
+          />
+        )}
         <CardMedia
           component={"img"}
           height="120"
-          image={`${menu.asset_url}`}
+          image={`${menu.asset_url || defaultMenuSrc}`}
           alt="green iguana"
           sx={{
-            transition: "0.3s",
+            transition: "all 0.2s",
+            opacity: 0.8,
             ":hover": {
-              transform: "scale(1.03)",
+              transform: "scale(1.05)",
+              opacity: 1,
             },
+            display: isLoading ? "none" : "block",
+          }}
+          onLoad={() => {
+            console.log("first");
+            setIsLoading(false);
           }}
         />
-
-        <CardContent
-          sx={{
-            height: 30,
-            maxHeight: 500,
-            bgcolor: bgCard,
-            color: theme.text,
-          }}
-        >
-          <Typography
-            gutterBottom
-            variant="h5"
-            textOverflow={"ellipsis"}
-            overflow={"hidden"}
-            whiteSpace={"nowrap"}
-            component="div"
-            title={menu.name}
-          >
-            {menu.name}
-          </Typography>
-          <Typography gutterBottom variant="body1" component="div">
-            {menu.price}
-          </Typography>
-        </CardContent>
       </CardActionArea>
 
-      <Box
+      <CardContent
         sx={{
-          backgroundColor: bgCard,
-          width: "auto",
+          height: 30,
+          bgcolor: bgCard,
+          color: theme.text,
+          pb: 3,
         }}
       >
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
+        <Typography
+          gutterBottom
+          variant="h5"
+          textOverflow={"ellipsis"}
+          overflow={"hidden"}
+          whiteSpace={"nowrap"}
+          component="div"
+          title={menu.name}
         >
-          <ExpandMoreIcon />
-        </ExpandMore>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <Typography sx={{ textJustify: "auto" }} variant="caption">
-            {menu.description}
-          </Typography>
-        </Collapse>
-      </Box>
+          {menu.name}
+        </Typography>
+        <Typography gutterBottom variant="body1" component="div">
+          {menu.price}
+        </Typography>
+      </CardContent>
+
       <Divider orientation="horizontal" />
       {handleDeleteMenu && (
         <CardActions
@@ -135,9 +116,15 @@ const MenuCard = ({ menu, handleDeleteMenu, handleRemoveMenu }: Props) => {
             fontWeight: "bold",
             cursor: "pointer",
             fontFamily: "cursive",
+            overflow: "hidden",
+            transition: "all 0.4s ",
+            ":hover": {
+              color: "#B31312",
+              background: theme.third,
+            },
           }}
         >
-          Delete Dish {menu.id}
+          <Box>Delete Dish {menu.id}</Box>
         </CardActions>
       )}
       {handleRemoveMenu && (
@@ -147,10 +134,17 @@ const MenuCard = ({ menu, handleDeleteMenu, handleRemoveMenu }: Props) => {
             zIndex: 999,
             display: "flex",
             justifyContent: "center",
-            backgroundColor: theme.third,
+            backgroundColor: theme.second,
             color: theme.text,
             fontWeight: "bold",
             cursor: "pointer",
+            fontFamily: "cursive",
+            overflow: "hidden",
+            transition: "all 0.4s ",
+            ":hover": {
+              color: "#B31312",
+              background: theme.third,
+            },
           }}
         >
           Remove Dish {menu.id}

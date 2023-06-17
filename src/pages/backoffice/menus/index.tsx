@@ -53,9 +53,18 @@ const MenusPage = () => {
     console.log(resData, "resData");
     await fetchData();
   };
-
+  const deleteTest = async () => {
+    const res = await fetch(`http://localhost:3000/api/hello`, {
+      method: "DELETE",
+    });
+    console.log(res.ok);
+    fetchData();
+  };
   return (
     <Layout title="Menus">
+      {/* <Box>
+        <Button onClick={deleteTest}>Delete</Button>
+      </Box> */}
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Box sx={{ m: 2, alignSelf: "flex-end" }}>
           <DialogBox btnText="create menu" title="create menu" width="137px">
@@ -72,9 +81,11 @@ const MenusPage = () => {
             <h3>There is no Menu</h3>
           ) : (
             filteredMenu.map((menu) => (
-              <Box sx={{ mx: 2, my: 1 }} key={menu.id}>
-                <MenuCard handleDeleteMenu={handleDeleteMenu} menu={menu} />
-              </Box>
+              <MenuCard
+                key={menu.id}
+                handleDeleteMenu={handleDeleteMenu}
+                menu={menu}
+              />
             ))
           )}
         </Box>

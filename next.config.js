@@ -5,6 +5,7 @@ const nextConfig = {
     domains: [
       "msquarefdc.sgp1.digitaloceanspaces.com",
       "lh3.googleusercontent.com",
+      "msquarefdc.sgp1.cdn.digitaloceanspaces.com",
     ],
   },
   env: {

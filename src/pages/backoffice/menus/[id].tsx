@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Card,
   Checkbox,
   Chip,
   FormControl,
@@ -30,6 +31,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Layout from "@/components/Layout";
 import { menu } from "@prisma/client";
+import { theme as myTheme } from "@/config/myTheme";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -222,15 +224,21 @@ const MenuDetail = () => {
   return (
     <Layout title="Edit Menu">
       <Box
-        display={"flex"}
-        flexDirection={"column"}
-        width={500}
-        margin={"0 auto"}
-        mt={5}
+        component={Card}
+        elevation={3}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: 500,
+          margin: "0 auto",
+          bgcolor: myTheme.second,
+          p: 3,
+        }}
+        mt={2}
       >
         <AspectRatio
           variant="outlined"
-          ratio="3/1"
+          ratio="4/1"
           objectFit="scale-down"
           sx={{ mb: 2 }}
         >
@@ -266,7 +274,7 @@ const MenuDetail = () => {
           color="neutral"
           value={description}
           onChange={(e) => setMenu({ ...menu, description: e.target.value })}
-          sx={{ mb: 2 }}
+          sx={{ mb: 2, bgcolor: "inherit", borderColor: "#888" }}
           disabled={false}
           minRows={2}
           placeholder="Description..."
