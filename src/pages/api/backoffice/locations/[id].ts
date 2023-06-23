@@ -83,15 +83,18 @@ const handleDeleteRequest = async (
   const locationId = Number(req.query.id as string);
 
   try {
-    const deletedLocation = await prisma.location.delete({
+    const archivedLocation = await prisma.location.update({
       where: {
         id: locationId,
+      },
+      data: {
+        is_archived: true,
       },
     });
 
     return res
       .status(200)
-      .json({ deletedLocation, message: `${req.method} ok!!` });
+      .json({ archivedLocation, message: `${req.method} ok!!` });
   } catch (error) {
     console.log({ error });
     return res

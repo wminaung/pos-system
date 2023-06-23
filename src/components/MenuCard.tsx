@@ -6,30 +6,23 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  Collapse,
   Divider,
-  IconButton,
-  IconButtonProps,
   Skeleton,
   Typography,
-  styled,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { menu } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
 import { defaultMenuSrc } from "@/utils";
-import Image from "next/image";
 
 interface Props {
   menu: menu;
-  handleDeleteMenu?: (menuId: number) => Promise<void>;
+
   handleRemoveMenu?: (menuId: number) => void;
 }
-const MenuCard = ({ menu, handleDeleteMenu, handleRemoveMenu }: Props) => {
+const MenuCard = ({ menu, handleRemoveMenu }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const bgCard = theme.second;
-  console.warn(isLoading);
   return (
     <Card
       component={Card}
@@ -73,7 +66,6 @@ const MenuCard = ({ menu, handleDeleteMenu, handleRemoveMenu }: Props) => {
             display: isLoading ? "none" : "block",
           }}
           onLoad={() => {
-            console.log("first");
             setIsLoading(false);
           }}
         />
@@ -103,52 +95,31 @@ const MenuCard = ({ menu, handleDeleteMenu, handleRemoveMenu }: Props) => {
         </Typography>
       </CardContent>
 
-      <Divider orientation="horizontal" />
-      {handleDeleteMenu && (
-        <CardActions
-          onClick={() => menu.id && handleDeleteMenu(menu.id)}
-          sx={{
-            zIndex: 999,
-            display: "flex",
-            justifyContent: "center",
-            backgroundColor: theme.second,
-            color: theme.text,
-            fontWeight: "bold",
-            cursor: "pointer",
-            fontFamily: "cursive",
-            overflow: "hidden",
-            transition: "all 0.4s ",
-            ":hover": {
-              color: "#B31312",
-              background: theme.third,
-            },
-          }}
-        >
-          <Box>Delete Dish {menu.id}</Box>
-        </CardActions>
-      )}
       {handleRemoveMenu && (
-        <CardActions
-          onClick={() => menu.id && handleRemoveMenu(menu.id)}
-          sx={{
-            zIndex: 999,
-            display: "flex",
-            justifyContent: "center",
-            backgroundColor: theme.second,
-            color: theme.text,
-            fontWeight: "bold",
-            cursor: "pointer",
-            fontFamily: "cursive",
-            overflow: "hidden",
-            transition: "all 0.4s ",
-            ":hover": {
-              color: "#B31312",
-              background: theme.third,
-            },
-          }}
-        >
-          Remove Dish {menu.id}
-        </CardActions>
+        <Box>
+          <Divider orientation="horizontal" />
+          <CardActions
+            onClick={() => menu.id && handleRemoveMenu(menu.id)}
+            sx={{
+              zIndex: 999,
+              display: "flex",
+              justifyContent: "center",
+              backgroundColor: theme.second,
+              color: theme.text,
+              fontWeight: "bold",
+              cursor: "pointer",
+              fontFamily: "cursive",
+              overflow: "hidden",
+              transition: "all 0.4s ",
+              ":hover": {
+                color: "#B31312",
+                background: theme.third,
+              },
+            }}
+          >
+            Remove Dish {menu.id}
+          </CardActions>
+        </Box>
       )}
     </Card>
   );

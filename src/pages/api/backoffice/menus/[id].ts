@@ -44,7 +44,7 @@ const handlePutRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name, price, description, asset_url, menuCatIds, isRequired } =
+  const { name, price, description, asset_url, addonCatIds, isRequired } =
     req.body as Payload.Menu.Update;
   const menuIdStr = req.query.id as string;
   const locationId = Number(req.query.locationId as string);
@@ -52,84 +52,55 @@ const handlePutRequest = async (
   const menuId = Number(menuIdStr);
   console.log({ body: req.body });
 
-  if (
-    !name ||
-    price < 0 ||
-    !description ||
-    !asset_url ||
-    typeof isRequired !== "boolean"
-  ) {
-    return res
-      .status(400)
-      .json({ message: "!name || price < 0 || !description || !asset_url" });
-  }
-  if (!locationId || !menuCatIds.length) {
+  if (!locationId || !addonCatIds.length) {
     return res
       .status(400)
       .json({ message: "locationIds and menuCatIds are needed" });
   }
 
-  const updatedMenu = await prisma.menu.update({
-    data: {
-      name,
-      price,
-      description,
-      asset_url,
-      menu_menu_category_location: {
-        deleteMany: {
-          location_id: locationId,
-        },
-        createMany: {
-          data: menuCatIds.map((menuCat) => ({
-            location_id: locationId,
-            menu_category_id: menuCat,
-            is_available: isRequired,
-          })),
-        },
+  try {
+    await prisma.menu_menu_category_location.updateMany({
+      where: {
+        menu_id: menuId,
+        location_id: locationId,
       },
-    },
-    where: {
-      id: menuId,
-    },
-  });
-  // const updatedMenu = await prisma.menu.update({
-  //   data: {
-  //     description,
-  //     image_url: imageUrl,
-  //     name,
-  //     price,
+      data: {
+        is_available: isRequired ? true : false,
+      },
+    });
 
-  //     // menu_location: {
-  //     //   deleteMany: {},
-  //     //   createMany: {
-  //     //     data: locationIds.map((location_id: number) => ({
-  //     //       location_id,
-  //     //     })),
-  //     //   },
-  //     // },
-  //     menu_addon_category: {
-  //       deleteMany: {},
-  //       createMany: {
-  //         data: addonCategoryIds.map((addon_category_id: number) => ({
-  //           addon_category_id,
-  //         })),
-  //       },
-  //     },
-  //     // menu_menu_category: {
-  //     //   deleteMany: {},
-  //     //   createMany: {
-  //     //     data: menuCategoryIds.map((menu_category_id: number) => ({
-  //     //       menu_category_id,
-  //     //     })),
-  //     //   },
-  //     // },
-  //   },
-  //   where: {
-  //     id: menuId,
-  //   },
-  // });
+    if (name && price > -1 && description) {
+      const dataToUpdate: any = {
+        name,
+        price,
+        description,
+      };
+      if (asset_url) {
+        dataToUpdate.asset_url = asset_url;
+      }
+      const updatedMenu = await prisma.menu.update({
+        data: {
+          ...dataToUpdate,
 
-  return res.status(200).json({ updatedMenu, message: `${req.method} ok!!` });
+          menu_addon_category: {
+            deleteMany: {},
+            createMany: {
+              data: addonCatIds.map((acid) => ({ addon_category_id: acid })),
+            },
+          },
+        },
+        where: {
+          id: menuId,
+        },
+      });
+    }
+
+    return res.status(200).json({ message: `${req.method} ok!!` });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "menu Update fail server error", error });
+  }
 };
 
 // TODO - delete menu
@@ -142,27 +113,20 @@ const handleDeleteRequest = async (
   const menuId = Number(menuIdStr);
 
   try {
-    await prisma.menu_menu_category_location.deleteMany({
-      where: {
-        menu_id: menuId,
+    const archivedMenu = await prisma.menu.update({
+      data: {
+        is_archived: true,
       },
-    });
-
-    await prisma.menu_addon_category.deleteMany({
-      where: {
-        menu_id: menuId,
-      },
-    });
-
-    const deletedMenu = await prisma.menu.delete({
       where: {
         id: menuId,
       },
     });
-
-    return res.status(200).json({ message: `${req.method} ok!!`, deletedMenu });
+    return res
+      .status(200)
+      .json({ archivedMenu, message: `${req.method} ok!!` });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: `${req.method} ok!!`, error });
+    return res
+      .status(500)
+      .json({ message: `archived error in ${req.url}`, error });
   }
 };

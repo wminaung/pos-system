@@ -41,6 +41,27 @@ export interface AddonCategory extends addon_category {
   addon: addon[];
   menu_addon_category: menu_addon_category[];
 }
+export interface MenuAddonCategory extends menu_addon_category {
+  addon_category: addon_category[];
+}
+
+export interface Order {
+  id?: number;
+  isPaid: boolean;
+  tableId: number;
+  orderLines: Orderline[];
+}
+export interface Orderline {
+  menu: Menu;
+  addon?: Addon[];
+  quantity: number;
+  status: OrderlineStatus;
+}
+export enum OrderlineStatus {
+  PENDING = "PENDING",
+  PREPARING = "PREPARING",
+  COMPLETE = "COMPLETE",
+}
 
 //////////////
 export interface BaseProps {
@@ -59,8 +80,6 @@ export interface MenuUpdatePayload {
   menuCatIds: number[];
 }
 
-export interface MenuCreatePayload extends MenuUpdatePayload {}
-
 export namespace Payload {
   export namespace Menu {
     export interface Create {
@@ -68,10 +87,12 @@ export namespace Payload {
       price: number;
       description: string;
       asset_url: string | null;
-      isRequired: boolean;
-      menuCatIds: number[];
+      addonCatIds: number[];
+      isRequired?: boolean;
     }
-    export interface Update extends Create {}
+    export interface Update extends Create {
+      isRequired: boolean;
+    }
   }
 
   export namespace MenuCategory {
@@ -83,6 +104,15 @@ export namespace Payload {
   }
 
   export namespace Addon {
+    export interface Create {
+      name: string;
+      price: number;
+      addonCategoryId: number | null;
+    }
+    export interface Update extends Create {}
+  }
+
+  export namespace AddonCategory {
     export interface Create {
       name: string;
     }

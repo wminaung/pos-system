@@ -67,6 +67,10 @@ const ShowMenus = ({ menus, menuCategory }: Props) => {
     setSelectedMenu(null);
   };
   const handleRemoveMenu = async (menuId: number) => {
+    if (!menuId || !Number(selectedLocationId) || !menuCategory.id) {
+      return alert("Someting wrong");
+    }
+
     const res = await fetch(
       `${config.backofficeApiBaseUrl}/menuCategories/removeMenu`,
       {

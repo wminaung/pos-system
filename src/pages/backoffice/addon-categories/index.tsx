@@ -15,52 +15,42 @@ import {
 import { DeleteForever, EditNote } from "@mui/icons-material";
 import Link from "next/link";
 import Layout from "@/components/Layout";
+import DialogBox from "@/components/DialogBox";
+import CreateAddonCategory from "@/components/addonCategory/CreateAddonCategory";
+import { config } from "@/config/config";
 
 const AddonCategories = () => {
   //*********************** */
-  const nameRef = useRef<any>(null);
+
   const { addonCategories } = useBackoffice();
+
   const { fetchData } = useBackofficeUpdate();
 
-  const handleCreateAddonCategory = async () => {
-    const name = nameRef.current.value.trim();
-    console.log({ name });
-    if (!name) {
-      return alert("name & price are needed");
+  const handleDelete = async (id: number) => {
+    const res = await fetch(
+      `${config.backofficeApiBaseUrl}/addonCategories/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!res.ok) {
+      return alert("delete fail");
     }
-
-    // createAddonCategory({ name }, (error, data) => {
-    //   console.log({ error, data });
-    // });
-  };
-
-  const handleDelete = (id: number) => {
-    // deleteAddonCategory(id, (error, data) => {
-    //   console.log({ error, data });
-    // });
+    console.log(await res.json());
+    fetchData();
   };
   return (
     <Layout title="Addon Categories">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: 300,
-          m: "0 auto",
-          mt: 8,
-        }}
-      >
-        <h2 style={{ textAlign: "center" }}>{"Addon Categories"}</h2>
-        <TextField
-          inputRef={nameRef}
-          label="Name"
-          variant="outlined"
-          sx={{ mb: 2 }}
-        />
-
-        <Button variant="contained" onClick={handleCreateAddonCategory}>
-          Create
-        </Button>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box sx={{ m: 2, alignSelf: "flex-end" }}>
+          <DialogBox
+            btnText="create addon category"
+            title="create addon category"
+            width="237px"
+          >
+            <CreateAddonCategory />
+          </DialogBox>
+        </Box>
       </Box>
       <Box
         display={"flex"}

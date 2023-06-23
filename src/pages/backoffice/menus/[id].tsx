@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   Card,
@@ -24,7 +25,7 @@ import {
 import { Textarea } from "@mui/joy";
 import FileDropZone from "@/components/FileDropZone";
 import AspectRatio from "@mui/joy/AspectRatio";
-import { Menu } from "@/typings/types";
+import { Menu, Payload } from "@/typings/types";
 import { config } from "@/config/config";
 import { Theme, useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
@@ -32,14 +33,11 @@ import Image from "next/image";
 import Layout from "@/components/Layout";
 import { menu } from "@prisma/client";
 import { theme as myTheme } from "@/config/myTheme";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-
-interface UpdateMenu extends menu {
-  menuCatIds: number[];
-  isRequired: boolean;
-}
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const MenuDetail = () => {
   // **************************************************
@@ -48,45 +46,51 @@ const MenuDetail = () => {
     menus,
     menusMenuCategoriesLocations,
     menuCategories,
+    addonCategories,
     selectedLocationId,
   } = useBackoffice();
   const { fetchData } = useBackofficeUpdate();
-  // const [selectedMenuCatIds, setSelectedMenuCatIds] = useState<number[]>([]);
-  // const [oldSelectedMenuCatIds, setOldSelectedMenuCatIds] = useState<number[]>(
-  //   []
-  // );
+
   console.log("menus :::", menus);
 
   const router = useRouter();
   const { id: menuIdStr } = router.query;
-  const [menu, setMenu] = useState<UpdateMenu>();
-  const [oldMenu, setOldMenu] = useState<UpdateMenu>();
+  const [menu, setMenu] = useState<Payload.Menu.Update>();
+  const [oldMenu, setOldMenu] = useState<Payload.Menu.Update>();
   const [menuImage, setMenuImage] = useState<File>();
   const theme = useTheme();
 
   const menuId = parseInt(menuIdStr as string, 10);
-  const hasMenu = menus.find((menu) => menu.id === menuId);
+  const hasMenu = menus.find((menu) => menu.id === menuId && !menu.is_archived);
   const isRequired = !!menusMenuCategoriesLocations.find(
     (m) =>
       menu &&
-      m.menu_id === menu.id &&
+      m.menu_id === menuId &&
       String(m.location_id) === selectedLocationId
   )?.is_available;
-
   useEffect(() => {
     if (hasMenu && selectedLocationId) {
-      const menuCatIds = hasMenu.menu_menu_category_location
-        .filter((menuCat) => menuCat.location_id === Number(selectedLocationId))
-        .map((menuCat) => menuCat.menu_category_id) as number[];
+      const isRequired = !!menusMenuCategoriesLocations.find(
+        (m) =>
+          menu &&
+          m.menu_id === menuId &&
+          String(m.location_id) === selectedLocationId
+      )?.is_available
+        ? true
+        : false;
+
+      const addonCatIds = hasMenu.menu_addon_category.map(
+        (addonCat) => addonCat.addon_category_id
+      );
 
       setMenu({
         ...hasMenu,
-        menuCatIds: menuCatIds,
+        addonCatIds: addonCatIds,
         isRequired,
       });
       setOldMenu({
         ...hasMenu,
-        menuCatIds: menuCatIds,
+        addonCatIds: addonCatIds,
         isRequired,
       });
     }
@@ -99,22 +103,7 @@ const MenuDetail = () => {
       </Stack>
     );
   }
-
-  const menuCategoriesByLocation = menuCategories.filter((mcat) =>
-    mcat.menu_menu_category_location.find(
-      (mmcl) => String(mmcl.location_id) === selectedLocationId
-    )
-  );
-
-  const handleChange = (event: SelectChangeEvent<number[]>) => {
-    const {
-      target: { value },
-    } = event;
-    console.log(value, "value");
-    if (typeof value === "string") return;
-
-    setMenu({ ...menu, menuCatIds: value });
-  };
+  console.log({ c: oldMenu.isRequired, g: menu.isRequired, oldMenu });
   // todo UPDATE
   const handleUpdateMenu = async () => {
     // console.log(menu, selectedMenuCatIds);
@@ -122,14 +111,14 @@ const MenuDetail = () => {
       name: oldName,
       price: oldPrice,
       description: oldDescription,
-      menuCatIds: oldMenuCatIds,
+      addonCatIds: oldAddonCatIds,
       asset_url: oldAssetUrl,
       isRequired: oldIsRequired,
     } = oldMenu;
 
-    const { name, price, description, menuCatIds, isRequired, asset_url } =
+    const { name, price, description, addonCatIds, isRequired, asset_url } =
       menu;
-    console.log({ menuCatIds });
+
     let assetUrl: string | null = "";
     if (menuImage) {
       const formData = new FormData();
@@ -152,7 +141,7 @@ const MenuDetail = () => {
       price === oldPrice &&
       isRequired === oldIsRequired &&
       description === oldDescription &&
-      String(menuCatIds) === String(oldMenuCatIds) &&
+      String(addonCatIds) === String(oldAddonCatIds) &&
       assetUrl === oldAssetUrl
     ) {
       return alert("you can't update");
@@ -163,7 +152,7 @@ const MenuDetail = () => {
       price,
       description,
       asset_url: assetUrl,
-      menuCatIds,
+      addonCatIds,
       isRequired,
     };
 
@@ -206,21 +195,7 @@ const MenuDetail = () => {
     setMenuImage(files[0]);
   };
 
-  const getStyles = (
-    menuCategoryId: number,
-    theme: Theme
-  ): React.CSSProperties | undefined => {
-    const isSelected = menu.menuCatIds.includes(menuCategoryId);
-    return {
-      fontWeight: isSelected
-        ? theme.typography.fontWeightBold
-        : theme.typography.fontWeightRegular,
-      backgroundColor: isSelected ? "#666" : "#fff",
-      color: isSelected ? "#fff" : "#000",
-      borderBottom: "1px dashed  black",
-    };
-  };
-  const { name, price, description, asset_url } = menu;
+  const { name, price, description, addonCatIds, asset_url } = menu;
   return (
     <Layout title="Edit Menu">
       <Box
@@ -279,50 +254,40 @@ const MenuDetail = () => {
           minRows={2}
           placeholder="Description..."
           size="lg"
-        />{" "}
-        <FormControl sx={{ mb: 2 }}>
-          <InputLabel id="demo-multiple-chip-label">Menu Category</InputLabel>
-          <Select
-            labelId="demo-multiple-chip-label"
-            id="demo-multiple-chip"
+        />
+        <FormControl fullWidth>
+          <Autocomplete
             multiple
-            onChange={handleChange}
-            value={menu.menuCatIds}
-            input={
-              <OutlinedInput id="select-multiple-chip" label="Menu Category" />
-            }
-            renderValue={(selected) => {
-              const selectedCategories = selected.map((id) =>
-                menuCategoriesByLocation.find((mcat) => mcat.id === id)
-              );
-              return (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selectedCategories.map((item, idx) => {
-                    return <Chip key={item?.id} label={item?.name} />;
-                  })}
-                </Box>
-              );
+            id="checkboxes-tags-demo"
+            options={addonCategories}
+            disableCloseOnSelect
+            getOptionLabel={(option) => option.name}
+            value={addonCategories.filter((ac) =>
+              addonCatIds.find((acid) => ac.id === acid)
+            )}
+            onChange={(e, value) => {
+              setMenu({ ...menu, addonCatIds: value.map((item) => item.id) });
             }}
-            MenuProps={{
-              PaperProps: {
-                style: {
-                  maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                  width: 250,
-                },
-              },
-            }}
-          >
-            {menuCategoriesByLocation.map((menuCategory) => (
-              <MenuItem
-                key={menuCategory.id}
-                value={menuCategory.id}
-                style={getStyles(menuCategory.id as number, theme)}
-              >
-                {menuCategory.name} {menuCategory.id}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>{" "}
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                <Checkbox
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
+                {option.name}
+              </li>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Addon Category"
+                placeholder="Favorites"
+              />
+            )}
+          />
+        </FormControl>
         <FormControlLabel
           sx={{ mb: 2 }}
           control={

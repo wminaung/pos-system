@@ -1,27 +1,40 @@
 import { Box, Button, TextField } from "@mui/material";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   useBackoffice,
   useBackofficeUpdate,
 } from "@/contexts/BackofficeContext";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Payload } from "@/typings/types";
+import { config } from "@/config/config";
+import { LoadingButton } from "@mui/lab";
+import Layout from "@/components/Layout";
 
 const AddonCategoryDetail = (props: any) => {
   const { addonCategories } = useBackoffice();
   const { fetchData } = useBackofficeUpdate();
-
+  const [isDisabled, setIsDisabled] = useState(true);
   console.log("Props", props);
   const router = useRouter();
   const addonCategoryIdStr = router.query.id as string;
 
-  const nameRef = useRef<HTMLInputElement>(null);
+  const [newAddonCat, setNewAddonCat] = useState(
+    {} as Payload.AddonCategory.Update
+  );
 
   const addonCategoryId = parseInt(addonCategoryIdStr as string, 10);
 
   const addonCategory = addonCategories.find(
     (addonCategory) => addonCategory.id === addonCategoryId
   );
+
+  useEffect(() => {
+    console.log("sdfijsdifjsijdfsdfiffffffffffffffffffffffff");
+    if (addonCategory) {
+      setNewAddonCat({ ...newAddonCat, name: addonCategory.name });
+    }
+  }, [addonCategory]);
 
   if (!addonCategory)
     return (
@@ -41,34 +54,46 @@ const AddonCategoryDetail = (props: any) => {
       </Box>
     );
 
-  const { id, name } = addonCategory;
-
-  console.log({ id, name });
-
   const handeleUpdateAddonCategory = async () => {
-    const nametoUpdate = nameRef.current?.value || "";
+    const { name } = newAddonCat;
+    if (name === addonCategory.name) {
+      return alert("can't updated");
+    }
 
-    const payload = { name: nametoUpdate };
-
-    // updateAddonCategory({ addonCategoryId, payload }, (error, data) => {
-    //   if (data) {
-    //     alert("updated successfully");
-    //   }
-    // });
+    const payload: Payload.AddonCategory.Update = { name };
+    const res = await fetch(
+      `${config.backofficeApiBaseUrl}/addonCategories/${addonCategoryId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!res.ok) {
+      return alert("update fail");
+    }
+    console.log(await res.json());
+    fetchData();
   };
 
-  const handleDeleteAddonCategory = () => {
-    // deleteAddonCategory(addonCategoryId, (error, data) => {
-    //   console.log({ error, data }, "deleteacat");
-    //   if (data) {
-    //     alert("deleted successfully");
-    //     navigate("/addon-categories");
-    //   }
-    // });
+  const handleDeleteAddonCategory = async () => {
+    const res = await fetch(
+      `${config.backofficeApiBaseUrl}/addonCategories/${addonCategoryId}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!res.ok) {
+      return alert("delete fail");
+    }
+    console.log(await res.json());
+    fetchData();
   };
 
   return (
-    <>
+    <Layout title="Edit Addon Category">
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -77,18 +102,20 @@ const AddonCategoryDetail = (props: any) => {
         mt={5}
       >
         <TextField
-          defaultValue={name}
-          inputRef={nameRef}
+          value={newAddonCat.name || ""}
           label="Name"
           type="text"
           variant="outlined"
           sx={{ mb: 2 }}
+          onChange={(e) =>
+            setNewAddonCat({ ...newAddonCat, name: e.target.value })
+          }
         />
 
-        <Button variant="contained" onClick={handeleUpdateAddonCategory}>
+        <LoadingButton variant="contained" onClick={handeleUpdateAddonCategory}>
           Update
-        </Button>
-        <Button
+        </LoadingButton>
+        <LoadingButton
           sx={{
             mt: 3,
           }}
@@ -96,9 +123,9 @@ const AddonCategoryDetail = (props: any) => {
           onClick={handleDeleteAddonCategory}
         >
           Delete
-        </Button>
+        </LoadingButton>
       </Box>
-    </>
+    </Layout>
   );
 };
 

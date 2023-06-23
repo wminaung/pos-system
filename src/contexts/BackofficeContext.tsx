@@ -6,6 +6,7 @@ import {
   Company,
   Location,
   Menu,
+  MenuAddonCategory,
   MenuCategory,
   MenuMenuCategoryLocation,
 } from "../typings/types";
@@ -29,6 +30,7 @@ interface BackofficeContextType {
   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
   locations: Location[];
   tables: table[];
+  menusAddonCategories: MenuAddonCategory[];
   selectedLocationId?: string | null;
 }
 
@@ -40,6 +42,7 @@ export const defaultBackofficeContext: BackofficeContextType = {
   addonCategories: [],
   menusMenuCategoriesLocations: [],
   locations: [],
+  menusAddonCategories: [],
   tables: [],
   selectedLocationId: "",
 };
@@ -92,6 +95,7 @@ export const BackofficeProvider = ({ children }: Props) => {
       menusMenuCategoriesLocations,
       locations,
       tables,
+      menusAddonCategories,
       selectedLocationId,
     } = resData;
 
@@ -111,6 +115,7 @@ export const BackofficeProvider = ({ children }: Props) => {
       menusMenuCategoriesLocations,
       locations,
       tables,
+      menusAddonCategories,
       selectedLocationId: getSelectedLocationId(),
     });
 

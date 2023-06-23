@@ -32,34 +32,13 @@ const MenusPage = () => {
   const { menus, selectedLocationId } = useBackoffice();
   const { fetchData } = useBackofficeUpdate();
 
-  const filteredMenu = menus.filter((menu) =>
+  const validMenus = menus.filter((menu) =>
     menu.menu_menu_category_location.find(
       (menuMenuCatLocation) =>
         String(menuMenuCatLocation.location_id) === selectedLocationId
     )
   );
 
-  const handleDeleteMenu = async (menuId: number) => {
-    if (!window.confirm("Are you sure want to delete!")) return;
-
-    const res = await fetch(`${config.backofficeApiBaseUrl}/menus/${menuId}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) {
-      console.log(await res.json());
-      return alert("Fail to Delete");
-    }
-    const resData = await res.json();
-    console.log(resData, "resData");
-    await fetchData();
-  };
-  const deleteTest = async () => {
-    const res = await fetch(`http://localhost:3000/api/hello`, {
-      method: "DELETE",
-    });
-    console.log(res.ok);
-    fetchData();
-  };
   return (
     <Layout title="Menus">
       {/* <Box>
@@ -77,17 +56,11 @@ const MenusPage = () => {
             flexWrap: "wrap",
           }}
         >
-          {!filteredMenu.length ? (
-            <h3>There is no Menu</h3>
-          ) : (
-            filteredMenu.map((menu) => (
-              <MenuCard
-                key={menu.id}
-                handleDeleteMenu={handleDeleteMenu}
-                menu={menu}
-              />
-            ))
-          )}
+          {validMenus
+            .filter((menu) => !menu.is_archived)
+            .map((menu) => (
+              <MenuCard key={menu.id} menu={menu} />
+            ))}
         </Box>
       </Box>
     </Layout>

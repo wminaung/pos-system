@@ -7,7 +7,7 @@ export const schema = {
         name: joi.string().min(2).required(),
         price: joi.number().min(0).required(),
         description: joi.string().min(4).required(),
-        menuCatIds: joi.array().items(joi.number()).required(),
+        addonCatIds: joi.array().items(joi.number()).required(),
         asset_url: joi.string().required(),
         isRequired: joi.bool().required(),
       }),

@@ -1,6 +1,6 @@
 import {
+  Autocomplete,
   Box,
-  Checkbox,
   Chip,
   FormControl,
   FormControlLabel,
@@ -12,6 +12,7 @@ import {
   SelectChangeEvent,
   Switch,
   TextField,
+  Checkbox,
 } from "@mui/material";
 import Textarea from "@mui/joy/Textarea";
 import { useEffect, useState } from "react";
@@ -22,9 +23,14 @@ import {
   useBackofficeUpdate,
 } from "@/contexts/BackofficeContext";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { MenuCreatePayload, Payload } from "@/typings/types";
+import { Payload } from "@/typings/types";
 import { theme } from "@/config/myTheme";
 import { selectMuiStyle } from "@/utils";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const defaultMenu: Payload.Menu.Create = {
   description: "",
@@ -32,27 +38,20 @@ const defaultMenu: Payload.Menu.Create = {
   price: 0,
   asset_url: "",
   isRequired: true,
-  menuCatIds: [],
+  addonCatIds: [],
 };
 const { ITEM_HEIGHT, ITEM_PADDING_TOP } = selectMuiStyle;
 const CreateMenu = () => {
   const [loading, setLoading] = useState(false);
   const [menuImage, setMenuImage] = useState<File>();
-  const [menu, setMenu] = useState<MenuCreatePayload>(defaultMenu);
+  const [menu, setMenu] = useState<Payload.Menu.Create>(defaultMenu);
 
-  const { selectedLocationId, locations, menus, menuCategories } =
-    useBackoffice();
+  const { addonCategories, selectedLocationId } = useBackoffice();
 
   const { fetchData } = useBackofficeUpdate();
 
   const isDisabled = !menu.name || !menu.description || !menuImage;
   console.log(isDisabled);
-
-  const menuCategoriesByLocation = menuCategories.filter((mcat) =>
-    mcat.menu_menu_category_location.find(
-      (mmcl) => String(mmcl.location_id) === selectedLocationId
-    )
-  );
 
   const onFileSelected = (files: File[]) => {
     setMenuImage(files[0]);
@@ -69,16 +68,12 @@ const CreateMenu = () => {
         method: "POST",
         body: formData,
       });
-
       if (response.ok) {
         const imageRes = await response.json();
         const assetUrl = imageRes.assetUrl as string;
-
         console.log("assetUrl", assetUrl);
         const payload = { ...menu, asset_url: assetUrl } as Payload.Menu.Create;
-
         console.log("payload", payload);
-
         const res = await fetch(
           `${config.backofficeApiBaseUrl}/menus?locationId=${selectedLocationId}`,
           {
@@ -104,19 +99,8 @@ const CreateMenu = () => {
       }
     } catch (error: any) {
       setLoading(false);
-
       alert(String(error));
     }
-  };
-
-  const handleChange = (event: SelectChangeEvent<number[]>) => {
-    const {
-      target: { value },
-    } = event;
-    console.log(value, "value");
-    if (typeof value === "string") return;
-
-    setMenu({ ...menu, menuCatIds: value });
   };
 
   return (
@@ -160,46 +144,39 @@ const CreateMenu = () => {
             setMenu({ ...menu, description: evt.target.value })
           }
         />
-        <FormControl sx={{ mb: 2 }}>
-          <InputLabel id="demo-multiple-chip-label">Menu Category</InputLabel>
-          <Select
-            labelId="demo-multiple-chip-label"
-            id="demo-multiple-chip"
+
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <Autocomplete
             multiple
-            onChange={handleChange}
-            value={menu.menuCatIds}
-            input={
-              <OutlinedInput id="select-multiple-chip" label="Menu Category" />
-            }
-            renderValue={(selected) => {
-              const selectedCategories = selected.map((id) =>
-                menuCategoriesByLocation.find((mcat) => mcat.id === id)
-              );
-              return (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selectedCategories.map((item, idx) => {
-                    return <Chip key={item?.id} label={item?.name} />;
-                  })}
-                </Box>
-              );
+            id="checkboxes-tags-demo"
+            options={addonCategories}
+            disableCloseOnSelect
+            getOptionLabel={(option) => option.name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            onChange={(e, value) => {
+              setMenu({ ...menu, addonCatIds: value.map((item) => item.id) });
             }}
-            MenuProps={{
-              PaperProps: {
-                style: {
-                  maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                  width: 250,
-                },
-              },
-            }}
-          >
-            {menuCategoriesByLocation.map((menuCategory) => (
-              <MenuItem key={menuCategory.id} value={menuCategory.id}>
-                {menuCategory.name} {menuCategory.id}
-              </MenuItem>
-            ))}
-          </Select>
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                <Checkbox
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
+                {option.name}
+              </li>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Addon Category"
+                placeholder="Favorites"
+              />
+            )}
+          />
         </FormControl>
-        <FormControlLabel
+        {/* <FormControlLabel
           sx={{ mb: 2 }}
           control={
             <Switch
@@ -210,7 +187,7 @@ const CreateMenu = () => {
             />
           }
           label="required"
-        />
+        /> */}
         <FileDropZone onFileSelected={onFileSelected} />
 
         <LoadingButton

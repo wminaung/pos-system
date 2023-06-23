@@ -213,6 +213,7 @@ const getData = async (user: User, selectedLocationId?: number) => {
   const locations = await prisma.location.findMany({
     where: {
       company_id: companyId,
+      is_archived: false,
     },
     orderBy: {
       id: "asc",
@@ -246,6 +247,9 @@ const getData = async (user: User, selectedLocationId?: number) => {
         },
       },
     },
+    where: {
+      is_archived: false,
+    },
   });
 
   const menuCategories = await prisma.menu_category.findMany({
@@ -255,6 +259,9 @@ const getData = async (user: User, selectedLocationId?: number) => {
     include: {
       menu_menu_category_location: true,
     },
+    where: {
+      is_archived: false,
+    },
   });
   const addons = await prisma.addon.findMany({
     orderBy: {
@@ -262,6 +269,9 @@ const getData = async (user: User, selectedLocationId?: number) => {
     },
     include: {
       addon_category: true,
+    },
+    where: {
+      is_archived: false,
     },
   });
 
@@ -273,6 +283,9 @@ const getData = async (user: User, selectedLocationId?: number) => {
       addon: true,
       menu_addon_category: true,
     },
+    where: {
+      is_archived: false,
+    },
   });
 
   const tables = await prisma.table.findMany({
@@ -281,6 +294,18 @@ const getData = async (user: User, selectedLocationId?: number) => {
     },
     include: {
       location: true,
+    },
+    where: {
+      is_archived: false,
+    },
+  });
+
+  const menusAddonCategories = await prisma.menu_addon_category.findMany({
+    orderBy: {
+      id: "asc",
+    },
+    include: {
+      addon_category: true,
     },
   });
 
@@ -293,6 +318,7 @@ const getData = async (user: User, selectedLocationId?: number) => {
     locations,
     menusMenuCategoriesLocations,
     tables,
+    menusAddonCategories,
     selectedLocationId: selectedLocationId || locations[0].id,
   };
 };

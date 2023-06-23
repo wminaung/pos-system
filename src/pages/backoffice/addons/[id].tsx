@@ -1,94 +1,116 @@
 import {
-  Box,
-  TextField,
-  Checkbox,
-  Button,
-  Autocomplete,
-  FormControlLabel,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Stack,
-  LinearProgress,
-} from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-
-import {
   useBackoffice,
   useBackofficeUpdate,
 } from "@/contexts/BackofficeContext";
-import Alertor from "@/components/Alertor";
-import { useRouter } from "next/router";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { LoadingButton } from "@mui/lab";
+import { config } from "@/config/config";
+import { addon } from "@prisma/client";
+import { Addon, Payload } from "@/typings/types";
 import Layout from "@/components/Layout";
+import { useRouter } from "next/router";
 
-const AddonDetail = () => {
-  // ********************************
-
-  const { addons, addonCategories } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+interface NewAddon {
+  name: string;
+  price: number;
+  addon_category_id: string;
+}
+const CreateAddon = () => {
+  //************************* */
 
   const router = useRouter();
 
-  const [selectedId, setSelectedId] = useState<number>(0);
-  const [isChecked, setIsChecked] = useState(true);
+  const [newAddon, setNewAddon] = useState<Payload.Addon.Update>(
+    {} as Payload.Addon.Update
+  );
+  const [oldAddon, setOldAddon] = useState<Payload.Addon.Update>(
+    {} as Payload.Addon.Update
+  );
 
-  const { id: addonIdStr } = router.query;
-  const addonId = parseInt(addonIdStr as string, 10);
-  const nameRef = useRef<any>(null);
-  const priceRef = useRef<any>(null);
+  const idString = router.query.id as string;
+  const id = Number(idString);
 
-  const handleUpdateAddon = async () => {
-    const name = nameRef.current.value.trim();
-    const price = parseInt(priceRef.current.value, 10);
-    if (!name || price < 0) {
-      return alert("name & price are needed");
-    }
+  const { addonCategories, addons } = useBackoffice();
+  const { fetchData } = useBackofficeUpdate();
 
-    // updateAddon(
-    //   {
-    //     addonId,
-    //     payload: {
-    //       name,
-    //       price,
-    //       required: isChecked,
-    //       addonCategoryId: selectedId || null,
-    //     },
-    //   },
-    //   (error, data) => {
-    //     if (data) {
-    //       alert("updated successfully");
-    //     }
-    //   }
-    // );
-  };
-
-  const handleDeleteAddon = async (addonId: number) => {
-    // deleteAddon(addonId, (error, data) => {
-    //   console.log({ error, data });
-    //   if (data) {
-    //     alert("deleted successfully");
-    //     navigate("/addons");
-    //   }
-    // });
-  };
-
-  const addon = addons.find((addon) => addon.id === addonId);
-
-  const selectedAddonCategory = addonCategories.find(
-    (ac) => ac.id === addon?.addon_category_id
-  ) || { id: 0 };
-
-  console.log({ selectedAddonCategory });
+  const editAddon = addons.find((addon) => addon.id === id) as Addon;
 
   useEffect(() => {
-    if (addons.length > 0) {
-      setSelectedId(addon?.addon_category_id || 0);
+    if (editAddon) {
+      const { addon_category_id, name, price } = editAddon;
+
+      setOldAddon({
+        ...oldAddon,
+        name,
+        price,
+        addonCategoryId: addon_category_id,
+      });
+
+      setNewAddon({
+        ...newAddon,
+        name,
+        price,
+        addonCategoryId: addon_category_id,
+      });
     }
   }, [addons]);
 
-  if (!addon) {
-    return <h3>There is no addon</h3>;
+  const isDisabled =
+    newAddon.name === oldAddon.name &&
+    newAddon.price === oldAddon.price &&
+    newAddon.addonCategoryId === oldAddon.addonCategoryId;
+
+  const handleUpdateAddon = async () => {
+    const { name, price, addonCategoryId } = newAddon;
+
+    if (!name || price < 0 || isDisabled) {
+      return alert("name & price are needed ,  isDisabled = " + isDisabled);
+    }
+
+    const payload: Payload.Addon.Create = {
+      name,
+      price,
+      addonCategoryId: addonCategoryId,
+    };
+    const res = await fetch(`${config.backofficeApiBaseUrl}/addons/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      return alert("updated fail");
+    }
+    const data = await res.json();
+    console.log("updated success", data);
+    fetchData();
+  };
+  const handleChange = (event: SelectChangeEvent) => {
+    const selectedId = event.target.value;
+    console.log(selectedId, "sid");
+    setNewAddon({
+      ...newAddon,
+      addonCategoryId: selectedId ? Number(selectedId) : null,
+    });
+  };
+  console.log({ newAddon });
+
+  if (!newAddon.name || !oldAddon.name) {
+    return null;
   }
 
   return (
@@ -97,62 +119,57 @@ const AddonDetail = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          maxWidth: 300,
+          width: 300,
           m: "0 auto",
         }}
       >
-        <h2 style={{ textAlign: "center" }}>Edit a new Addon </h2>
         <TextField
           label="Name"
-          inputRef={nameRef}
-          defaultValue={addon.name}
+          value={newAddon.name}
+          onChange={(e) => setNewAddon({ ...newAddon, name: e.target.value })}
           variant="outlined"
           sx={{ mb: 2 }}
         />
         <TextField
           label="Price"
-          defaultValue={addon.price}
-          inputRef={priceRef}
           variant="outlined"
           type="number"
+          value={newAddon.price}
+          onChange={(e) =>
+            setNewAddon({ ...newAddon, price: Number(e.target.value) })
+          }
           sx={{ mb: 2 }}
         />
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id="demo-simple-select-label">AddonCategory</InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            label="addon cat"
-            value={selectedId}
-            onChange={(e) => {
-              const selectedACatId = Number(e.target.value);
-              console.log(selectedACatId, "sdifs");
-              setSelectedId(selectedACatId);
-            }}
+            value={
+              newAddon.addonCategoryId ? String(newAddon.addonCategoryId) : ""
+            }
+            label="AddonCategory"
+            onChange={handleChange}
           >
-            <MenuItem value={0}>{"nothing"}</MenuItem>
-
-            {addonCategories.map((ac) => (
-              <MenuItem key={ac.id} value={ac.id}>
-                {ac.name}
+            <MenuItem value={""}>None</MenuItem>
+            {addonCategories.map(({ id, name }) => (
+              <MenuItem key={`${id}-${name}`} value={id}>
+                {name} {id}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        <Button variant="contained" onClick={handleUpdateAddon}>
-          Update
-        </Button>
-        <Button
-          onClick={() => addon.id && handleDeleteAddon(addon.id)}
-          sx={{ mt: 1 }}
-          variant="outlined"
+        <LoadingButton
+          disabled={isDisabled}
+          onClick={handleUpdateAddon}
+          variant="contained"
         >
-          Delete
-        </Button>
+          Update
+        </LoadingButton>
       </Box>
     </Layout>
   );
 };
 
-export default AddonDetail;
+export default CreateAddon;

@@ -121,22 +121,21 @@ const handleDeleteRequest = async (
   const menuCatId = Number(menuCatIdStr);
   const locationId = Number(req.query.locationId as string);
   try {
-    const deletMenu = await prisma.menu_menu_category_location.deleteMany({
+    const archivedMenuCat = await prisma.menu_category.update({
       where: {
-        menu_category_id: menuCatId,
-        menu_id: null,
-        location_id: locationId,
+        id: menuCatId,
       },
-    });
-
-    const deletedMenuCat = await prisma.menu_category.delete({
-      where: { id: menuCatId },
+      data: {
+        is_archived: true,
+      },
     });
     return res
       .status(200)
-      .json({ deletedMenuCat, deletMenu, message: "deleted successfully" });
+      .json({ archivedMenuCat, message: "archivedMenuCat successfully" });
   } catch (error) {
     console.log({ error });
-    return res.status(500).json({ message: " check query delete fail", error });
+    return res
+      .status(500)
+      .json({ message: "archivedMenuCat check query delete fail", error });
   }
 };

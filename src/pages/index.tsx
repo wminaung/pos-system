@@ -9,24 +9,32 @@ import {
 } from "@/contexts/BackofficeContext";
 import { useSession } from "next-auth/react";
 import Layout from "@/components/Layout";
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress } from "@mui/material";
 import { config } from "@/config/config";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const { fetchData } = useBackofficeUpdate();
-
-  const gg = async () => {
-    const res = await fetch(`http://localhost:3000/api/hello`, {
-      method: "DELETE",
-      body: JSON.stringify({ name: "ddd" }),
-    });
+  const router = useRouter();
+  const goBackOffice = async () => {
+    await router.push("/backoffice");
   };
+
+  useEffect(() => {
+    router.prefetch("/backoffice");
+  }, []);
   return (
-    <Layout>
-      <button onClick={() => gg()}>click</button>
-    </Layout>
+    <Box sx={{ width: "100vw" }}>
+      <Button
+        variant="contained"
+        sx={{ margin: "0 auto", display: "block", mt: 10 }}
+        onClick={() => goBackOffice()}
+      >
+        Go Backoffice
+      </Button>
+    </Box>
   );
 }
 /*
