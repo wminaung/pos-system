@@ -1,4 +1,4 @@
-import { createContext, useEffect } from "react";
+import { Dispatch, SetStateAction, createContext, useEffect } from "react";
 import {
   Addon,
   AddonCategory,
@@ -10,11 +10,14 @@ import {
   MenuCategory,
   MenuMenuCategoryLocation,
   Order,
+  Orderline,
 } from "../typings/types";
 import { useContext, useState } from "react";
 import { config } from "@/config/config";
 import { useSession } from "next-auth/react";
 import { table } from "@prisma/client";
+import { useRouter } from "next/router";
+import Layout from "@/components/Layout";
 
 interface OrderContextType {
   menus: Menu[];
@@ -22,12 +25,13 @@ interface OrderContextType {
   addons: Addon[];
   addonCategories: AddonCategory[];
   menusAddonCategories: MenuAddonCategory[];
-  locations: Location[];
+  location: Location | null;
   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
-  updateData: (value: any) => void;
-  fetchData: () => void;
   isLoading: boolean;
   cart: Order | null;
+  orderlines: Orderline[];
+  updateData: Dispatch<SetStateAction<OrderContextType>>;
+  fetchData: () => void;
 }
 
 export const defaultOrderContext: OrderContextType = {
@@ -36,12 +40,13 @@ export const defaultOrderContext: OrderContextType = {
   addons: [],
   addonCategories: [],
   menusAddonCategories: [],
-  locations: [],
+  location: null,
   menusMenuCategoriesLocations: [],
   updateData: () => {},
   fetchData: () => {},
   isLoading: false,
   cart: null,
+  orderlines: [],
 };
 
 const OrderContext = createContext(defaultOrderContext);
@@ -56,10 +61,38 @@ export const OrderContextProvider = ({ children }: Props) => {
   // **********************************
   const [data, updateData] = useState(defaultOrderContext);
 
+  const router = useRouter();
+  const query = router.query;
+
+  const locationIdStr = query.locationId as string;
+  const locationId = locationIdStr ? Number(locationIdStr) : null;
+
+  useEffect(() => {
+    locationId && fetchData();
+  }, [locationId]);
+
   // ? fetch all data
+  const fetchData = async () => {
+    if (!locationId) return;
+    updateData({ ...data, isLoading: true });
+    const response = await fetch(
+      `${config.orderApiBaseUrl}?locationId=${locationId}`
+    );
+
+    const responseJson = await response.json();
+
+    const { menuCategories, menus, addonCategories, addons, location } =
+      responseJson as OrderContextType;
+    console.log("fetch....................");
+    updateData({
+      ...data,
+      ...responseJson,
+      isLoading: false,
+    });
+  };
 
   return (
-    <OrderContext.Provider value={{ ...data }}>
+    <OrderContext.Provider value={{ ...data, updateData, fetchData }}>
       {children}
     </OrderContext.Provider>
   );

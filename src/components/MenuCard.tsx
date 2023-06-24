@@ -7,6 +7,7 @@ import {
   CardContent,
   CardMedia,
   Divider,
+  Paper,
   Skeleton,
   Typography,
 } from "@mui/material";
@@ -14,36 +15,29 @@ import { menu } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
 import { defaultMenuSrc } from "@/utils";
+import { Url } from "next/dist/shared/lib/router/router";
 
 interface Props {
   menu: menu;
-
   handleRemoveMenu?: (menuId: number) => void;
+  href: Url;
 }
-const MenuCard = ({ menu, handleRemoveMenu }: Props) => {
+const MenuCard = ({ menu, handleRemoveMenu, href }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const bgCard = theme.second;
+
   return (
     <Card
-      component={Card}
-      elevation={3}
+      elevation={6}
       sx={{
-        zIndex: 0,
-        position: "relative",
-        boxShadow: "none",
-        overflow: "",
         width: 180,
-        maxHeight: 800,
+        // maxHeight: 800,
         mx: 2,
-        my: 1,
+        my: 2,
         backgroundColor: "#000",
       }}
     >
-      <CardActionArea
-        component={Link}
-        href={`/backoffice/menus/${menu.id}`}
-        passHref
-      >
+      <CardActionArea component={Link} href={href} passHref>
         {isLoading && (
           <Skeleton
             sx={{ bgcolor: theme.third }}

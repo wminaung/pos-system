@@ -130,13 +130,16 @@ const ShowMenus = ({ menus, menuCategory }: Props) => {
           alignItems: "center",
         }}
       >
-        {validMenus.map((menu) => (
-          <MenuCard
-            menu={menu}
-            key={menu.id}
-            handleRemoveMenu={handleRemoveMenu}
-          />
-        ))}
+        {validMenus.map((menu) => {
+          return (
+            <MenuCard
+              menu={menu}
+              href={`/backoffice/menus/${menu.id}`}
+              key={menu.id}
+              handleRemoveMenu={handleRemoveMenu}
+            />
+          );
+        })}
       </Box>
     </Box>
   );

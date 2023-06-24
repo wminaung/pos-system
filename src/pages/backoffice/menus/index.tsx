@@ -58,9 +58,15 @@ const MenusPage = () => {
         >
           {validMenus
             .filter((menu) => !menu.is_archived)
-            .map((menu) => (
-              <MenuCard key={menu.id} menu={menu} />
-            ))}
+            .map((menu) => {
+              return (
+                <MenuCard
+                  key={menu.id}
+                  href={`/backoffice/menus/${menu.id}`}
+                  menu={menu}
+                />
+              );
+            })}
         </Box>
       </Box>
     </Layout>

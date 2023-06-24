@@ -52,10 +52,18 @@ export const idsToDelete = (oldIds: number[], newIds: number[]) => {
   return oldIds.filter((oldId) => !newIds.includes(oldId));
 };
 export const generateLinkForQRCode = (locationId: number, tableId: number) => {
-  return `${config.orderApiBaseUrl}/location/${locationId}/table/${tableId}`;
+  return `${config.orderBaseRoute}/location/${locationId}/table/${tableId}`;
 };
 export const getQrCodeUrl = (locationId: number, tableId: number) => {
   return `https://msquarefdc.sgp1.cdn.digitaloceanspaces.com/happy-pos/qrcode/win-min-aung/locationId-${locationId}-tableId-${tableId}.png`;
 };
 export const defaultQRCodeSrc = "/defaultQRCode.png";
 export const defaultMenuSrc = "/test.png";
+
+export const orderByAacDesc = ({ order }: { order: "asc" | "desc" }) => {
+  return {
+    orderBy: {
+      id: order,
+    },
+  };
+};

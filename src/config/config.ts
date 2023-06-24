@@ -12,6 +12,7 @@ export namespace Config {
     googleClientSecret: string;
     nextAuthSecret: string;
     nextAuthUrl: string;
+    orderBaseRoute: string;
   }
 }
 
@@ -26,4 +27,5 @@ export const config: Config.Frontend & Config.Backend = {
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
   nextAuthSecret: process.env.NEXTAUTH_SECRET || "",
   nextAuthUrl: process.env.NEXTAUTH_URL || "",
+  orderBaseRoute: process.env.NEXT_PUBLIC_ORDER_BASE_ROUTE || "",
 };
