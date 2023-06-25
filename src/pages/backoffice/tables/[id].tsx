@@ -3,18 +3,11 @@ import Layout from "@/components/Layout";
 import { config } from "@/config/config";
 import { useBackoffice } from "@/contexts/BackofficeContext";
 import { defaultQRCodeSrc } from "@/utils";
-
-import {
-  Autocomplete,
-  Box,
-  Button,
-  FormControlLabel,
-  Switch,
-  TextField,
-} from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useEffect, useState } from "react";
 
 const EditTable = () => {
   const router = useRouter();
@@ -22,7 +15,15 @@ const EditTable = () => {
 
   const { tables, selectedLocationId } = useBackoffice();
   const table = tables.find((table) => table.id === Number(tableId));
-  const [tableName, setTableName] = useState(table?.name);
+  const [tableName, setTableName] = useState("");
+
+  useEffect(() => {
+    table && setTableName(table.name);
+  }, [table]);
+
+  if (!table) {
+    return null;
+  }
 
   const updateTable = async () => {
     await fetch(`${config.backofficeApiBaseUrl}/tables`, {
@@ -38,7 +39,7 @@ const EditTable = () => {
     <Layout title="Edit Table">
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <TextField
-          defaultValue={tableName}
+          value={tableName}
           sx={{ mb: 2 }}
           onChange={(evt) => setTableName(evt.target.value)}
         />
@@ -46,6 +47,7 @@ const EditTable = () => {
         <Box>
           <Image src={assetUrl} alt="qrcode" width={170} height={170} />
         </Box>
+
         <Button
           variant="contained"
           onClick={updateTable}
@@ -53,6 +55,20 @@ const EditTable = () => {
         >
           Update
         </Button>
+      </Box>
+
+      <Box sx={{ my: 4 }}>
+        <Link
+          href={{
+            pathname: `http://localhost:3000/order/location/[locationId]/table/[tableId]`,
+            query: {
+              locationId: selectedLocationId,
+              tableId: table.id,
+            },
+          }}
+        >
+          <Typography>click to Go Link</Typography>
+        </Link>
       </Box>
     </Layout>
   );

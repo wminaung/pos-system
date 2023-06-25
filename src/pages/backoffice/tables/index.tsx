@@ -99,26 +99,12 @@ const Tables = () => {
                 href={`/backoffice/tables/${table.id}`}
                 style={{ textDecoration: "none", color: "#000000" }}
               >
-                <Box
-                  sx={{
-                    width: "170px",
-                    height: "170px",
-                    borderRadius: 2,
-                    border: "2px solid #EBEBEB",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    textAlign: "center",
-                  }}
-                >
-                  <Image
-                    src={table.asset_url || defaultQRCodeSrc}
-                    alt={table.name}
-                    width={170}
-                    height={170}
-                  />
-                </Box>
+                <Image
+                  src={table.asset_url || defaultQRCodeSrc}
+                  alt={table.name}
+                  width={170}
+                  height={170}
+                />
               </Link>
               <Typography sx={{ mt: 1 }}>{table.name}</Typography>
             </Box>
