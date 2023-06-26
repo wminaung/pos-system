@@ -53,9 +53,8 @@ export interface Order {
 }
 export interface Orderline {
   menu: Menu;
-  addon?: Addon[];
+  addons?: Addon[];
   quantity: number;
-  status: OrderlineStatus;
 }
 export enum OrderlineStatus {
   PENDING = "PENDING",

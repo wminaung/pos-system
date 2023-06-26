@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 const OrderingPage = () => {
   const [value, setValue] = useState("1");
   const { menuCategories, menus } = useOrder();
+
   const router = useRouter();
   const pathname = router.pathname;
   const query = router.query;

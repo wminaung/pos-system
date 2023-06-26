@@ -1,3 +1,4 @@
+import QuantitySelector from "@/components/QuantitySelector";
 import { theme } from "@/config/myTheme";
 import { useOrder } from "@/contexts/OrderContext";
 import { AddonCategory } from "@/typings/types";
@@ -16,21 +17,50 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+enum CounterType {
+  INCREASE,
+  DECREASE,
+}
 
 const OrderMenu = () => {
+  const [selectedAddonIds, setSelectedAddonIds] = useState<Array<number>>([]);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [menuCount, setMenuCount] = useState(1);
+
   const router = useRouter();
   const query = router.query;
   const menuId = Number(query.menuId);
-  const { addonCategories, menus } = useOrder();
-
-  const [selectedAddonIds, setSelectedAddonIds] = useState<Array<number>>([]);
+  const { addonCategories, menus, orderlines, updateData, addons } = useOrder();
+  const allData = useOrder();
 
   console.warn("selectedAddonIds :", selectedAddonIds);
 
   const validAddonCats = addonCategories.filter((addonCat) =>
     addonCat.menu_addon_category.find((mac) => mac.menu_id === menuId)
   );
+  const menu = menus.find((menu) => menu.id === menuId);
+  useEffect(() => {
+    if (validAddonCats && selectedAddonIds.length) {
+      const requiredAddonCat = validAddonCats.filter(
+        (addonCat) => addonCat.is_required
+      );
+      const requiredAddonsIds = requiredAddonCat.map((addonCat) =>
+        addonCat.addon.map((addon) => addon.id)
+      );
+      console.log("req id", requiredAddonsIds);
+
+      const shouldDisabled = !requiredAddonsIds.every((requriedAddonIds) => {
+        const shouldDisabled = requriedAddonIds.find((addonId) =>
+          selectedAddonIds.some((selectAddonId) => selectAddonId === addonId)
+        );
+
+        return shouldDisabled;
+      });
+      setIsDisabled(shouldDisabled);
+    }
+  }, [selectedAddonIds, validAddonCats]);
 
   const showSelection = (addonCat: AddonCategory) => {
     if (addonCat.is_required) {
@@ -91,12 +121,51 @@ const OrderMenu = () => {
       ); // CheckBox end
     }
   };
+  console.warn(isDisabled);
 
+  const handleIncreaseDecrease = (type: CounterType) => {
+    if (type === CounterType.DECREASE) {
+      if (menuCount - 1 < 1) {
+        setMenuCount(1);
+        return;
+      }
+      setMenuCount(menuCount - 1);
+    } else if (type === CounterType.INCREASE) {
+      setMenuCount(menuCount + 1);
+    } else {
+      console.warn("please insert counter type");
+    }
+  };
+  console.log(menuCount, "menu count");
+
+  if (!menu) {
+    return null;
+  }
+  console.log({ orderlines });
+  const addToCart = async () => {
+    updateData({
+      ...allData,
+      orderlines: [
+        ...orderlines,
+        {
+          menu,
+          quantity: menuCount,
+          addons: addons.filter((addon) => selectedAddonIds.includes(addon.id)),
+        },
+      ],
+    });
+    await router.push("/order");
+  };
   return (
     <Box component={Paper} elevation={3}>
+      <Typography textAlign={"center"} variant="h3">
+        {menu.name}
+      </Typography>
+      <Divider />
+
       {validAddonCats.map((addonCat) => {
         return (
-          <Box p={2} mb={1} key={addonCat.id}>
+          <Box p={2} py={0} key={addonCat.id}>
             <FormControl fullWidth>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <FormLabel
@@ -117,8 +186,19 @@ const OrderMenu = () => {
           </Box>
         );
       })}
-      <Button sx={{ m: 2 }} variant="contained">
-        Go Next Page
+
+      <QuantitySelector
+        onDecrease={() => handleIncreaseDecrease(CounterType.DECREASE)}
+        onIncrease={() => handleIncreaseDecrease(CounterType.INCREASE)}
+        value={menuCount}
+      />
+      <Button
+        disabled={isDisabled}
+        sx={{ m: 2 }}
+        onClick={addToCart}
+        variant="contained"
+      >
+        Add To Cart
       </Button>
     </Box>
   );
