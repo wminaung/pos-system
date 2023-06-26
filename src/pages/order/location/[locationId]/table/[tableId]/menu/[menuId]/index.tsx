@@ -41,21 +41,11 @@ const OrderMenu = () => {
           onChange={(e, value) => {
             const allIds = addonCat.addon.map((addon) => addon.id);
             const selectedId = Number(value);
-            const nonSelectedId = allIds.filter(
-              (allId) => allId !== selectedId
-            )[0];
-
-            let isSelected = selectedAddonIds.find((addonId) =>
-              allIds.find((allId) => allId === addonId)
+            const newValues = selectedAddonIds.filter(
+              (selectId) => !allIds.find((allId) => allId === selectId)
             );
-            if (isSelected) {
-              const newValue = selectedAddonIds.filter(
-                (addonId) => nonSelectedId !== addonId
-              );
-              setSelectedAddonIds([...newValue, selectedId]);
-            } else {
-              setSelectedAddonIds([...selectedAddonIds, selectedId]);
-            }
+            console.log(newValues, "newValue");
+            setSelectedAddonIds([...newValues, selectedId]);
           }}
         >
           {addonCat.addon.map((addon) => {
