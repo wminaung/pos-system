@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useOrder } from "@/contexts/OrderContext";
 import MenuCard from "@/components/MenuCard";
 import { useRouter } from "next/router";
+import ViewCartBar from "@/components/ViewCardBar";
 
 const OrderingPage = () => {
   const [value, setValue] = useState("1");
@@ -59,7 +60,8 @@ const OrderingPage = () => {
             </TabPanel>
           );
         })}
-      </TabContext>
+      </TabContext>{" "}
+      <ViewCartBar />
     </Box>
   );
 };

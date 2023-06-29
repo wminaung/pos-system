@@ -7,14 +7,16 @@ import { useOrder } from "@/contexts/OrderContext";
 
 const ViewCartBar = () => {
   const router = useRouter();
+  const { locationId, tableId } = router.query;
   const { orderlines } = useOrder();
   const cartText = `You have ${orderlines.length} item in cart.`;
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <Box
         sx={{
           position: "fixed",
           bottom: 0,
+          left: 0,
           backgroundColor: "lightblue",
           width: "100%",
           py: 2,
@@ -23,7 +25,13 @@ const ViewCartBar = () => {
       >
         <Box
           onClick={() =>
-            router.push({ pathname: "/order/cart", query: router.query })
+            router.push({
+              pathname: "/order/cart",
+              query: {
+                locationId,
+                tableId,
+              },
+            })
           }
           sx={{
             display: "flex",

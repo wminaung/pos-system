@@ -10,12 +10,10 @@ import {
   MenuCategory,
   MenuMenuCategoryLocation,
   Order,
-  Orderline,
+  OrderlineItem,
 } from "../typings/types";
 import { useContext, useState } from "react";
 import { config } from "@/config/config";
-import { useSession } from "next-auth/react";
-import { table } from "@prisma/client";
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
 
@@ -29,7 +27,7 @@ interface OrderContextType {
   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
   isLoading: boolean;
   cart: Order | null;
-  orderlines: Orderline[];
+  orderlines: OrderlineItem[];
   updateData: Dispatch<SetStateAction<OrderContextType>>;
   fetchData: () => void;
 }

@@ -1,4 +1,10 @@
-import { Box, Button, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  Switch,
+  TextField,
+} from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import {
   useBackoffice,
@@ -14,14 +20,14 @@ import Layout from "@/components/Layout";
 const AddonCategoryDetail = (props: any) => {
   const { addonCategories } = useBackoffice();
   const { fetchData } = useBackofficeUpdate();
-  const [isDisabled, setIsDisabled] = useState(true);
-  console.log("Props", props);
+
   const router = useRouter();
   const addonCategoryIdStr = router.query.id as string;
 
-  const [newAddonCat, setNewAddonCat] = useState(
-    {} as Payload.AddonCategory.Update
-  );
+  const [newAddonCat, setNewAddonCat] = useState({
+    name: "",
+    isRequired: false,
+  } as Payload.AddonCategory.Update);
 
   const addonCategoryId = parseInt(addonCategoryIdStr as string, 10);
 
@@ -32,7 +38,11 @@ const AddonCategoryDetail = (props: any) => {
   useEffect(() => {
     console.log("sdfijsdifjsijdfsdfiffffffffffffffffffffffff");
     if (addonCategory) {
-      setNewAddonCat({ ...newAddonCat, name: addonCategory.name });
+      setNewAddonCat({
+        ...newAddonCat,
+        name: addonCategory.name,
+        isRequired: addonCategory.is_required,
+      });
     }
   }, [addonCategory]);
 
@@ -55,12 +65,16 @@ const AddonCategoryDetail = (props: any) => {
     );
 
   const handeleUpdateAddonCategory = async () => {
-    const { name } = newAddonCat;
-    if (name === addonCategory.name) {
+    const { name, isRequired } = newAddonCat;
+    console.log(newAddonCat);
+    if (
+      name === addonCategory.name &&
+      isRequired === addonCategory.is_required
+    ) {
       return alert("can't updated");
     }
 
-    const payload: Payload.AddonCategory.Update = { name };
+    const payload: Payload.AddonCategory.Update = { name, isRequired };
     const res = await fetch(
       `${config.backofficeApiBaseUrl}/addonCategories/${addonCategoryId}`,
       {
@@ -102,7 +116,7 @@ const AddonCategoryDetail = (props: any) => {
         mt={5}
       >
         <TextField
-          value={newAddonCat.name || ""}
+          value={newAddonCat.name}
           label="Name"
           type="text"
           variant="outlined"
@@ -111,7 +125,16 @@ const AddonCategoryDetail = (props: any) => {
             setNewAddonCat({ ...newAddonCat, name: e.target.value })
           }
         />
-
+        <FormControlLabel
+          value="Required"
+          checked={newAddonCat.isRequired}
+          control={<Switch color="primary" />}
+          onChange={(e, checked) => {
+            setNewAddonCat({ ...newAddonCat, isRequired: checked });
+          }}
+          label="Required"
+          labelPlacement="end"
+        />
         <LoadingButton variant="contained" onClick={handeleUpdateAddonCategory}>
           Update
         </LoadingButton>

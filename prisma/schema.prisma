@@ -14,6 +14,7 @@ model addon {
   price             Int
   addon_category    addon_category? @relation(fields: [addon_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   is_archived       Boolean         @default(false)
+  orderline         orderline[]
 }
 
 model addon_category {
@@ -43,6 +44,7 @@ model location {
   menu_menu_category_location menu_menu_category_location[]
   table                       table[]
   is_archived                 Boolean                       @default(false)
+  order                       order[]
 }
 
 model menu {
@@ -54,6 +56,7 @@ model menu {
   menu_addon_category         menu_addon_category[]
   menu_menu_category_location menu_menu_category_location[]
   is_archived                 Boolean                       @default(false)
+  orderline                   orderline[]
 }
 
 model menu_addon_category {
@@ -103,6 +106,36 @@ model table {
 
   location    location? @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   is_archived Boolean   @default(false)
+
+  order order[]
+}
+
+model order {
+  id          Int         @id @default(autoincrement())
+  isPaid      Boolean     @default(false)
+  status      OrderStatus @default(PENDING)
+  location_id Int
+  table_id    Int
+  orderline   orderline[]
+  location    location    @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  table       table       @relation(fields: [table_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model orderline {
+  id       Int    @id @default(autoincrement())
+  order_id Int
+  menu_id  Int
+  addon_id Int?
+  quantity Int    @default(1)
+  order    order  @relation(fields: [order_id], references: [id])
+  menu     menu   @relation(fields: [menu_id], references: [id])
+  addon    addon? @relation(fields: [addon_id], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  COMPLETE
 }
 
 enum Role {

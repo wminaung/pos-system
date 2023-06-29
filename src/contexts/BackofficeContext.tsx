@@ -9,6 +9,8 @@ import {
   MenuAddonCategory,
   MenuCategory,
   MenuMenuCategoryLocation,
+  Order,
+  Orderline,
 } from "../typings/types";
 import { useContext, useState } from "react";
 import { config } from "@/config/config";
@@ -32,6 +34,8 @@ interface BackofficeContextType {
   tables: table[];
   menusAddonCategories: MenuAddonCategory[];
   selectedLocationId?: string | null;
+  orderlines: Orderline[];
+  orders: Order[];
 }
 
 export const defaultBackofficeContext: BackofficeContextType = {
@@ -45,6 +49,8 @@ export const defaultBackofficeContext: BackofficeContextType = {
   menusAddonCategories: [],
   tables: [],
   selectedLocationId: "",
+  orderlines: [],
+  orders: [],
 };
 
 const BackofficeContext = createContext(defaultBackofficeContext);
@@ -97,7 +103,9 @@ export const BackofficeProvider = ({ children }: Props) => {
       tables,
       menusAddonCategories,
       selectedLocationId,
-    } = resData;
+      orderlines,
+      orders,
+    } = resData as BackofficeContextType;
 
     /*
     todo test
@@ -117,6 +125,8 @@ export const BackofficeProvider = ({ children }: Props) => {
       tables,
       menusAddonCategories,
       selectedLocationId: getSelectedLocationId(),
+      orderlines,
+      orders,
     });
 
     callback && callback(undefined, resData);

@@ -1,21 +1,30 @@
 import { config } from "@/config/config";
 import { useBackofficeUpdate } from "@/contexts/BackofficeContext";
 import { Payload } from "@/typings/types";
-import { Box, Button, TextField } from "@mui/material";
-import { RefObject, useRef } from "react";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  Switch,
+  TextField,
+} from "@mui/material";
+import { RefObject, useRef, useState } from "react";
 
 const CreateAddonCategory = () => {
   //********************* */
-  const nameRef = useRef<HTMLInputElement>(null);
+  const [addonCategory, setAddonCategory] = useState({
+    name: "",
+    isRequired: false,
+  });
+
+  console.log(addonCategory);
   const { fetchData } = useBackofficeUpdate();
   const handleCreateAddonCategory = async () => {
-    const name = nameRef.current ? nameRef.current.value.trim() : "";
-
-    if (!name) {
+    const { name, isRequired } = addonCategory;
+    if (!name || typeof isRequired !== "boolean") {
       return alert("name is needed");
     }
-
-    const payload: Payload.AddonCategory.Create = { name };
+    const payload: Payload.AddonCategory.Create = { name, isRequired };
     const res = await fetch(`${config.backofficeApiBaseUrl}/addonCategories`, {
       method: "POST",
       headers: {
@@ -23,13 +32,11 @@ const CreateAddonCategory = () => {
       },
       body: JSON.stringify(payload),
     });
-
     if (!res.ok) {
       alert("something wrong");
     } else {
       console.log(await res.json());
     }
-
     fetchData();
   };
 
@@ -38,16 +45,29 @@ const CreateAddonCategory = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
+
         width: 300,
       }}
     >
       <TextField
-        inputRef={nameRef}
+        value={addonCategory.name}
         label="Name"
         variant="outlined"
+        onChange={(e) =>
+          setAddonCategory({ ...addonCategory, name: e.target.value })
+        }
         sx={{ mb: 3 }}
       />
-
+      <FormControlLabel
+        value="Required"
+        checked={addonCategory.isRequired}
+        control={<Switch color="primary" />}
+        onChange={(e, checked) => {
+          setAddonCategory({ ...addonCategory, isRequired: checked });
+        }}
+        label="Required"
+        labelPlacement="end"
+      />
       <Button variant="contained" onClick={handleCreateAddonCategory}>
         Create
       </Button>

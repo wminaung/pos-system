@@ -7,7 +7,7 @@ export default async function handler(
   const method = req.method;
 
   if (method === "GET") {
-    return res.send(200);
+    return res.send({ message: "hello api" });
   }
 
   res.json({ message: "OK" });

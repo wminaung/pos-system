@@ -1,4 +1,5 @@
 import QuantitySelector from "@/components/QuantitySelector";
+import ViewCartBar from "@/components/ViewCardBar";
 import { theme } from "@/config/myTheme";
 import { useOrder } from "@/contexts/OrderContext";
 import { AddonCategory } from "@/typings/types";
@@ -6,6 +7,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Chip,
   Divider,
   FormControl,
   FormControlLabel,
@@ -26,7 +28,7 @@ enum CounterType {
 
 const OrderMenu = () => {
   const [selectedAddonIds, setSelectedAddonIds] = useState<Array<number>>([]);
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [menuCount, setMenuCount] = useState(1);
 
   const router = useRouter();
@@ -46,6 +48,7 @@ const OrderMenu = () => {
       const requiredAddonCat = validAddonCats.filter(
         (addonCat) => addonCat.is_required
       );
+
       const requiredAddonsIds = requiredAddonCat.map((addonCat) =>
         addonCat.addon.map((addon) => addon.id)
       );
@@ -59,6 +62,15 @@ const OrderMenu = () => {
         return shouldDisabled;
       });
       setIsDisabled(shouldDisabled);
+    } else {
+      const requiredAddonCat = validAddonCats.filter(
+        (addonCat) => addonCat.is_required
+      );
+      if (!requiredAddonCat.length) {
+        setIsDisabled(false);
+      } else {
+        setIsDisabled(true);
+      }
     }
   }, [selectedAddonIds, validAddonCats]);
 
@@ -121,7 +133,7 @@ const OrderMenu = () => {
       ); // CheckBox end
     }
   };
-  console.warn(isDisabled);
+  console.warn(isDisabled, { query });
 
   const handleIncreaseDecrease = (type: CounterType) => {
     if (type === CounterType.DECREASE) {
@@ -148,24 +160,31 @@ const OrderMenu = () => {
       orderlines: [
         ...orderlines,
         {
+          id: Date.now(),
           menu,
           quantity: menuCount,
           addons: addons.filter((addon) => selectedAddonIds.includes(addon.id)),
         },
       ],
     });
-    await router.push("/order");
+    await router.push({
+      pathname: "/order/location/[locationId]/table/[tableId]",
+      query: {
+        locationId: query.locationId,
+        tableId: query.tableId,
+      },
+    });
   };
   return (
     <Box component={Paper} elevation={3}>
-      <Typography textAlign={"center"} variant="h3">
+      <Typography textAlign={"center"} py={1} variant="h3">
         {menu.name}
       </Typography>
       <Divider />
 
       {validAddonCats.map((addonCat) => {
         return (
-          <Box p={2} py={0} key={addonCat.id}>
+          <Box p={2} py={1} key={addonCat.id}>
             <FormControl fullWidth>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <FormLabel
@@ -174,9 +193,13 @@ const OrderMenu = () => {
                 >
                   {addonCat.name}
                 </FormLabel>
-                <Typography variant="subtitle1" sx={{ color: "red" }}>
-                  {addonCat.is_required ? "Required" : "Optional"}{" "}
-                </Typography>
+                <Box sx={{ color: "red" }}>
+                  <Chip
+                    label={addonCat.is_required ? "Required" : "Optional"}
+                    color={addonCat.is_required ? "error" : "default"}
+                    size="small"
+                  />
+                </Box>
               </Box>
 
               {showSelection(addonCat)}
@@ -200,6 +223,7 @@ const OrderMenu = () => {
       >
         Add To Cart
       </Button>
+      <ViewCartBar />
     </Box>
   );
 };

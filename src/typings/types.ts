@@ -7,6 +7,9 @@ import type {
   menu_addon_category,
   menu_category,
   menu_menu_category_location,
+  order,
+  orderline,
+  table,
 } from "@prisma/client";
 
 export interface Company extends company {
@@ -45,15 +48,21 @@ export interface MenuAddonCategory extends menu_addon_category {
   addon_category: addon_category[];
 }
 
-export interface Order {
-  id?: number;
-  isPaid: boolean;
-  tableId: number;
-  orderLines: Orderline[];
+export interface Order extends order {
+  location: location;
+  orderline: orderline[];
+  table: table;
 }
-export interface Orderline {
+export interface Orderline extends orderline {
+  menu: menu;
+  order: order;
+  addon: addon | null;
+}
+
+export interface OrderlineItem {
+  id: number;
   menu: Menu;
-  addons?: Addon[];
+  addons?: addon[];
   quantity: number;
 }
 export enum OrderlineStatus {
@@ -114,6 +123,7 @@ export namespace Payload {
   export namespace AddonCategory {
     export interface Create {
       name: string;
+      isRequired: boolean;
     }
     export interface Update extends Create {}
   }

@@ -1,3 +1,4 @@
+import { Payload } from "@/typings/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -6,9 +7,9 @@ export default async function handler(
 ) {
   const method = req.method;
   if (method === "POST") {
-    const { name } = req.body as { name: string };
+    const { name, isRequired } = req.body as Payload.AddonCategory.Create;
 
-    if (!name) {
+    if (!name || typeof isRequired !== "boolean") {
       return res
         .status(400)
         .json({ message: `name , Bad Request! invalid name` });
@@ -18,6 +19,7 @@ export default async function handler(
       const newAddonCat = await prisma.addon_category.create({
         data: {
           name,
+          is_required: isRequired,
         },
       });
 

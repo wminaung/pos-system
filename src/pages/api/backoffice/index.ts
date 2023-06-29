@@ -309,6 +309,28 @@ const getData = async (user: User, selectedLocationId?: number) => {
     },
   });
 
+  const orders = await prisma.order.findMany({
+    orderBy: {
+      id: "asc",
+    },
+    include: {
+      location: true,
+      orderline: true,
+      table: true,
+    },
+  });
+
+  const orderlines = await prisma.orderline.findMany({
+    orderBy: {
+      id: "asc",
+    },
+    include: {
+      addon: true,
+      menu: true,
+      order: true,
+    },
+  });
+
   return {
     company,
     menus,
@@ -320,6 +342,8 @@ const getData = async (user: User, selectedLocationId?: number) => {
     tables,
     menusAddonCategories,
     selectedLocationId: selectedLocationId || locations[0].id,
+    orderlines,
+    orders,
   };
 };
 

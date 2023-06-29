@@ -27,9 +27,9 @@ export default async function handler(
       return res.status(500).json({ message: "check query", error });
     }
   } else if (method === "PUT") {
-    const { name } = req.body as Payload.AddonCategory.Update;
+    const { name, isRequired } = req.body as Payload.AddonCategory.Update;
 
-    if (!name) {
+    if (!name || typeof isRequired !== "boolean") {
       return res.status(400).json({ message: "name is needed" });
     }
 
@@ -40,6 +40,7 @@ export default async function handler(
         },
         data: {
           name,
+          is_required: isRequired,
         },
       });
 
