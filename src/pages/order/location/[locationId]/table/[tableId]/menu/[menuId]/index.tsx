@@ -34,7 +34,8 @@ const OrderMenu = () => {
   const router = useRouter();
   const query = router.query;
   const menuId = Number(query.menuId);
-  const { addonCategories, menus, orderlines, updateData, addons } = useOrder();
+  const { addonCategories, menus, orderlineItems, updateData, addons } =
+    useOrder();
   const allData = useOrder();
 
   console.warn("selectedAddonIds :", selectedAddonIds);
@@ -153,14 +154,15 @@ const OrderMenu = () => {
   if (!menu) {
     return null;
   }
-  console.log({ orderlines });
+  console.log({ orderlineItems });
+  // TODO - addToCart
   const addToCart = async () => {
     updateData({
       ...allData,
-      orderlines: [
-        ...orderlines,
+      orderlineItems: [
+        ...orderlineItems,
         {
-          id: Date.now(),
+          id: String(Date.now()),
           menu,
           quantity: menuCount,
           addons: addons.filter((addon) => selectedAddonIds.includes(addon.id)),

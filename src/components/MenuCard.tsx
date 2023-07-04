@@ -20,7 +20,7 @@ import { Url } from "next/dist/shared/lib/router/router";
 interface Props {
   menu: menu;
   handleRemoveMenu?: (menuId: number) => void;
-  href: Url;
+  href?: Url;
 }
 const MenuCard = ({ menu, handleRemoveMenu, href }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -37,7 +37,7 @@ const MenuCard = ({ menu, handleRemoveMenu, href }: Props) => {
         backgroundColor: "#000",
       }}
     >
-      <CardActionArea component={Link} href={href} passHref>
+      <CardActionArea component={Link} href={href ? href : "#"} passHref>
         {isLoading && (
           <Skeleton
             sx={{ bgcolor: theme.third }}

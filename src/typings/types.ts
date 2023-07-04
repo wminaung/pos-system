@@ -60,7 +60,7 @@ export interface Orderline extends orderline {
 }
 
 export interface OrderlineItem {
-  id: number;
+  id: string;
   menu: Menu;
   addons?: addon[];
   quantity: number;

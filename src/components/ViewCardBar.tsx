@@ -8,8 +8,8 @@ import { useOrder } from "@/contexts/OrderContext";
 const ViewCartBar = () => {
   const router = useRouter();
   const { locationId, tableId } = router.query;
-  const { orderlines } = useOrder();
-  const cartText = `You have ${orderlines.length} item in cart.`;
+  const { orderlineItems } = useOrder();
+  const cartText = `You have ${orderlineItems.length} item in cart.`;
   return (
     <Box>
       <Box

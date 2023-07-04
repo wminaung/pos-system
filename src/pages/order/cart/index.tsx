@@ -17,22 +17,22 @@ import { config } from "@/config/config";
 import { useRouter } from "next/router";
 
 const OrderPage = () => {
-  const { orderlines, updateData, fetchData } = useOrder();
+  const { orderlineItems, updateData, fetchData } = useOrder();
   const data = useOrder();
 
   const router = useRouter();
 
   const query = router.query;
 
-  if (!query.locationId || !query.tableId || !orderlines.length) {
+  if (!query.locationId || !query.tableId || !orderlineItems.length) {
     return null;
   }
 
   const handleQuantityChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    orderlineId: number
+    orderlineId: string
   ) => {
-    const updatedOrderlines = orderlines.map((orderline) => {
+    const updatedOrderlines = orderlineItems.map((orderline) => {
       if (orderline.id === orderlineId) {
         const newQuantity = parseInt(event.target.value);
         if (newQuantity >= 1) {
@@ -44,19 +44,19 @@ const OrderPage = () => {
       return orderline;
     });
 
-    updateData({ ...data, orderlines: updatedOrderlines });
+    updateData({ ...data, orderlineItems: updatedOrderlines });
   };
 
-  const handleRemoveMenu = (id: number) => {
-    const updateOrderline = orderlines.filter(
-      (orderline) => orderline.id !== id
+  const handleRemoveMenu = (orderlineId: string) => {
+    const updateOrderline = orderlineItems.filter(
+      (orderline) => orderline.id !== orderlineId
     );
 
-    updateData({ ...data, orderlines: [...updateOrderline] });
+    updateData({ ...data, orderlineItems: [...updateOrderline] });
   };
 
   const handleConfirmOrder = async () => {
-    const payload = { orderlines };
+    const payload = { orderlineItems };
 
     const res = await fetch(
       `${config.orderApiBaseUrl}/location/${query.locationId}/table/${query.tableId}`,
@@ -67,7 +67,7 @@ const OrderPage = () => {
       }
     );
     if (res.ok) {
-      updateData({ ...data, orderlines: [] });
+      updateData({ ...data, orderlineItems: [] });
 
       await router.push({
         pathname: `/order/review`,
@@ -90,7 +90,7 @@ const OrderPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {orderlines.map((orderline) => {
+          {orderlineItems.map((orderline) => {
             const { id: orderlineId, menu, quantity, addons } = orderline;
             const addonPrice = !addons
               ? 0
@@ -101,7 +101,7 @@ const OrderPage = () => {
                 );
             console.log("addonPrice", addonPrice);
             return (
-              <TableRow key={menu.id}>
+              <TableRow key={orderline.id}>
                 <TableCell>{menu.name}</TableCell>
                 <TableCell>{(menu.price + addonPrice) * quantity} </TableCell>
                 <TableCell>

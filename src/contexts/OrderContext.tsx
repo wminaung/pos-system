@@ -10,6 +10,7 @@ import {
   MenuCategory,
   MenuMenuCategoryLocation,
   Order,
+  Orderline,
   OrderlineItem,
 } from "../typings/types";
 import { useContext, useState } from "react";
@@ -27,8 +28,9 @@ interface OrderContextType {
   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
   isLoading: boolean;
   cart: Order | null;
-  orderlines: OrderlineItem[];
+  orderlineItems: OrderlineItem[];
   updateData: Dispatch<SetStateAction<OrderContextType>>;
+
   fetchData: () => void;
 }
 
@@ -40,11 +42,11 @@ export const defaultOrderContext: OrderContextType = {
   menusAddonCategories: [],
   location: null,
   menusMenuCategoriesLocations: [],
-  updateData: () => {},
-  fetchData: () => {},
   isLoading: false,
   cart: null,
-  orderlines: [],
+  orderlineItems: [],
+  updateData: () => {},
+  fetchData: () => {},
 };
 
 const OrderContext = createContext(defaultOrderContext);

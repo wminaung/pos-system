@@ -102,6 +102,7 @@ export default async function handler(
         id: "asc",
       },
     });
+
     const resObject = {
       menuCategories,
       menus,
@@ -110,7 +111,6 @@ export default async function handler(
       location,
     };
 
-    console.log(typeof resObject);
     return res.json(resObject);
   }
 

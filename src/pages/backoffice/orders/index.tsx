@@ -29,7 +29,7 @@ const OrderPage = () => {
                 Table Id
               </TableCell>
               <TableCell sx={boldStyle} align="right">
-                Paid
+                Proce
               </TableCell>
               <TableCell sx={boldStyle} align="right">
                 Status

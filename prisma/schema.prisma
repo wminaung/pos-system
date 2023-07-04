@@ -80,11 +80,11 @@ model menu_menu_category_location {
   menu_id          Int?
   menu_category_id Int
   location_id      Int
-  is_available     Boolean @default(true)
-
-  menu          menu?         @relation(fields: [menu_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  menu_category menu_category @relation(fields: [menu_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  location      location      @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  is_available     Boolean       @default(true)
+  is_archived      Boolean       @default(false)
+  menu             menu?         @relation(fields: [menu_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  menu_category    menu_category @relation(fields: [menu_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  location         location      @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model user {
@@ -113,29 +113,36 @@ model table {
 model order {
   id          Int         @id @default(autoincrement())
   isPaid      Boolean     @default(false)
-  status      OrderStatus @default(PENDING)
   location_id Int
   table_id    Int
+  price       Int?        @default(0)
   orderline   orderline[]
   location    location    @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   table       table       @relation(fields: [table_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now()) @updatedAt
 }
 
 model orderline {
-  id       Int    @id @default(autoincrement())
-  order_id Int
-  menu_id  Int
-  addon_id Int?
-  quantity Int    @default(1)
-  order    order  @relation(fields: [order_id], references: [id])
-  menu     menu   @relation(fields: [menu_id], references: [id])
-  addon    addon? @relation(fields: [addon_id], references: [id])
+  id               Int         @id @default(autoincrement())
+  orderlineItem_id String
+  order_id         Int
+  menu_id          Int
+  addon_id         Int?
+  quantity         Int         @default(1)
+  status           OrderStatus @default(PENDING)
+  order            order       @relation(fields: [order_id], references: [id])
+  menu             menu        @relation(fields: [menu_id], references: [id])
+  addon            addon?      @relation(fields: [addon_id], references: [id])
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @default(now()) @updatedAt
 }
 
 enum OrderStatus {
   PENDING
   PREPARING
   COMPLETE
+  REJECTED
 }
 
 enum Role {
