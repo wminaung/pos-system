@@ -231,6 +231,9 @@ const getData = async (user: User, selectedLocationId?: number) => {
         location: true,
         menu_category: true,
       },
+      orderBy: {
+        id: "asc",
+      },
     });
 
   const menus = await prisma.menu.findMany({

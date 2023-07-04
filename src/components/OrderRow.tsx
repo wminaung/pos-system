@@ -41,16 +41,17 @@ const OrderRow = ({ order }: Props) => {
     console.log("orderlineItems", orderlineItems);
 
     const validMenus = orderlineItems.map((orderlineItem) => {
-      const itemId = orderlineItem.orderlineItem_id;
+      const orderlineItemId = orderlineItem.orderlineItem_id;
       const orderId = orderlineItem.order_id;
       const menuId = orderlineItem.menu_id;
 
       const addonIds = orderlines
-        .filter((orderline) => orderline.orderlineItem_id === itemId)
+        .filter((orderline) => orderline.orderlineItem_id === orderlineItemId)
         .map((orderline) => orderline.addon_id);
 
       return {
-        key: orderlineItem.id,
+        id: orderlineItem.id,
+        orderlineItemId,
         orderId,
         menuId,
         addonIds,
@@ -59,10 +60,10 @@ const OrderRow = ({ order }: Props) => {
       };
     });
 
-    return validMenus;
+    return validMenus.sort((a, b) => a.id - b.id);
   };
 
-  console.log(getValidMenusAndAddons(), "vvvvvvvvvvvv");
+  console.log(getValidMenusAndAddons(), "vvvvvvvvvasdfsafsfvvv");
 
   return (
     <>
@@ -96,7 +97,7 @@ const OrderRow = ({ order }: Props) => {
             >
               {/* //todo give order  <OrderCard /> /*/}
               {getValidMenusAndAddons().map((validMenu) => {
-                return <OrderCard key={validMenu.key} validMenu={validMenu} />;
+                return <OrderCard key={validMenu.id} validMenu={validMenu} />;
               })}
             </Box>
           </Collapse>
