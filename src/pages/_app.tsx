@@ -5,6 +5,8 @@ import { SessionProvider } from "next-auth/react";
 import { OrderContextProvider } from "@/contexts/OrderContext";
 import { useRouter } from "next/router";
 import OrderLayout from "@/components/OrderLayout";
+import { Provider } from "react-redux";
+import { store } from "@/store/store";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -21,9 +23,11 @@ export default function App({ Component, pageProps }: AppProps) {
           </OrderLayout>
         </OrderContextProvider>
       ) : (
-        <BackofficeProvider>
-          <Component {...pageProps} />
-        </BackofficeProvider>
+        <Provider store={store}>
+          <BackofficeProvider>
+            <Component {...pageProps} />
+          </BackofficeProvider>
+        </Provider>
       )}
     </SessionProvider>
   );
