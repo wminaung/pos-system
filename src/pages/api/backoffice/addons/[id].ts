@@ -1,5 +1,5 @@
 import { Payload } from "@/typings/types";
-import { addon } from "@prisma/client";
+import { prisma } from "@/utils/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(

@@ -1,5 +1,6 @@
 import { OrderStatus } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { prisma } from "@/utils/db";
 
 export interface ChangeStatusPayload {
   orderlineItemId: string;

@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { prisma } from "@/utils/db";
 
 interface DeleteMenu {
   menuId: number;

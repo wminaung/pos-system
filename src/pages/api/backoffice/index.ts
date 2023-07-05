@@ -3,8 +3,7 @@ import { prisma } from "@/utils/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import colors from "colors";
-import type { user as User } from "@prisma/client";
-import { MenuCreateInput } from "@/typings/types";
+import type { Prisma, user } from "@prisma/client";
 
 export default async function handler(
   req: NextApiRequest,
@@ -90,7 +89,7 @@ const handleGetRequest = async (
       },
     });
 
-    const newMenusData: MenuCreateInput[] = [
+    const newMenusData: Prisma.menuCreateInput[] = [
       {
         name: "shan-khout-swell",
         price: 300,
@@ -198,7 +197,7 @@ const handleGetRequest = async (
 };
 
 // TODO
-const getData = async (user: User, selectedLocationId?: number) => {
+const getData = async (user: user, selectedLocationId?: number) => {
   const companyId = user.company_id;
 
   const company = await prisma.company.findUnique({

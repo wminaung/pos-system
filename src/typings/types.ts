@@ -129,9 +129,9 @@ export namespace Payload {
   }
 }
 
-export interface MenuCreateInput {
-  name: string;
-  price: number;
-  asset_url?: string;
-  description: string;
-}
+// export interface MenuCreateInput {
+//   name: string;
+//   price: number;
+//   asset_url?: string;
+//   description: string;
+// }

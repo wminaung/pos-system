@@ -1,5 +1,6 @@
 import { OrderlineItem } from "@/typings/types";
 import { OrderStatus, Prisma } from "@prisma/client";
+import { prisma } from "@/utils/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(

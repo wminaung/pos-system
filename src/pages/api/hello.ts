@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { deleteQrCode } from "@/utils/fileUpload";
 import type { NextApiRequest, NextApiResponse } from "next";
-
+import { prisma } from "@/utils/db";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse

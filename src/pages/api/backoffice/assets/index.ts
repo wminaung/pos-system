@@ -2,6 +2,7 @@
 import { fileUpload } from "@/utils/fileUpload";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Request, Response } from "express";
+import { prisma } from "@/utils/db";
 
 export const config = {
   api: {

@@ -1,4 +1,5 @@
 import { Payload } from "@/typings/types";
+import { prisma } from "@/utils/db";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
