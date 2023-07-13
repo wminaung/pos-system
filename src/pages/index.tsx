@@ -1,39 +1,43 @@
 import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
-import { GetStaticProps } from "next";
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
-import { useSession } from "next-auth/react";
-import Layout from "@/components/Layout";
-import { Backdrop, Box, Button, CircularProgress } from "@mui/material";
-import { config } from "@/config/config";
+import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const router = useRouter();
-  const goBackOffice = async () => {
-    await router.push("/backoffice");
-  };
 
-  useEffect(() => {
-    router.prefetch("/backoffice");
-  }, []);
   return (
     <Box sx={{ width: "100vw" }}>
       <Button
         variant="contained"
         sx={{ margin: "0 auto", display: "block", mt: 10 }}
-        onClick={() => goBackOffice()}
+        onClick={() => async () => {
+          await router.push("/backoffice");
+        }}
       >
         Go Backoffice
       </Button>
+
+      {/* <div>
+        <div>
+          <button
+            aria-label="Increment value"
+            onClick={() => dispatch(actions.increment())}
+          >
+            Increment
+          </button>
+          <Typography variant="h2">{count}</Typography>
+          <button
+            aria-label="Decrement value"
+            onClick={() => dispatch(actions.decrement())}
+          >
+            Decrement
+          </button>
+        </div>
+      </div> */}
     </Box>
   );
 }

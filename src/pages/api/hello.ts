@@ -37,7 +37,7 @@ const handleGetRequest = async (
   // );
 
   // console.log(newMenus, "nnnnnnnnnnnnnnnnnnnnnnnnnn");
-  return res.status(200).json({ message: `${req.method} ok!!` });
+  return res.status(200).json({ message: `${req.method} ok!!`, menusData });
 };
 
 // TODO -

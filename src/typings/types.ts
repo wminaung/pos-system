@@ -135,3 +135,17 @@ export namespace Payload {
 //   asset_url?: string;
 //   description: string;
 // }
+export interface AppDataResponse {
+  company: Company | null;
+  menus: Menu[];
+  menuCategories: MenuCategory[];
+  addons: Addon[];
+  addonCategories: AddonCategory[];
+  menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
+  locations: Location[];
+  tables: table[];
+  menusAddonCategories: MenuAddonCategory[];
+  selectedLocationId?: string | null;
+  orderlines: Orderline[];
+  orders: Order[];
+}
