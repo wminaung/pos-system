@@ -1,5 +1,5 @@
 import { Company } from "@/typings/types";
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface CompanyState {
   isLoading: boolean;
@@ -13,16 +13,11 @@ const initialState: CompanyState = {
   error: null,
 };
 
-interface SetCompanyAction {
-  payload: Company | null;
-  type: string;
-}
-
 export const companySlice = createSlice({
   name: "company",
   initialState,
   reducers: {
-    setCompany: (state, action: SetCompanyAction) => {
+    setCompany: (state, action: PayloadAction<Company | null>) => {
       state.item = action.payload;
     },
   },

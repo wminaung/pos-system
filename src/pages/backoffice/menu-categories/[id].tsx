@@ -1,9 +1,6 @@
 import {
-  Autocomplete,
   Box,
   Button,
-  Card,
-  Checkbox,
   Chip,
   FormControl,
   FormLabel,
@@ -16,21 +13,16 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
+import { useBackofficeUpdate } from "@/contexts/BackofficeContext";
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
 import { config } from "@/config/config";
-
 import { location } from "@prisma/client";
 import { selectMuiStyle } from "@/utils";
 import { Payload } from "@/typings/types";
-import MenuCard from "@/components/MenuCard";
 import ShowMenus from "@/components/menuCategory/ShowMenus";
 import { theme } from "@/config/myTheme";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const { ITEM_HEIGHT, ITEM_PADDING_TOP } = selectMuiStyle;
 
@@ -43,9 +35,17 @@ const MenuCategoryDetail = () => {
   const [oldMenuCat, setOldMenuCat] = useState(
     {} as Payload.MenuCategory.Update
   );
-  const { menuCategories, locations, selectedLocationId, menus } =
-    useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+
+  const {
+    state: {
+      menuCategories,
+      locations,
+      menus,
+      app: { selectedLocationId },
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   const router = useRouter();
   const { id: menuCategoryIdStr } = router.query;
@@ -105,7 +105,7 @@ const MenuCategoryDetail = () => {
       return alert("you can't update this mcat");
     }
     console.log(await res.json());
-    await fetchData();
+    dispatch(actions.fetchAppData(selectedLocationId as string));
   };
 
   const handleDeleteMenuCategory = async () => {
@@ -120,7 +120,7 @@ const MenuCategoryDetail = () => {
       return alert("you can't delete this mcat");
     }
     console.log(await res.json());
-    await fetchData();
+    // todo some
     router.push("/backoffice/menu-categories");
   };
 

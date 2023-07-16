@@ -1,15 +1,11 @@
-import React, { use, useEffect } from "react";
-import { Button, Grid, Paper, Typography, IconButton } from "@mui/material";
+import React, { useEffect } from "react";
+import { Button, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import { signIn, signOut, useSession } from "next-auth/react";
-import GoogleIcon from "@mui/icons-material/Google";
+import { useSession } from "next-auth/react";
 import Layout from "@/components/Layout";
-import { useBackoffice } from "@/contexts/BackofficeContext";
-import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { appData, fetchAppData, useAppSlice } from "@/store/slices/appSlice";
-import { setMenus } from "@/store/slices/menusSlice";
+import { useAppSlice } from "@/store/slices/appSlice";
 import { useRouter } from "next/router";
-import { getSelectedLocationId } from "@/utils";
+import { getSelectedLocationId, setSelectedLocationId } from "@/utils";
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   height: "100vh",
@@ -24,16 +20,13 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
 }));
 
-const StyledButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(3, 0, 2),
-}));
-
 const BackOfficePage = () => {
   const { data, status } = useSession();
   const router = useRouter();
-  const { state, actions, dispatch } = useAppSlice();
-  const { error, isLoading } = useAppSelector((state) => state.app);
-  // const selectedLocationId = getSelectedLocationId() as string;
+  const { state } = useAppSlice();
+  const { isLoading, selectedLocationId: defaultSelectedLocationId } =
+    state.app;
+  const selectedLocationId = getSelectedLocationId() as string;
   useEffect(() => {
     if (status === "authenticated") {
       !isLoading && router.push("/backoffice/orders");
@@ -43,9 +36,13 @@ const BackOfficePage = () => {
       console.log("is still ....");
     }
   }, [data, router, isLoading]);
+
   // useEffect(() => {
-  //   dispatch(actions.fetchAppData(selectedLocationId));
-  // }, []);
+  //   if (defaultSelectedLocationId) {
+  //     dispatch(actions.app.fetchAppData(defaultSelectedLocationId));
+  //     setSelectedLocationId(defaultSelectedLocationId);
+  //   }
+  // }, [defaultSelectedLocationId]);
 
   return (
     <Layout>
@@ -59,7 +56,14 @@ const BackOfficePage = () => {
           elevation={6}
           square
         >
-          <Button onClick={() => 3}>cljc</Button>
+          <Button
+            onClick={() => {
+              console.log("first");
+              // dispatch(actions.menus.setMenus([]));
+            }}
+          >
+            cljc
+          </Button>
           <StyledPaper>
             <Typography component="h1" variant="h5" gutterBottom>
               Welcome to happy pos backoffice

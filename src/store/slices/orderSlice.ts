@@ -1,6 +1,6 @@
 import { config } from "@/config/config";
 import { AppDataResponse } from "@/typings/types";
-import { getSelectedLocationId } from "@/utils";
+
 import {
   PayloadAction,
   createAsyncThunk,
@@ -21,19 +21,33 @@ import { setOrders } from "./ordersSlice";
 import { setMenusAddonCategories } from "./menusAddonCategoriesSlice";
 import { setMenusMenuCategoriesLocations } from "./menusMenuCategoriesLocationsSlice";
 
-interface AppState {
+// interface OrderContextType {
+//   menus: Menu[];
+//   menuCategories: MenuCategory[];
+//   addons: Addon[];
+//   addonCategories: AddonCategory[];
+//   menusAddonCategories: MenuAddonCategory[];
+//   location: Location | null;
+//   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
+//   isLoading: boolean;
+//   cart: Order | null;
+//   orderlineItems: OrderlineItem[];
+//   updateData: Dispatch<SetStateAction<OrderContextType>>;
+
+//   fetchData: () => void;
+// }
+
+interface OrderState {
   isLoading: boolean;
   error: Error | null;
-  selectedLocationId?: string | null;
 }
 
-const initialState: AppState = {
+const initialState: OrderState = {
   isLoading: false,
   error: null,
-  selectedLocationId: null,
 };
 export const fetchAppData = createAsyncThunk(
-  "app/fetchAppData",
+  "order/fetchOrderData",
   async (locationId: string, thunkAPI) => {
     thunkAPI.dispatch(setAppLoading(true));
     const response = await fetch(
@@ -80,22 +94,16 @@ export const fetchAppData = createAsyncThunk(
   }
 );
 
-export const appSlice = createSlice({
-  name: "app",
+export const orderSlice = createSlice({
+  name: "order",
   initialState,
   reducers: {
-    setAppLoading: (state, action) => {
+    setOrderLoading: (state, action: PayloadAction<any>) => {
       state.isLoading = action.payload;
-    },
-    setAppSelectedLocationId: (
-      state,
-      action: PayloadAction<string | null | undefined>
-    ) => {
-      state.selectedLocationId = action.payload;
     },
   },
 });
-export const { setAppLoading, setAppSelectedLocationId } = appSlice.actions;
+export const orderActions = orderSlice.actions;
 
 export const selectApp = (state: RootState) => state.app;
 export const selectMenus = (state: RootState) => state.menus.items;
@@ -114,47 +122,57 @@ export const selectMenusAddonCategories = (state: RootState) =>
 export const selectMenusMenuCategoriesLocations = (state: RootState) =>
   state.menusMenuCategoriesLocations.items;
 
-export const appData = createSelector(
+// interface OrderContextType {
+//   menus: Menu[];
+//   menuCategories: MenuCategory[];
+//   addons: Addon[];
+//   addonCategories: AddonCategory[];
+//   menusAddonCategories: MenuAddonCategory[];
+//   location: Location | null;
+//   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
+//   isLoading: boolean;
+//   cart: Order | null;
+//   orderlineItems: OrderlineItem[];
+//   updateData: Dispatch<SetStateAction<OrderContextType>>;
+
+//   fetchData: () => void;
+// }
+/*
+cart: Order | null;
+//   orderlineItems: OrderlineItem[];
+*/
+export const orderData = createSelector(
   [
-    selectApp,
     selectMenus,
-    selectCompany,
     selectMenuCategories,
     selectAddons,
     selectAddonCategories,
-    selectTables,
+    selectMenusAddonCategories,
     selectLocations,
     selectOrderlines,
     selectOrders,
-    selectMenusAddonCategories,
     selectMenusMenuCategoriesLocations,
   ],
   (
-    app,
     menus,
-    company,
     menuCategories,
     addons,
     addonCategories,
-    tables,
+    menusAddonCategories,
     locations,
     orderlines,
     orders,
-    menusAddonCategories,
     menusMenuCategoriesLocations
   ) => {
     return {
-      app,
       menus,
-      company,
       menuCategories,
       addons,
       addonCategories,
-      tables,
+      menusAddonCategories,
       locations,
       orderlines,
       orders,
-      menusAddonCategories,
       menusMenuCategoriesLocations,
     };
   }
@@ -162,55 +180,51 @@ export const appData = createSelector(
 export const appActions = appSlice.actions;
 export default appSlice.reducer;
 
-export const useAppSlice = () => {
-  const state = useAppSelector(appData);
-  const dispatch = useAppDispatch();
-  const actions = appSlice.actions;
-  const fetchData = () => {
-    dispatch(fetchAppData(state.app.selectedLocationId as string));
-  };
-  return {
-    state,
-    dispatch,
-    fetchData,
-    actions: {
-      fetchAppData,
-      app: { ...actions },
-
-      menus: {
-        setMenus,
-      },
-      company: {
-        setCompany,
-      },
-      menuCategories: {
-        setMenuCategories,
-        addMenuCategory,
-      },
-      menusMenuCategoriesLocations: {
-        setMenusMenuCategoriesLocations,
-      },
-      menusAddonCategories: {
-        setMenusAddonCategories,
-      },
-      addons: {
-        setAddons,
-      },
-      addonCategories: {
-        setAddonCategories,
-      },
-      tables: {
-        setTables,
-      },
-      locations: {
-        setLocations,
-      },
-      orderlines: {
-        setOrderlines,
-      },
-      orders: {
-        setOrders,
-      },
-    },
-  };
+export const useOrderSlice = () => {
+  //   const state = useAppSelector(orderData);
+  //   const dispatch = useAppDispatch();
+  //   const actions = appSlice.actions;
+  //   return {
+  //     state,
+  //     dispatch,
+  //     fetchData,
+  //     actions: {
+  //       fetchAppData,
+  //       app: { ...actions },
+  //       menus: {
+  //         setMenus,
+  //       },
+  //       company: {
+  //         setCompany,
+  //       },
+  //       menuCategories: {
+  //         setMenuCategories,
+  //         addMenuCategory,
+  //       },
+  //       menusMenuCategoriesLocations: {
+  //         setMenusMenuCategoriesLocations,
+  //       },
+  //       menusAddonCategories: {
+  //         setMenusAddonCategories,
+  //       },
+  //       addons: {
+  //         setAddons,
+  //       },
+  //       addonCategories: {
+  //         setAddonCategories,
+  //       },
+  //       tables: {
+  //         setTables,
+  //       },
+  //       locations: {
+  //         setLocations,
+  //       },
+  //       orderlines: {
+  //         setOrderlines,
+  //       },
+  //       orders: {
+  //         setOrders,
+  //       },
+  //     },
+  //   };
 };

@@ -11,6 +11,7 @@ import {
   MenuMenuCategoryLocation,
   Order,
   Orderline,
+  Table,
 } from "../typings/types";
 import { useContext, useState } from "react";
 import { config } from "@/config/config";
@@ -31,7 +32,7 @@ interface BackofficeContextType {
   addonCategories: AddonCategory[];
   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
   locations: Location[];
-  tables: table[];
+  tables: Table[];
   menusAddonCategories: MenuAddonCategory[];
   selectedLocationId?: string | null;
   orderlines: Orderline[];

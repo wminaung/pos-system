@@ -1,5 +1,5 @@
-import { Addon, Company } from "@/typings/types";
-import { createSlice } from "@reduxjs/toolkit";
+import { Addon } from "@/typings/types";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface AddonsState {
   isLoading: boolean;
@@ -13,16 +13,11 @@ const initialState: AddonsState = {
   error: null,
 };
 
-interface SetAddonsAction {
-  payload: Addon[];
-  type: string;
-}
-
 export const addonsSlice = createSlice({
   name: "addons",
   initialState,
   reducers: {
-    setAddons: (state, action: SetAddonsAction) => {
+    setAddons: (state, action: PayloadAction<Addon[]>) => {
       state.items = action.payload;
     },
   },

@@ -36,7 +36,7 @@ const handleGetRequest = async (
 
   console.log(
     colors.bold.bgGreen("<server session>\n"),
-    req.query.location as string,
+    req.query.locationId as string,
 
     (session?.user && session.user.email) || "",
     colors.bold.bgGreen("\n</server session>\n")
@@ -190,7 +190,7 @@ const handleGetRequest = async (
     const data = await getData(newUser, newLocation.id);
     return res.status(200).json(data);
   }
-  const selectedLocationId = Number(req.query.location as string);
+  const selectedLocationId = Number(req.query.locationId as string);
   console.log(selectedLocationId, "selectedLocationId -> location=?");
   const data = await getData(user, selectedLocationId);
   return res.status(200).json(data);
@@ -241,13 +241,7 @@ const getData = async (user: user, selectedLocationId?: number) => {
     },
     include: {
       menu_addon_category: true,
-      menu_menu_category_location: {
-        where: {
-          location_id: {
-            in: locations.map((location) => location.id),
-          },
-        },
-      },
+      menu_menu_category_location: true,
     },
     where: {
       is_archived: false,

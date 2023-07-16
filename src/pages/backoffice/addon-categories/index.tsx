@@ -18,13 +18,19 @@ import Layout from "@/components/Layout";
 import DialogBox from "@/components/DialogBox";
 import CreateAddonCategory from "@/components/addonCategory/CreateAddonCategory";
 import { config } from "@/config/config";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const AddonCategories = () => {
   //*********************** */
 
-  const { addonCategories } = useBackoffice();
+  const {
+    state: {
+      app: { selectedLocationId },
+      addonCategories,
+    },
 
-  const { fetchData } = useBackofficeUpdate();
+    fetchData,
+  } = useAppSlice();
 
   const handleDelete = async (id: number) => {
     const res = await fetch(

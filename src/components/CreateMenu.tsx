@@ -1,18 +1,10 @@
 import {
   Autocomplete,
   Box,
-  Chip,
   FormControl,
-  FormControlLabel,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  SelectChangeEvent,
-  Switch,
   TextField,
   Checkbox,
+  Button,
 } from "@mui/material";
 import Textarea from "@mui/joy/Textarea";
 import { useEffect, useState } from "react";
@@ -28,6 +20,7 @@ import { theme } from "@/config/myTheme";
 import { selectMuiStyle } from "@/utils";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -40,13 +33,19 @@ const defaultMenu: Payload.Menu.Create = {
   isRequired: true,
   addonCatIds: [],
 };
-const { ITEM_HEIGHT, ITEM_PADDING_TOP } = selectMuiStyle;
 const CreateMenu = () => {
   const [loading, setLoading] = useState(false);
   const [menuImage, setMenuImage] = useState<File>();
   const [menu, setMenu] = useState<Payload.Menu.Create>(defaultMenu);
 
-  const { addonCategories, selectedLocationId } = useBackoffice();
+  const {
+    state: {
+      addonCategories,
+      app: { selectedLocationId },
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   const { fetchData } = useBackofficeUpdate();
 
@@ -92,7 +91,8 @@ const CreateMenu = () => {
           throw new Error(details[0].message);
         }
         console.log(await res.json());
-        await fetchData();
+        // await fetchData();
+        dispatch(actions.fetchAppData(selectedLocationId as string));
         setLoading(false);
         setMenu({ ...defaultMenu });
         setMenuImage(undefined);
@@ -103,6 +103,7 @@ const CreateMenu = () => {
     }
   };
 
+  console.warn(selectedLocationId as string);
   return (
     <Box>
       <Box
@@ -144,7 +145,6 @@ const CreateMenu = () => {
             setMenu({ ...menu, description: evt.target.value })
           }
         />
-
         <FormControl fullWidth sx={{ mb: 2 }}>
           <Autocomplete
             multiple
@@ -189,7 +189,6 @@ const CreateMenu = () => {
           label="required"
         /> */}
         <FileDropZone onFileSelected={onFileSelected} />
-
         <LoadingButton
           sx={{ mt: 2 }}
           color="secondary"

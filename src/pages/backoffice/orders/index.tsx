@@ -9,10 +9,13 @@ import Paper from "@mui/material/Paper";
 import Layout from "@/components/Layout";
 import { useBackoffice } from "@/contexts/BackofficeContext";
 import OrderRow from "@/components/OrderRow";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const boldStyle = { fontWeight: "bold" };
 const OrderPage = () => {
-  const { orders } = useBackoffice();
+  const {
+    state: { orders },
+  } = useAppSlice();
 
   return (
     <Layout title="Order">

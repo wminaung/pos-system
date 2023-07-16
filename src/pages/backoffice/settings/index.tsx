@@ -10,23 +10,25 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
+
 import { Location } from "@/typings/types";
 import { LoadingButton } from "@mui/lab";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
 import { setSelectedLocationId } from "@/utils";
 import { theme } from "@/config/myTheme";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const Settings = () => {
   const [selectedLocation, setSelectedLocation] = useState<Location>();
   const [newLocation, setNewLocation] = useState<Location>({} as Location);
-  const allData = useBackoffice();
-  const { locations, selectedLocationId } = allData;
-  const { fetchData } = useBackofficeUpdate();
+  const {
+    fetchData,
+    state: {
+      locations,
+      app: { selectedLocationId },
+    },
+  } = useAppSlice();
 
   useEffect(() => {
     if (locations.length) {

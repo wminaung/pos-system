@@ -18,6 +18,7 @@ import {
 } from "@/contexts/BackofficeContext";
 import Image from "next/image";
 import { defaultQRCodeSrc } from "@/utils";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -31,8 +32,14 @@ const MenuProps = {
 };
 
 const Tables = () => {
-  const { tables, selectedLocationId } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+  const {
+    fetchData,
+    state: {
+      tables,
+      app: { selectedLocationId },
+    },
+  } = useAppSlice();
+
   const [open, setOpen] = useState(false);
 
   const [newTable, setNewTable] = useState({

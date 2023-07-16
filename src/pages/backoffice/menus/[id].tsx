@@ -35,21 +35,23 @@ import { menu } from "@prisma/client";
 import { theme as myTheme } from "@/config/myTheme";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const MenuDetail = () => {
   // **************************************************
-
   const {
-    menus,
-    menusMenuCategoriesLocations,
-    menuCategories,
-    addonCategories,
-    selectedLocationId,
-  } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+    state: {
+      app: { selectedLocationId },
+      menus,
+      menusMenuCategoriesLocations,
+      addonCategories,
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   console.log("menus :::", menus);
 
@@ -170,8 +172,9 @@ const MenuDetail = () => {
       console.log(await menuRes.json());
       return alert("Menu Update Fail");
     }
-    fetchData();
+    //todo fetchData();
     console.log(await menuRes.json());
+    dispatch(actions.fetchAppData(selectedLocationId as string));
     alert("updated success");
   };
 
@@ -187,7 +190,8 @@ const MenuDetail = () => {
     }
     const resData = await res.json();
     console.log(resData, "resData");
-    await fetchData();
+    //todo   await fetchData();
+    dispatch(actions.fetchAppData(selectedLocationId as string));
     await router.push("/backoffice/menus");
   };
 

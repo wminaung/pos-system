@@ -9,8 +9,9 @@ import { Provider } from "react-redux";
 import { store } from "@/store";
 import { Session } from "next-auth";
 import { getSelectedLocationId } from "@/utils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchAppData } from "@/store/slices/appSlice";
+import SetLocation from "@/components/SetLocation";
 
 type CustomeAppProps = AppProps & { session: Session };
 
@@ -26,7 +27,9 @@ export default function App({
   const selectedLocationId = getSelectedLocationId() as string;
 
   useEffect(() => {
-    !isOrder ? store.dispatch(fetchAppData(selectedLocationId)) : "";
+    if (!isOrder) {
+      store.dispatch(fetchAppData(selectedLocationId));
+    }
   }, [isOrder]);
 
   return isOrder ? (
@@ -38,7 +41,9 @@ export default function App({
   ) : (
     <Provider store={store}>
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <SetLocation>
+          <Component {...pageProps} />
+        </SetLocation>
       </SessionProvider>
     </Provider>
   );

@@ -1,43 +1,15 @@
-import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const router = useRouter();
 
   return (
     <Box sx={{ width: "100vw" }}>
-      <Button
-        variant="contained"
-        sx={{ margin: "0 auto", display: "block", mt: 10 }}
-        onClick={() => async () => {
-          await router.push("/backoffice");
-        }}
-      >
-        Go Backoffice
+      <Button variant="contained" onClick={() => router.push("/backoffice")}>
+        click
       </Button>
-
-      {/* <div>
-        <div>
-          <button
-            aria-label="Increment value"
-            onClick={() => dispatch(actions.increment())}
-          >
-            Increment
-          </button>
-          <Typography variant="h2">{count}</Typography>
-          <button
-            aria-label="Decrement value"
-            onClick={() => dispatch(actions.decrement())}
-          >
-            Decrement
-          </button>
-        </div>
-      </div> */}
     </Box>
   );
 }

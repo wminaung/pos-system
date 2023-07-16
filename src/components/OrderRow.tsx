@@ -16,6 +16,7 @@ import { useBackoffice } from "@/contexts/BackofficeContext";
 import MenuCard from "./MenuCard";
 import { orderline } from "@prisma/client";
 import OrderCard from "./OrderCard";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 interface Props {
   order: Order;
@@ -23,7 +24,9 @@ interface Props {
 const OrderRow = ({ order }: Props) => {
   const [open, setOpen] = useState(false);
 
-  const { orderlines } = useBackoffice();
+  const {
+    state: { orderlines },
+  } = useAppSlice();
 
   const validOrderlines = order.orderline;
 

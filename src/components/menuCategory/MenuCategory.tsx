@@ -14,6 +14,7 @@ import {
 import { MenuCategory as MenuCategoryType } from "../../typings/types";
 import Link from "next/link";
 import { config } from "@/config/config";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 interface Props {
   menuCategory: MenuCategoryType;
@@ -21,8 +22,13 @@ interface Props {
 const MenuCategory = ({ menuCategory }: Props) => {
   // ************************
 
-  const { fetchData } = useBackofficeUpdate();
-  const { selectedLocationId } = useBackoffice();
+  const {
+    state: {
+      app: { selectedLocationId },
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   const handleDeleteMenuCategory = async (menuCategoryId: number) => {
     const res = await fetch(
@@ -36,7 +42,8 @@ const MenuCategory = ({ menuCategory }: Props) => {
       return alert("you can't delete this mcat");
     }
     console.log(await res.json());
-    await fetchData();
+    // await fetchData();
+    dispatch(actions.fetchAppData(selectedLocationId as string));
   };
 
   return (

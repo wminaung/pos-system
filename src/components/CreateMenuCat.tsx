@@ -13,12 +13,9 @@ import {
 import React, { useEffect, useState } from "react";
 import type { MenuCategory } from "@/typings/types";
 import { config } from "@/config/config";
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
 import { LoadingButton } from "@mui/lab";
 import { location } from "@prisma/client";
+import { useAppSlice } from "@/store/slices/appSlice";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const defaultMenuCat = { name: "" } as MenuCategory;
@@ -29,8 +26,15 @@ const CreateMenuCat = () => {
   const [menuCat, setMenuCat] = useState<MenuCategory>(defaultMenuCat);
   const [selectedLocations, setSelectedLocations] = useState<location[]>([]);
   const [loading, setLoading] = useState(false);
-  const { fetchData } = useBackofficeUpdate();
-  const { selectedLocationId, locations } = useBackoffice();
+
+  const {
+    state: {
+      locations,
+      app: { selectedLocationId },
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   useEffect(() => {
     selectedLocationId &&
@@ -70,11 +74,12 @@ const CreateMenuCat = () => {
       setLoading(false);
       return alert("menu-cat create fail");
     }
-    const data = await res.json();
-    console.log("create success", data);
+    const data = (await res.json()) as MenuCategory;
+
+    dispatch(actions.fetchAppData(selectedLocationId as string));
+
     setLoading(false);
     setMenuCat({ ...defaultMenuCat });
-    fetchData();
   };
   const isDisabled = !menuCat.name;
 

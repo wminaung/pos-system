@@ -20,6 +20,7 @@ import ClassIcon from "@mui/icons-material/Class";
 import CategoryIcon from "@mui/icons-material/Category";
 import TableBarIcon from "@mui/icons-material/TableBar";
 import { useBackoffice } from "@/contexts/BackofficeContext";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const sidebarMenuItems = [
   {
@@ -79,7 +80,12 @@ interface Props {
 const SideBar = ({ profileImageUrl, profileName }: Props) => {
   const textColor = theme.text;
 
-  const { locations, selectedLocationId } = useBackoffice();
+  const {
+    state: {
+      app: { selectedLocationId },
+      locations,
+    },
+  } = useAppSlice();
 
   const locationName =
     locations.find((locl) => String(locl.id) === selectedLocationId)?.name ||

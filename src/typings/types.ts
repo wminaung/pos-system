@@ -53,6 +53,11 @@ export interface Order extends order {
   orderline: orderline[];
   table: table;
 }
+
+export interface Table extends table {
+  location: location | null;
+}
+
 export interface Orderline extends orderline {
   menu: menu;
   order: order;
@@ -143,7 +148,7 @@ export interface AppDataResponse {
   addonCategories: AddonCategory[];
   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
   locations: Location[];
-  tables: table[];
+  tables: Table[];
   menusAddonCategories: MenuAddonCategory[];
   selectedLocationId?: string | null;
   orderlines: Orderline[];

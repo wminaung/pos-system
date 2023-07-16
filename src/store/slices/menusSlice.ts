@@ -1,36 +1,47 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { config } from "@/config/config";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Menu } from "@/typings/types";
-import { RootState } from "..";
+import { setAppLoading } from "./appSlice";
+import { config } from "@/config/config";
 
-export interface MenuState {
+export interface MenusState {
   isLoading: boolean;
   items: Menu[];
   error: Error | null;
 }
 
-const initialState: MenuState = {
+const initialState: MenusState = {
   isLoading: false,
   items: [],
   error: null,
 };
-interface SetMenusAction {
-  payload: Menu[];
-  type: string;
-}
+
 export const menusSlice = createSlice({
   name: "menus",
   initialState,
   reducers: {
-    setMenus: (state, action: SetMenusAction) => {
+    setMenus: (state, action: PayloadAction<Menu[]>) => {
       state.items = action.payload;
+    },
+    addMenu: (state, action: PayloadAction<Menu>) => {
+      state.items = [...state.items, action.payload];
     },
   },
 });
 
+export const fetchMenus = createAsyncThunk(
+  "app/fetchAppData",
+  async (locationId: string, thunkAPI) => {
+    thunkAPI.dispatch(setAppLoading(true));
+    const response = await fetch(
+      `${config.backofficeApiBaseUrl}/app?locationId=${locationId}`
+    );
+
+    const responseJson = await response.json();
+    const {} = responseJson;
+  }
+);
+
 // Action creators are generated for each case reducer function
-export const { setMenus } = menusSlice.actions;
+export const { setMenus, addMenu } = menusSlice.actions;
 
 export default menusSlice.reducer;
