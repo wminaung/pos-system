@@ -32,19 +32,19 @@ export default function App({
     }
   }, [isOrder]);
 
-  return isOrder ? (
-    <OrderContextProvider>
-      <OrderLayout>
-        <Component {...pageProps} />
-      </OrderLayout>
-    </OrderContextProvider>
-  ) : (
+  return (
     <Provider store={store}>
-      <SessionProvider session={session}>
-        <SetLocation>
+      {isOrder ? (
+        <OrderLayout>
           <Component {...pageProps} />
-        </SetLocation>
-      </SessionProvider>
+        </OrderLayout>
+      ) : (
+        <SessionProvider session={session}>
+          <SetLocation>
+            <Component {...pageProps} />
+          </SetLocation>
+        </SessionProvider>
+      )}
     </Provider>
   );
 }

@@ -1,8 +1,6 @@
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import {
   Divider,
@@ -15,13 +13,10 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { OrderStatus } from "@prisma/client";
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
 import { Addon, AddonCategory } from "@/typings/types";
 import { config } from "@/config/config";
 import { ChangeStatusPayload } from "@/pages/api/backoffice/order/changeStatus";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 interface Props {
   validMenu: {
@@ -37,8 +32,10 @@ interface Props {
 
 const OrderCard = ({ validMenu }: Props) => {
   const [status, setStatus] = useState<OrderStatus>("PENDING");
-  const { menus, addons, addonCategories } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+  const {
+    state: { menus, addons, addonCategories },
+    fetchData,
+  } = useAppSlice();
 
   const handleStatusChange = async (e: SelectChangeEvent<OrderStatus>) => {
     const value = e.target.value as OrderStatus;
@@ -74,7 +71,7 @@ const OrderCard = ({ validMenu }: Props) => {
 
     if (res.ok) {
       console.log(await res.json());
-      return await fetchData();
+      return fetchData();
     } else {
       return alert("fetch fail");
     }
@@ -126,6 +123,7 @@ const OrderCard = ({ validMenu }: Props) => {
             sx={{
               display: "flex",
               justifyContent: "space-between",
+              py: 2,
             }}
           >
             <Typography variant="h5" color="text.main" gutterBottom>

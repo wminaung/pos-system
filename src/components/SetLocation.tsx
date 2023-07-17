@@ -16,14 +16,14 @@ const SetLocation = ({ children }: Props) => {
   } = useAppSlice();
   const selectedLocation = getSelectedLocationId();
   useEffect(() => {
-    if (!selectedLocation) {
-      if (selectedLocationId) {
-        setSelectedLocationId(selectedLocationId);
-        actions.app.setAppSelectedLocationId(selectedLocationId);
-      }
-    } else {
+    if (selectedLocation) {
       setSelectedLocationId(selectedLocation);
-      actions.app.setAppSelectedLocationId(selectedLocation);
+      dispatch(actions.app.setAppSelectedLocationId(getSelectedLocationId()));
+    } else {
+      if (selectedLocationId) {
+        dispatch(actions.app.setAppSelectedLocationId(selectedLocationId));
+        setSelectedLocationId(selectedLocationId);
+      }
     }
   }, [selectedLocation, selectedLocationId]);
 

@@ -24,6 +24,6 @@ export const tablesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setTables } = tablesSlice.actions;
+export const tablesActions = tablesSlice.actions;
 
 export default tablesSlice.reducer;

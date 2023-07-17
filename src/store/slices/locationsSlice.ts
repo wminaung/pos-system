@@ -24,6 +24,6 @@ export const locationsSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setLocations } = locationsSlice.actions;
+export const locationsActions = locationsSlice.actions;
 
 export default locationsSlice.reducer;

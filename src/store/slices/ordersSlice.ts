@@ -24,6 +24,6 @@ export const ordersSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setOrders } = ordersSlice.actions;
+export const ordersActions = ordersSlice.actions;
 
 export default ordersSlice.reducer;

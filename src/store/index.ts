@@ -13,6 +13,9 @@ import orderlinesSlice from "./slices/orderlinesSlice";
 import ordersSlice from "./slices/ordersSlice";
 import menusMenuCategoriesLocationsSlice from "./slices/menusMenuCategoriesLocationsSlice";
 import menusAddonCategoriesSlice from "./slices/menusAddonCategoriesSlice";
+import locationSlice from "./slices/locationSlice";
+import clientSlice from "./slices/clientSlice";
+import orderlineItemsSlice from "./slices/orderlineItemsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +31,11 @@ export const store = configureStore({
     orders: ordersSlice,
     menusMenuCategoriesLocations: menusMenuCategoriesLocationsSlice,
     menusAddonCategories: menusAddonCategoriesSlice,
+
+    /* client */
+    client: clientSlice,
+    location: locationSlice,
+    orderlineItems: orderlineItemsSlice,
   },
 });
 

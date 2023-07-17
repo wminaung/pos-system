@@ -15,10 +15,16 @@ import {
 import { useOrder } from "@/contexts/OrderContext";
 import { config } from "@/config/config";
 import { useRouter } from "next/router";
+import { useClientSlice } from "@/store/slices/clientSlice";
 
 const OrderPage = () => {
-  const { orderlineItems, updateData, fetchData } = useOrder();
-  const data = useOrder();
+  const {
+    state: { orderlineItems },
+    dispatch,
+    actions,
+  } = useClientSlice();
+  // const { orderlineItems, updateData, fetchData } = useOrder();
+  // const data = useOrder();
 
   const router = useRouter();
 
@@ -32,7 +38,7 @@ const OrderPage = () => {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     orderlineId: string
   ) => {
-    const updatedOrderlines = orderlineItems.map((orderline) => {
+    const updatedOrderlinesItems = orderlineItems.map((orderline) => {
       if (orderline.id === orderlineId) {
         const newQuantity = parseInt(event.target.value);
         if (newQuantity >= 1) {
@@ -44,15 +50,17 @@ const OrderPage = () => {
       return orderline;
     });
 
-    updateData({ ...data, orderlineItems: updatedOrderlines });
+    // todo updateData({ ...data, orderlineItems: updatedOrderlines });
+    dispatch(actions.setOrderlineItems(updatedOrderlinesItems));
   };
 
   const handleRemoveMenu = (orderlineId: string) => {
-    const updateOrderline = orderlineItems.filter(
+    const updatedOrderlineItems = orderlineItems.filter(
       (orderline) => orderline.id !== orderlineId
     );
 
-    updateData({ ...data, orderlineItems: [...updateOrderline] });
+    // todo updateData({ ...data, orderlineItems: [...updateOrderline] });
+    dispatch(actions.setOrderlineItems(updatedOrderlineItems));
   };
 
   const handleConfirmOrder = async () => {
@@ -67,7 +75,8 @@ const OrderPage = () => {
       }
     );
     if (res.ok) {
-      updateData({ ...data, orderlineItems: [] });
+      // todo     updateData({ ...data, orderlineItems: [] });
+      dispatch(actions.resetOrderlineItems());
 
       await router.push({
         pathname: `/order/review`,

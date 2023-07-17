@@ -27,6 +27,6 @@ export const menusAddonCategoriesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setMenusAddonCategories } = menusAddonCategoriesSlice.actions;
+export const menusAddonCategoriesActions = menusAddonCategoriesSlice.actions;
 
 export default menusAddonCategoriesSlice.reducer;

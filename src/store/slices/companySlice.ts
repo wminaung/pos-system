@@ -23,6 +23,6 @@ export const companySlice = createSlice({
   },
 });
 
-export const { setCompany } = companySlice.actions;
+export const companyActions = companySlice.actions;
 
 export default companySlice.reducer;

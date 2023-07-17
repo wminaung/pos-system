@@ -9,17 +9,17 @@ import {
 } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "../hook";
 import { RootState } from "..";
-import { setMenus } from "./menusSlice";
-import { setCompany } from "./companySlice";
-import { addMenuCategory, setMenuCategories } from "./menuCategoriesSlice";
-import { setAddons } from "./addonsSlice";
-import { setLocations } from "./locationsSlice";
-import { setAddonCategories } from "./addonCategoriesSlice";
-import { setTables } from "./tablesSlice";
-import { setOrderlines } from "./orderlinesSlice";
-import { setOrders } from "./ordersSlice";
-import { setMenusAddonCategories } from "./menusAddonCategoriesSlice";
-import { setMenusMenuCategoriesLocations } from "./menusMenuCategoriesLocationsSlice";
+import { menusActions } from "./menusSlice";
+import { companyActions } from "./companySlice";
+import { menuCategoriesActions } from "./menuCategoriesSlice";
+import { addonsActions } from "./addonsSlice";
+import { locationsActions } from "./locationsSlice";
+import { addonCategoriesActions } from "./addonCategoriesSlice";
+import { tablesActions } from "./tablesSlice";
+import { orderlinesActions } from "./orderlinesSlice";
+import { ordersActions } from "./ordersSlice";
+import { menusAddonCategoriesActions } from "./menusAddonCategoriesSlice";
+import { menusMenuCategoriesLocationsActions } from "./menusMenuCategoriesLocationsSlice";
 
 interface AppState {
   isLoading: boolean;
@@ -63,17 +63,24 @@ export const fetchAppData = createAsyncThunk(
         selectedLocationId ? String(selectedLocationId) : null
       )
     );
-    dispatch(setMenus(menus));
-    dispatch(setCompany(company));
-    dispatch(setMenuCategories(menuCategories));
-    dispatch(setLocations(locations));
-    dispatch(setAddons(addons));
-    dispatch(setAddonCategories(addonCategories));
-    dispatch(setTables(tables));
-    dispatch(setOrderlines(orderlines));
-    dispatch(setOrders(orders));
-    dispatch(setMenusAddonCategories(menusAddonCategories));
-    dispatch(setMenusMenuCategoriesLocations(menusMenuCategoriesLocations));
+
+    dispatch(menusActions.setMenus(menus));
+    dispatch(companyActions.setCompany(company));
+    dispatch(menuCategoriesActions.setMenuCategories(menuCategories));
+    dispatch(locationsActions.setLocations(locations));
+    dispatch(addonsActions.setAddons(addons));
+    dispatch(addonCategoriesActions.setAddonCategories(addonCategories));
+    dispatch(tablesActions.setTables(tables));
+    dispatch(orderlinesActions.setOrderlines(orderlines));
+    dispatch(ordersActions.setOrders(orders));
+    dispatch(
+      menusAddonCategoriesActions.setMenusAddonCategories(menusAddonCategories)
+    );
+    dispatch(
+      menusMenuCategoriesLocationsActions.setMenusMenuCategoriesLocations(
+        menusMenuCategoriesLocations
+      )
+    );
 
     /* final */
     dispatch(setAppLoading(false));
@@ -165,7 +172,7 @@ export default appSlice.reducer;
 export const useAppSlice = () => {
   const state = useAppSelector(appData);
   const dispatch = useAppDispatch();
-  const actions = appSlice.actions;
+
   const fetchData = () => {
     dispatch(fetchAppData(state.app.selectedLocationId as string));
   };
@@ -175,41 +182,40 @@ export const useAppSlice = () => {
     fetchData,
     actions: {
       fetchAppData,
-      app: { ...actions },
+      app: { ...appActions },
 
       menus: {
-        setMenus,
+        ...menusActions,
       },
       company: {
-        setCompany,
+        ...companyActions,
       },
       menuCategories: {
-        setMenuCategories,
-        addMenuCategory,
+        ...menuCategoriesActions,
       },
       menusMenuCategoriesLocations: {
-        setMenusMenuCategoriesLocations,
+        ...menusMenuCategoriesLocationsActions,
       },
       menusAddonCategories: {
-        setMenusAddonCategories,
+        ...menusAddonCategoriesActions,
       },
       addons: {
-        setAddons,
+        ...addonsActions,
       },
       addonCategories: {
-        setAddonCategories,
+        ...addonCategoriesActions,
       },
       tables: {
-        setTables,
+        ...tablesActions,
       },
       locations: {
-        setLocations,
+        ...locationsActions,
       },
       orderlines: {
-        setOrderlines,
+        ...orderlinesActions,
       },
       orders: {
-        setOrders,
+        ...ordersActions,
       },
     },
   };

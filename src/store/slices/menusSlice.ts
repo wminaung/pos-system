@@ -42,6 +42,6 @@ export const fetchMenus = createAsyncThunk(
 );
 
 // Action creators are generated for each case reducer function
-export const { setMenus, addMenu } = menusSlice.actions;
+export const menusActions = menusSlice.actions;
 
 export default menusSlice.reducer;

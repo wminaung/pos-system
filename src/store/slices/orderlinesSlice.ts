@@ -24,6 +24,6 @@ export const orderlinesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setOrderlines } = orderlinesSlice.actions;
+export const orderlinesActions = orderlinesSlice.actions;
 
 export default orderlinesSlice.reducer;

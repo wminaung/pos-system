@@ -154,3 +154,13 @@ export interface AppDataResponse {
   orderlines: Orderline[];
   orders: Order[];
 }
+export interface OrderDataResponse {
+  menus: Menu[];
+  menuCategories: MenuCategory[];
+  addons: Addon[];
+  addonCategories: AddonCategory[];
+  menusAddonCategories: MenuAddonCategory[];
+  location: Location | null;
+  menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
+  orderlineItems: OrderlineItem[];
+}
