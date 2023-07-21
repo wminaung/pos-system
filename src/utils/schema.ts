@@ -8,6 +8,7 @@ export const schema = {
         price: joi.number().min(0).required(),
         description: joi.string().min(4).required(),
         addonCatIds: joi.array().items(joi.number()).required(),
+        menuCatIds: joi.array().items(joi.number()).required(),
         asset_url: joi.string().required(),
         isRequired: joi.bool().required(),
       }),

@@ -112,7 +112,6 @@ const CreateAddon = () => {
       addonCategoryId: selectedId ? Number(selectedId) : null,
     });
   };
-  console.log({ newAddon });
 
   if (!newAddon.name || !oldAddon.name) {
     return null;

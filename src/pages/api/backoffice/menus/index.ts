@@ -65,9 +65,10 @@ const handlePostRequest = async (
 
   try {
     const joiResult = await schema.menu.payload.create.validateAsync(req.body);
-    const { name, price, description, addonCatIds, asset_url } =
+    const { name, price, description, addonCatIds, asset_url, menuCatIds } =
       joiResult as Payload.Menu.Create;
     console.log("body", req.body);
+
     const newMenu = await prisma.menu.create({
       data: {
         name,
@@ -79,6 +80,14 @@ const handlePostRequest = async (
           createMany: {
             data: addonCatIds.map((addonCatId) => ({
               addon_category_id: addonCatId,
+            })),
+          },
+        },
+        menu_menu_category_location: {
+          createMany: {
+            data: menuCatIds.map((menuCatId) => ({
+              location_id: locationId,
+              menu_category_id: menuCatId,
             })),
           },
         },

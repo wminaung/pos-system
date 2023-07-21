@@ -53,14 +53,14 @@ const MenuDetail = () => {
     dispatch,
   } = useAppSlice();
 
-  console.log("menus :::", menus);
-
   const router = useRouter();
   const { id: menuIdStr } = router.query;
   const [menu, setMenu] = useState<Payload.Menu.Update>();
   const [oldMenu, setOldMenu] = useState<Payload.Menu.Update>();
   const [menuImage, setMenuImage] = useState<File>();
-  const theme = useTheme();
+  const [showPreviewImage, setShowPreviewImage] = useState<
+    string | undefined | null
+  >(null);
 
   const menuId = parseInt(menuIdStr as string, 10);
   const hasMenu = menus.find((menu) => menu.id === menuId && !menu.is_archived);
@@ -89,11 +89,13 @@ const MenuDetail = () => {
         ...hasMenu,
         addonCatIds: addonCatIds,
         isRequired,
+        menuCatIds: [],
       });
       setOldMenu({
         ...hasMenu,
         addonCatIds: addonCatIds,
         isRequired,
+        menuCatIds: [],
       });
     }
   }, [hasMenu]);
@@ -105,7 +107,7 @@ const MenuDetail = () => {
       </Stack>
     );
   }
-  console.log({ c: oldMenu.isRequired, g: menu.isRequired, oldMenu });
+
   // todo UPDATE
   const handleUpdateMenu = async () => {
     // console.log(menu, selectedMenuCatIds);
@@ -132,6 +134,7 @@ const MenuDetail = () => {
       if (response.ok) {
         const imageRes = await response.json();
         assetUrl = imageRes.assetUrl as string;
+        setShowPreviewImage(null);
       } else {
         assetUrl = oldAssetUrl;
       }
@@ -197,6 +200,7 @@ const MenuDetail = () => {
 
   const onFileSelected = (files: File[]) => {
     setMenuImage(files[0]);
+    setShowPreviewImage(URL.createObjectURL(files[0]));
   };
 
   const { name, price, description, addonCatIds, asset_url } = menu;
@@ -305,7 +309,10 @@ const MenuDetail = () => {
           label="required"
         />
         <Box sx={{ mb: 2 }}>
-          <FileDropZone onFileSelected={onFileSelected} />
+          <FileDropZone
+            onFileSelected={onFileSelected}
+            showPreviewImage={showPreviewImage}
+          />
         </Box>
         <Button variant="contained" onClick={handleUpdateMenu}>
           Update

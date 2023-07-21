@@ -11,7 +11,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { OrderStatus } from "@prisma/client";
 import { Addon, AddonCategory } from "@/typings/types";
 import { config } from "@/config/config";
@@ -89,11 +89,13 @@ const OrderCard = ({ validMenu }: Props) => {
     return null;
   }
 
-  const addonCatIds = validMenu.addonIds.map((addonId) => {
-    const addon = addons.find((addon) => addon.id === addonId) as Addon;
-    return addon.addon_category_id;
-  });
-  console.log("addonCatIds", addonCatIds);
+  const addonCatIds = validMenu.addonIds
+    .filter((addonId) => addonId !== null)
+    .map((addonId) => {
+      const addon = addons.find((addon) => addon.id === addonId) as Addon;
+      return addon.addon_category_id;
+    });
+
   const validAddonCatIds = [...new Set(addonCatIds)];
 
   const validAddonsByAddonCat = validAddonCatIds.map((addonCatId) => {
@@ -113,7 +115,6 @@ const OrderCard = ({ validMenu }: Props) => {
       addons: addonsByAddonCat,
     };
   });
-  console.log("validAddonsByAddonCat", validAddonsByAddonCat);
 
   const card = (
     <>
@@ -199,4 +200,4 @@ const OrderCard = ({ validMenu }: Props) => {
   return <Box>{card}</Box>;
 };
 
-export default OrderCard;
+export default memo(OrderCard);

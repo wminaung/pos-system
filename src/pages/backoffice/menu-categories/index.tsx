@@ -4,6 +4,9 @@ import Layout from "@/components/Layout";
 import DialogBox from "@/components/DialogBox";
 import CreateMenuCat from "@/components/CreateMenuCat";
 import { useAppSlice } from "@/store/slices/appSlice";
+import ItemCard from "@/components/ItemCard";
+import { CategoryIcon } from "@/components/icon";
+import { theme } from "@/config/myTheme";
 
 const MenuCategories = () => {
   const {
@@ -41,8 +44,20 @@ const MenuCategories = () => {
               alignItems: "center",
             }}
           >
-            {menuCategoriesByLocation.map((menuCategory) => (
+            {/* {menuCategoriesByLocation.map((menuCategory) => (
               <MenuCategory key={menuCategory.id} menuCategory={menuCategory} />
+            ))} */}
+            {menuCategoriesByLocation.map((menuCategory) => (
+              <ItemCard
+                icon={
+                  <CategoryIcon
+                    sx={{ fontSize: 50, color: theme.text, p: 2 }}
+                  />
+                }
+                title={menuCategory.name}
+                href={`/backoffice/menu-categories/${menuCategory.id}`}
+                key={menuCategory.id}
+              />
             ))}
           </Box>
         </Box>

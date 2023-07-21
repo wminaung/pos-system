@@ -27,16 +27,8 @@ const MenusPage = () => {
     )
   );
 
-  const fetchMenu = async () => {
-    const response = await fetch(
-      `${config.backofficeApiBaseUrl}/menus?locationId=${1}`
-    );
-    const data = await response.json();
-    console.log(data, "Data");
-  };
   return (
     <Layout title="Menus">
-      <Button onClick={fetchMenu}>fetchmenus</Button>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Box sx={{ m: 2, alignSelf: "flex-end" }}>
           <DialogBox btnText="create menu" title="create menu" width="137px">

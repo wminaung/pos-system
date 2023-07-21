@@ -10,8 +10,13 @@ import Layout from "@/components/Layout";
 import { useBackoffice } from "@/contexts/BackofficeContext";
 import OrderRow from "@/components/OrderRow";
 import { useAppSlice } from "@/store/slices/appSlice";
+import { theme } from "@/config/myTheme";
+import { Typography } from "@mui/material";
+import { Order } from "@/typings/types";
 
 const boldStyle = { fontWeight: "bold" };
+
+//*** <<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>> */
 const OrderPage = () => {
   const {
     state: { orders },
@@ -19,34 +24,44 @@ const OrderPage = () => {
 
   return (
     <Layout title="Order">
-      <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>Order Id</TableCell>
-              <TableCell sx={boldStyle} align="right">
-                No. of menus
-              </TableCell>
-              <TableCell sx={boldStyle} align="right">
-                Table Id
-              </TableCell>
-              <TableCell sx={boldStyle} align="right">
-                Proce
-              </TableCell>
-              <TableCell sx={boldStyle} align="right">
-                Status
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders.map((order) => (
-              <OrderRow key={order.id} order={order} />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {!orders.length ? (
+        <Typography variant="h2">There is no order yet</Typography>
+      ) : (
+        showOrdersTable(orders)
+      )}
     </Layout>
   );
 };
 export default OrderPage;
+// todo
+const showOrdersTable = (orders: Order[]) => {
+  return (
+    <TableContainer component={Paper} sx={{ bgcolor: theme.second }}>
+      <Table aria-label="collapsible table">
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>Order Id</TableCell>
+            <TableCell sx={boldStyle} align="right">
+              No. of menus
+            </TableCell>
+            <TableCell sx={boldStyle} align="right">
+              Table Id
+            </TableCell>
+            <TableCell sx={boldStyle} align="right">
+              Proce
+            </TableCell>
+            <TableCell sx={boldStyle} align="right">
+              Status
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {orders.map((order) => (
+            <OrderRow key={order.id} order={order} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};

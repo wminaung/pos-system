@@ -101,6 +101,7 @@ export namespace Payload {
       description: string;
       asset_url: string | null;
       addonCatIds: number[];
+      menuCatIds: number[];
       isRequired?: boolean;
     }
     export interface Update extends Create {

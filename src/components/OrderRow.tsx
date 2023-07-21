@@ -41,7 +41,6 @@ const OrderRow = ({ order }: Props) => {
         (orderline) => orderline.orderlineItem_id === orderlineItemId
       ) as orderline;
     });
-    console.log("orderlineItems", orderlineItems);
 
     const validMenus = orderlineItems.map((orderlineItem) => {
       const orderlineItemId = orderlineItem.orderlineItem_id;
@@ -65,8 +64,6 @@ const OrderRow = ({ order }: Props) => {
 
     return validMenus.sort((a, b) => a.id - b.id);
   };
-
-  console.log(getValidMenusAndAddons(), "vvvvvvvvvasdfsafsfvvv");
 
   return (
     <>

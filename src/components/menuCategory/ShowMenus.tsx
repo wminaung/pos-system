@@ -19,9 +19,6 @@ import { config } from "@/config/config";
 import { fetchData } from "next-auth/client/_utils";
 import { useAppSlice } from "@/store/slices/appSlice";
 
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
-
 interface Props {
   menus: Menu[];
   menuCategory: MenuCategory;
@@ -99,6 +96,7 @@ const ShowMenus = ({ menus, menuCategory }: Props) => {
       alert("check err");
     }
   };
+
   return (
     <Box sx={{ mt: 4 }}>
       <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
@@ -113,17 +111,19 @@ const ShowMenus = ({ menus, menuCategory }: Props) => {
           options={menus
             .filter((menu) => !validMenuIds.includes(menu.id))
             .map((menu) => menu)}
-          getOptionLabel={(option) => option.name}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Add menu to this category"
-              InputProps={{
-                ...params.InputProps,
-                type: "search",
-              }}
-            />
-          )}
+          getOptionLabel={(option) => option.id + ". " + option.name}
+          renderInput={(params) => {
+            return (
+              <TextField
+                {...params}
+                label="Add menu to this category"
+                InputProps={{
+                  ...params.InputProps,
+                  type: "search",
+                }}
+              />
+            );
+          }}
         />
         <Button variant="contained" onClick={addMenuToMenuCategory}>
           Add

@@ -11,6 +11,9 @@ import Layout from "@/components/Layout";
 import DialogBox from "@/components/DialogBox";
 import CreateAddon from "@/components/addon/CreateAddon";
 import { useAppSlice } from "@/store/slices/appSlice";
+import ItemCard from "@/components/ItemCard";
+import { EggIcon } from "@/components/icon";
+import { theme } from "@/config/myTheme";
 
 const Addons = () => {
   // ********************************
@@ -54,45 +57,12 @@ const Addons = () => {
         justifyContent={"center"}
       >
         {addons.map((addon) => (
-          <Box sx={{ m: 2 }} key={addon.id}>
-            <Card
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                background: "#e1e1e1",
-                boxShadow: 3,
-              }}
-            >
-              <Box
-                sx={{ display: "flex", flexDirection: "column", width: 220 }}
-              >
-                <CardContent sx={{ flex: "1 0 auto" }}>
-                  <Typography component="div" variant="subtitle1">
-                    {addon.name}
-                  </Typography>
-                </CardContent>
-
-                <Box
-                  sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}
-                >
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => addon.id && handleDeleteAddon(addon.id)}
-                  >
-                    <DeleteForever sx={{ height: 38, width: 38 }} />
-                  </IconButton>
-                  <Link
-                    href={`/backoffice/addons/${addon.id}`}
-                    style={{ marginLeft: 8 }}
-                  >
-                    <IconButton aria-label="edit">
-                      <EditNote sx={{ height: 38, width: 38 }} />
-                    </IconButton>
-                  </Link>
-                </Box>
-              </Box>
-            </Card>
-          </Box>
+          <ItemCard
+            icon={<EggIcon sx={{ fontSize: 50, color: theme.text, p: 2 }} />}
+            title={addon.name}
+            href={`/backoffice/addons/${addon.id}`}
+            key={addon.id}
+          />
         ))}
       </Box>
     </Layout>

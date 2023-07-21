@@ -134,10 +134,6 @@ const MenuCategoryDetail = () => {
     });
   };
 
-  console.log(
-    " menuCategory.menu_menu_category_location",
-    menuCategory.menu_menu_category_location
-  );
   return (
     <Layout title="Edit Menu Category">
       <Box
