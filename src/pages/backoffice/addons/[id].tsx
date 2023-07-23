@@ -4,23 +4,20 @@ import {
 } from "@/contexts/BackofficeContext";
 import {
   Box,
-  Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { config } from "@/config/config";
-import { addon } from "@prisma/client";
 import { Addon, Payload } from "@/typings/types";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 interface NewAddon {
   name: string;
@@ -29,6 +26,16 @@ interface NewAddon {
 }
 const CreateAddon = () => {
   //************************* */
+
+  const {
+    state: {
+      app: { selectedLocationId },
+      addonCategories,
+      addons,
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   const router = useRouter();
 
@@ -41,9 +48,6 @@ const CreateAddon = () => {
 
   const idString = router.query.id as string;
   const id = Number(idString);
-
-  const { addonCategories, addons } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
 
   const editAddon = addons.find((addon) => addon.id === id) as Addon;
 
@@ -97,7 +101,8 @@ const CreateAddon = () => {
     }
     const data = await res.json();
     console.log("updated success", data);
-    fetchData();
+    dispatch(actions.fetchAppData(selectedLocationId as string));
+    // todo   fetchData();
   };
   const handleChange = (event: SelectChangeEvent) => {
     const selectedId = event.target.value;
@@ -107,7 +112,6 @@ const CreateAddon = () => {
       addonCategoryId: selectedId ? Number(selectedId) : null,
     });
   };
-  console.log({ newAddon });
 
   if (!newAddon.name || !oldAddon.name) {
     return null;

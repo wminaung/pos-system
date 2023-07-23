@@ -3,23 +3,32 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useOrder } from "@/contexts/OrderContext";
 import MenuCard from "@/components/MenuCard";
 import { useRouter } from "next/router";
 import ViewCartBar from "@/components/ViewCardBar";
+import { useClientSlice } from "@/store/slices/clientSlice";
 
 const OrderingPage = () => {
   const [value, setValue] = useState("1");
-  const { menuCategories, menus } = useOrder();
 
   const router = useRouter();
   const pathname = router.pathname;
   const query = router.query;
+  const { locationId } = query;
+  const {
+    fetchData,
+    state: { menus, menuCategories },
+  } = useClientSlice();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    locationId && fetchData(locationId as string);
+  }, [locationId]);
 
   return (
     <Box sx={{ width: "100%", typography: "body1" }}>

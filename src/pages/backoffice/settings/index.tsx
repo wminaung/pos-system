@@ -10,37 +10,40 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
+
 import { Location } from "@/typings/types";
 import { LoadingButton } from "@mui/lab";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
-import { setSelectedLocationId } from "@/utils";
+import { getSelectedLocationId, setSelectedLocationId } from "@/utils";
 import { theme } from "@/config/myTheme";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const Settings = () => {
   const [selectedLocation, setSelectedLocation] = useState<Location>();
   const [newLocation, setNewLocation] = useState<Location>({} as Location);
-  const allData = useBackoffice();
-  const { locations, selectedLocationId } = allData;
-  const { fetchData } = useBackofficeUpdate();
+  const {
+    fetchData,
+    state: {
+      locations,
+      app: { selectedLocationId },
+    },
+    dispatch,
+    actions,
+  } = useAppSlice();
 
   useEffect(() => {
     if (locations.length) {
-      if (!selectedLocationId) {
-        setSelectedLocationId(String(locations[0].id));
-        setSelectedLocation(locations[0]);
-      } else {
+      if (selectedLocationId) {
         const selectedLocation = locations.find(
           (location) => String(location.id) === selectedLocationId
         );
         setSelectedLocation(selectedLocation);
+      } else {
+        console.log(selectedLocationId, "///");
       }
     }
-  }, [locations]);
+  }, [locations, selectedLocationId]);
 
   useEffect(() => {
     selectedLocation && setNewLocation(selectedLocation);
@@ -60,6 +63,7 @@ const Settings = () => {
   const handleUpdate = async () => {
     if (!selectedLocation.id) return alert("need selectedLocationId");
     setSelectedLocationId(String(selectedLocation.id));
+    dispatch(actions.app.setAppSelectedLocationId(getSelectedLocationId()));
 
     const isCanUpdate =
       selectedLocation.name !== newLocation.name ||

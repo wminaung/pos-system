@@ -1,36 +1,24 @@
-import {
-  Backdrop,
-  Box,
-  Button,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  CardMedia,
-  CircularProgress,
-  Paper,
-  Typography,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
-import Link from "next/link";
+import { Box, Button } from "@mui/material";
+import { useBackofficeUpdate } from "@/contexts/BackofficeContext";
 import { getAccessToken, getSelectedLocationId } from "@/utils";
-import { useEffect, useState } from "react";
-import { config } from "@/config/config";
 import Layout from "@/components/Layout";
 import DialogBox from "@/components/DialogBox";
 import CreateMenu from "@/components/CreateMenu";
-import { theme } from "@/config/myTheme";
 import MenuCard from "@/components/MenuCard";
+import { useAppSlice } from "@/store/slices/appSlice";
+import { config } from "@/config/config";
 
 const MenusPage = () => {
   // ******************** ;data.status === "loading"
 
-  const { menus, selectedLocationId } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+  const {
+    state: {
+      app: { selectedLocationId },
+      menus,
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   const validMenus = menus.filter((menu) =>
     menu.menu_menu_category_location.find(
@@ -41,9 +29,6 @@ const MenusPage = () => {
 
   return (
     <Layout title="Menus">
-      {/* <Box>
-        <Button onClick={deleteTest}>Delete</Button>
-      </Box> */}
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Box sx={{ m: 2, alignSelf: "flex-end" }}>
           <DialogBox btnText="create menu" title="create menu" width="137px">

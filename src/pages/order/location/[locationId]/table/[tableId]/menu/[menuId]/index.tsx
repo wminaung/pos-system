@@ -2,6 +2,7 @@ import QuantitySelector from "@/components/QuantitySelector";
 import ViewCartBar from "@/components/ViewCardBar";
 import { theme } from "@/config/myTheme";
 import { useOrder } from "@/contexts/OrderContext";
+import { useClientSlice } from "@/store/slices/clientSlice";
 import { AddonCategory } from "@/typings/types";
 import {
   Box,
@@ -34,9 +35,12 @@ const OrderMenu = () => {
   const router = useRouter();
   const query = router.query;
   const menuId = Number(query.menuId);
-  const { addonCategories, menus, orderlineItems, updateData, addons } =
-    useOrder();
-  const allData = useOrder();
+
+  const {
+    state: { addonCategories, menus, addons, orderlineItems },
+    dispatch,
+    actions,
+  } = useClientSlice();
 
   console.warn("selectedAddonIds :", selectedAddonIds);
 
@@ -157,18 +161,14 @@ const OrderMenu = () => {
   console.log({ orderlineItems });
   // TODO - addToCart
   const addToCart = async () => {
-    updateData({
-      ...allData,
-      orderlineItems: [
-        ...orderlineItems,
-        {
-          id: String(Date.now()),
-          menu,
-          quantity: menuCount,
-          addons: addons.filter((addon) => selectedAddonIds.includes(addon.id)),
-        },
-      ],
-    });
+    const orderlineItemToAdd = {
+      id: String(Date.now()),
+      menu,
+      quantity: menuCount,
+      addons: addons.filter((addon) => selectedAddonIds.includes(addon.id)),
+    };
+    dispatch(actions.addOrderLineItem(orderlineItemToAdd));
+
     await router.push({
       pathname: "/order/location/[locationId]/table/[tableId]",
       query: {

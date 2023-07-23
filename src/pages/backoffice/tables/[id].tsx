@@ -2,6 +2,7 @@
 import Layout from "@/components/Layout";
 import { config } from "@/config/config";
 import { useBackoffice } from "@/contexts/BackofficeContext";
+import { useAppSlice } from "@/store/slices/appSlice";
 import { defaultQRCodeSrc } from "@/utils";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import Image from "next/image";
@@ -13,7 +14,12 @@ const EditTable = () => {
   const router = useRouter();
   const tableId = router.query.id as string;
 
-  const { tables, selectedLocationId } = useBackoffice();
+  const {
+    state: {
+      app: { selectedLocationId },
+      tables,
+    },
+  } = useAppSlice();
   const table = tables.find((table) => table.id === Number(tableId));
   const [tableName, setTableName] = useState("");
 

@@ -6,7 +6,7 @@ type Data = {
   name: string;
 };
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
@@ -26,7 +26,10 @@ export default function handler(
 }
 
 // TODO -
-const handleGetRequest = (req: NextApiRequest, res: NextApiResponse<any>) => {
+const handleGetRequest = async (
+  req: NextApiRequest,
+  res: NextApiResponse<any>
+) => {
   res.status(200).json({ message: `${req.method} ok!!` });
 };
 
@@ -54,9 +57,12 @@ const handlePostRequest = async (
           },
         },
       },
+      include: {
+        menu_menu_category_location: true,
+      },
     });
 
-    return res.status(200).json({ message: `${req.method} ok!!`, newMenuCat });
+    return res.status(200).json(newMenuCat);
   } catch (error) {
     console.error({ error });
     return res.status(500).json({ message: "check prisma query", error });

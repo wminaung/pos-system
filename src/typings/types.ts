@@ -53,6 +53,11 @@ export interface Order extends order {
   orderline: orderline[];
   table: table;
 }
+
+export interface Table extends table {
+  location: location | null;
+}
+
 export interface Orderline extends orderline {
   menu: menu;
   order: order;
@@ -96,6 +101,7 @@ export namespace Payload {
       description: string;
       asset_url: string | null;
       addonCatIds: number[];
+      menuCatIds: number[];
       isRequired?: boolean;
     }
     export interface Update extends Create {
@@ -135,3 +141,27 @@ export namespace Payload {
 //   asset_url?: string;
 //   description: string;
 // }
+export interface AppDataResponse {
+  company: Company | null;
+  menus: Menu[];
+  menuCategories: MenuCategory[];
+  addons: Addon[];
+  addonCategories: AddonCategory[];
+  menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
+  locations: Location[];
+  tables: Table[];
+  menusAddonCategories: MenuAddonCategory[];
+  selectedLocationId?: string | null;
+  orderlines: Orderline[];
+  orders: Order[];
+}
+export interface OrderDataResponse {
+  menus: Menu[];
+  menuCategories: MenuCategory[];
+  addons: Addon[];
+  addonCategories: AddonCategory[];
+  menusAddonCategories: MenuAddonCategory[];
+  location: Location | null;
+  menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
+  orderlineItems: OrderlineItem[];
+}

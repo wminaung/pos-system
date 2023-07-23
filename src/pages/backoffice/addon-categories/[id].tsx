@@ -16,10 +16,16 @@ import { Payload } from "@/typings/types";
 import { config } from "@/config/config";
 import { LoadingButton } from "@mui/lab";
 import Layout from "@/components/Layout";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const AddonCategoryDetail = (props: any) => {
-  const { addonCategories } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+  const {
+    state: {
+      app: { selectedLocationId },
+      addonCategories,
+    },
+    fetchData,
+  } = useAppSlice();
 
   const router = useRouter();
   const addonCategoryIdStr = router.query.id as string;

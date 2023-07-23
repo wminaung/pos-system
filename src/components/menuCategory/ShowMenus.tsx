@@ -17,9 +17,7 @@ import {
 } from "@/contexts/BackofficeContext";
 import { config } from "@/config/config";
 import { fetchData } from "next-auth/client/_utils";
-
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
+import { useAppSlice } from "@/store/slices/appSlice";
 
 interface Props {
   menus: Menu[];
@@ -28,8 +26,13 @@ interface Props {
 const ShowMenus = ({ menus, menuCategory }: Props) => {
   const [selectedMenu, setSelectedMenu] = useState<Menu | null>(null);
   // location 1, menucat 1 ,
-  const { selectedLocationId } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+  const {
+    state: {
+      app: { selectedLocationId },
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   const validMenuIds = menuCategory.menu_menu_category_location
     .filter((mmcl) => String(mmcl.location_id) === selectedLocationId)
@@ -63,7 +66,8 @@ const ShowMenus = ({ menus, menuCategory }: Props) => {
     } else {
       alert("nope ");
     }
-    fetchData();
+    // todo fetchData()
+    dispatch(actions.fetchAppData(selectedLocationId as string));
     setSelectedMenu(null);
   };
   const handleRemoveMenu = async (menuId: number) => {
@@ -86,12 +90,13 @@ const ShowMenus = ({ menus, menuCategory }: Props) => {
       }
     );
     if (res.ok) {
-      fetchData();
       console.log(await res.json());
+      dispatch(actions.fetchAppData(selectedLocationId as string));
     } else {
       alert("check err");
     }
   };
+
   return (
     <Box sx={{ mt: 4 }}>
       <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
@@ -106,17 +111,19 @@ const ShowMenus = ({ menus, menuCategory }: Props) => {
           options={menus
             .filter((menu) => !validMenuIds.includes(menu.id))
             .map((menu) => menu)}
-          getOptionLabel={(option) => option.name}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Add menu to this category"
-              InputProps={{
-                ...params.InputProps,
-                type: "search",
-              }}
-            />
-          )}
+          getOptionLabel={(option) => option.id + ". " + option.name}
+          renderInput={(params) => {
+            return (
+              <TextField
+                {...params}
+                label="Add menu to this category"
+                InputProps={{
+                  ...params.InputProps,
+                  type: "search",
+                }}
+              />
+            );
+          }}
         />
         <Button variant="contained" onClick={addMenuToMenuCategory}>
           Add

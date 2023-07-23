@@ -1,12 +1,14 @@
 import { Box } from "@mui/material";
+import Image from "next/image";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
 interface Props {
   onFileSelected: (acceptedFiles: File[]) => void;
+  showPreviewImage?: string | null;
 }
 
-const FileDropZone = ({ onFileSelected }: Props) => {
+const FileDropZone = ({ onFileSelected, showPreviewImage }: Props) => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     onFileSelected(acceptedFiles);
   }, []);
@@ -29,10 +31,14 @@ const FileDropZone = ({ onFileSelected }: Props) => {
       }}
     >
       <input {...getInputProps()} />
-      {acceptedFiles.length ? (
-        <img src={URL.createObjectURL(acceptedFiles[0])} alt="safj" />
-      ) : (
-        ""
+
+      {showPreviewImage && (
+        <Image
+          width={180}
+          height={180}
+          src={showPreviewImage}
+          alt="previewImage"
+        />
       )}
       {isDragActive ? (
         <p>Drop the files here ...</p>

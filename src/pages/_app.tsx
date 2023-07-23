@@ -5,26 +5,46 @@ import { SessionProvider } from "next-auth/react";
 import { OrderContextProvider } from "@/contexts/OrderContext";
 import { useRouter } from "next/router";
 import OrderLayout from "@/components/OrderLayout";
+import { Provider } from "react-redux";
+import { store } from "@/store";
+import { Session } from "next-auth";
+import { getSelectedLocationId } from "@/utils";
+import { useEffect, useState } from "react";
+import { fetchAppData } from "@/store/slices/appSlice";
+import SetLocation from "@/components/SetLocation";
 
-export default function App({ Component, pageProps }: AppProps) {
+type CustomeAppProps = AppProps & { session: Session };
+
+export default function App({
+  Component,
+  pageProps,
+  session,
+}: CustomeAppProps) {
   const router = useRouter();
 
   const pathName = router.pathname;
   const isOrder = pathName.split("/")[1] === "order";
+  const selectedLocationId = getSelectedLocationId() as string;
+
+  useEffect(() => {
+    if (!isOrder) {
+      store.dispatch(fetchAppData(selectedLocationId));
+    }
+  }, [isOrder]);
 
   return (
-    <SessionProvider session={pageProps.session}>
+    <Provider store={store}>
       {isOrder ? (
-        <OrderContextProvider>
-          <OrderLayout>
-            <Component {...pageProps} />
-          </OrderLayout>
-        </OrderContextProvider>
-      ) : (
-        <BackofficeProvider>
+        <OrderLayout>
           <Component {...pageProps} />
-        </BackofficeProvider>
+        </OrderLayout>
+      ) : (
+        <SessionProvider session={session}>
+          <SetLocation>
+            <Component {...pageProps} />
+          </SetLocation>
+        </SessionProvider>
       )}
-    </SessionProvider>
+    </Provider>
   );
 }

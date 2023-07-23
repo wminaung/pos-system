@@ -53,7 +53,7 @@ const handlePutRequest = async (
   console.log("updated :", menuCatIdStr);
   const menuCatId = Number(menuCatIdStr);
   try {
-    const updatedMenu = await prisma.menu_category.update({
+    const updatedMenuCategory = await prisma.menu_category.update({
       data: {
         name,
       },
@@ -104,7 +104,9 @@ const handlePutRequest = async (
     });
 
     console.log({ toDeletedLocationIds, toUpdatedLocationIds });
-    return res.status(200).json({ updatedMenu, message: `${req.method} ok!!` });
+    return res
+      .status(200)
+      .json({ updatedMenuCategory, message: `${req.method} ok!!` });
   } catch (error) {
     console.log({ error });
     return res.status(500).json({ message: " check query update fail", error });
