@@ -1,33 +1,11 @@
-import { useEffect, useState } from "react";
-import { useBackoffice } from "../contexts/BackofficeContext";
 import NavBar from "./NavBar";
-import LunchDiningIcon from "@mui/icons-material/LunchDining";
-import LocalDiningIcon from "@mui/icons-material/LocalDining";
-import SettingsIcon from "@mui/icons-material/Settings";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import FastfoodIcon from "@mui/icons-material/Fastfood";
-import ClassIcon from "@mui/icons-material/Class";
-import CategoryIcon from "@mui/icons-material/Category";
-import {
-  Avatar,
-  Backdrop,
-  Box,
-  CircularProgress,
-  Divider,
-  LinearProgress,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Stack,
-  Typography,
-} from "@mui/material";
-import Link from "next/link";
+
+import { Box } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { theme } from "@/config/myTheme";
-import Image from "next/image";
 import SideBar from "./SideBar";
+import Loading from "./Loading";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 interface Props {
   title?: string;
@@ -36,9 +14,16 @@ interface Props {
 
 const Layout = (props: Props) => {
   const { data: session, status } = useSession();
+  const { state } = useAppSlice();
+
   const profileImageUrl = session?.user?.image || "/test.png";
 
   const profileName = session?.user?.name || "no-name";
+  const isLoading =
+    !session ||
+    status !== "authenticated" ||
+    state.app.isLoading ||
+    !state.app.selectedLocationId;
   return (
     <Box>
       <NavBar title={props.title} />
@@ -67,7 +52,7 @@ const Layout = (props: Props) => {
             },
           }}
         >
-          {props.children}
+          {isLoading ? <Loading /> : props.children}
         </Box>
       </Box>
     </Box>

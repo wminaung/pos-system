@@ -16,6 +16,7 @@ import { config } from "@/config/config";
 import Layout from "@/components/Layout";
 import { theme } from "@/config/myTheme";
 import { useAppSlice } from "@/store/slices/appSlice";
+import Loading from "@/components/Loading";
 
 const Settings = () => {
   const [selectedLocation, setSelectedLocation] = useState<Location>();
@@ -57,9 +58,12 @@ const Settings = () => {
     setSelectedLocation(selectedLocation);
   };
   if (!selectedLocation) {
-    return <h3>There is no selected Location</h3>;
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    );
   }
-
   const handleUpdate = async () => {
     if (!selectedLocation.id) return alert("need selectedLocationId");
 
