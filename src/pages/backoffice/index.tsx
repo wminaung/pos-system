@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 import Layout from "@/components/Layout";
 import { useAppSlice } from "@/store/slices/appSlice";
 import { useRouter } from "next/router";
-import { getSelectedLocationId, setSelectedLocationId } from "@/utils";
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   height: "100vh",
@@ -26,7 +25,7 @@ const BackOfficePage = () => {
   const { state } = useAppSlice();
   const { isLoading, selectedLocationId: defaultSelectedLocationId } =
     state.app;
-  const selectedLocationId = getSelectedLocationId() as string;
+
   useEffect(() => {
     if (status === "authenticated") {
       !isLoading && router.push("/backoffice/orders");
@@ -35,14 +34,7 @@ const BackOfficePage = () => {
     } else {
       console.log("is still ....");
     }
-  }, [data, router, isLoading]);
-
-  // useEffect(() => {
-  //   if (defaultSelectedLocationId) {
-  //     dispatch(actions.app.fetchAppData(defaultSelectedLocationId));
-  //     setSelectedLocationId(defaultSelectedLocationId);
-  //   }
-  // }, [defaultSelectedLocationId]);
+  }, [data, isLoading]);
 
   return (
     <Layout>

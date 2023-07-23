@@ -173,8 +173,12 @@ export const useAppSlice = () => {
   const state = useAppSelector(appData);
   const dispatch = useAppDispatch();
 
-  const fetchData = () => {
-    dispatch(fetchAppData(state.app.selectedLocationId as string));
+  const fetchData = (locationId?: string) => {
+    dispatch(
+      fetchAppData(
+        locationId ? locationId : (state.app.selectedLocationId as string)
+      )
+    );
   };
   return {
     state,

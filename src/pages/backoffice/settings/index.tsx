@@ -10,12 +10,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
 import { Location } from "@/typings/types";
 import { LoadingButton } from "@mui/lab";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
-import { getSelectedLocationId, setSelectedLocationId } from "@/utils";
 import { theme } from "@/config/myTheme";
 import { useAppSlice } from "@/store/slices/appSlice";
 
@@ -33,15 +31,17 @@ const Settings = () => {
   } = useAppSlice();
 
   useEffect(() => {
-    if (locations.length) {
-      if (selectedLocationId) {
-        const selectedLocation = locations.find(
-          (location) => String(location.id) === selectedLocationId
-        );
-        setSelectedLocation(selectedLocation);
-      } else {
-        console.log(selectedLocationId, "///");
-      }
+    if (!selectedLocationId && locations.length) {
+      dispatch(
+        actions.app.setAppSelectedLocationId(locations[0].id.toString())
+      );
+      setSelectedLocation(locations[0]);
+    } else {
+      setSelectedLocation(
+        locations.find(
+          (location) => String(location.id) === String(selectedLocationId)
+        )
+      );
     }
   }, [locations, selectedLocationId]);
 
@@ -51,7 +51,7 @@ const Settings = () => {
 
   const handleOnChange = (event: SelectChangeEvent<number>) => {
     const selectedLocation = locations.find(
-      (location) => location.id === event.target.value
+      (location) => String(location.id) === String(event.target.value)
     );
 
     setSelectedLocation(selectedLocation);
@@ -62,8 +62,8 @@ const Settings = () => {
 
   const handleUpdate = async () => {
     if (!selectedLocation.id) return alert("need selectedLocationId");
-    setSelectedLocationId(String(selectedLocation.id));
-    dispatch(actions.app.setAppSelectedLocationId(getSelectedLocationId()));
+
+    dispatch(actions.app.setAppSelectedLocationId(String(selectedLocation.id)));
 
     const isCanUpdate =
       selectedLocation.name !== newLocation.name ||
@@ -87,7 +87,7 @@ const Settings = () => {
       console.log(await res.json());
       return alert("cant't fetch");
     }
-    return fetchData();
+    return fetchData(String(selectedLocation.id));
   };
   const isDisabled =
     selectedLocation.name === newLocation.name &&

@@ -11,7 +11,6 @@ import { Session } from "next-auth";
 import { getSelectedLocationId } from "@/utils";
 import { useEffect, useState } from "react";
 import { fetchAppData } from "@/store/slices/appSlice";
-import SetLocation from "@/components/SetLocation";
 
 type CustomeAppProps = AppProps & { session: Session };
 
@@ -40,9 +39,7 @@ export default function App({
         </OrderLayout>
       ) : (
         <SessionProvider session={session}>
-          <SetLocation>
-            <Component {...pageProps} />
-          </SetLocation>
+          <Component {...pageProps} />
         </SessionProvider>
       )}
     </Provider>
