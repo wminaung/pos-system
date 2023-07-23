@@ -27,7 +27,7 @@ const Logout = () => {
       updateData(defaultBackofficeContext);
       signOut({ callbackUrl: "/auth/login" });
     }
-  }, []);
+  }, [session]);
 
   return (
     <Box
