@@ -30,17 +30,15 @@ const Logout = () => {
   }, []);
 
   return (
-    <Layout>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mt: 5,
-        }}
-      >
-        <Typography variant="h3">You are logged out.</Typography>
-      </Box>
-    </Layout>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        mt: 5,
+      }}
+    >
+      <Typography variant="h3">You are logged out.</Typography>
+    </Box>
   );
 };
 

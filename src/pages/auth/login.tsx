@@ -25,46 +25,44 @@ const LoginPage = () => {
   const { data: session } = useSession();
   console.log("session : ", session);
   return (
-    <Layout>
-      <StyledGrid container justifyContent="center" alignItems="center">
-        <Grid
-          item
-          xs={12}
-          sm={8}
-          md={5}
-          component={StyledPaper}
-          elevation={6}
-          square
-        >
-          <StyledPaper>
-            <Typography component="h1" variant="h5" gutterBottom>
-              Sign in to Your Account
-            </Typography>
-            {session ? (
-              <StyledButton
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={() => signOut()}
-                startIcon={<GoogleIcon />}
-              >
-                Sign Out with Google
-              </StyledButton>
-            ) : (
-              <StyledButton
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={() => signIn("google", { callbackUrl: "/backoffice" })}
-                startIcon={<GoogleIcon />}
-              >
-                Sign in with Google
-              </StyledButton>
-            )}
-          </StyledPaper>
-        </Grid>
-      </StyledGrid>
-    </Layout>
+    <StyledGrid container justifyContent="center" alignItems="center">
+      <Grid
+        item
+        xs={12}
+        sm={8}
+        md={5}
+        component={StyledPaper}
+        elevation={6}
+        square
+      >
+        <StyledPaper>
+          <Typography component="h1" variant="h5" gutterBottom>
+            Sign in to Your Account
+          </Typography>
+          {session ? (
+            <StyledButton
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={() => signOut()}
+              startIcon={<GoogleIcon />}
+            >
+              Sign Out with Google
+            </StyledButton>
+          ) : (
+            <StyledButton
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={() => signIn("google", { callbackUrl: "/backoffice" })}
+              startIcon={<GoogleIcon />}
+            >
+              Sign in with Google
+            </StyledButton>
+          )}
+        </StyledPaper>
+      </Grid>
+    </StyledGrid>
   );
 };
 
