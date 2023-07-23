@@ -12,7 +12,12 @@ export default async function handler(
   const method = req.method;
 
   if (method === "GET") {
-    await handleGetRequest(req, res);
+    try {
+      await handleGetRequest(req, res);
+    } catch (error) {
+      console.log("error", error);
+      res.status(500).json({ error, message: "something" });
+    }
   } else {
     res.status(405).json({ name: `${method} not allow!!` });
   }
@@ -342,27 +347,3 @@ const getData = async (user: user, selectedLocationId?: number) => {
     orders,
   };
 };
-
-// // TODO -
-// const handlePostRequest = (
-//   req: CustomNextApiRequest,
-//   res: NextApiResponse<any>
-// ) => {
-//   res.status(200).json({ message: `${req.method} ok!!` });
-// };
-
-// // TODO -
-// const handlePutRequest = (
-//   req: CustomNextApiRequest,
-//   res: NextApiResponse<any>
-// ) => {
-//   res.status(200).json({ message: `${req.method} ok!!` });
-// };
-
-// // TODO -
-// const handleDeleteRequest = (
-//   req: CustomNextApiRequest,
-//   res: NextApiResponse<any>
-// ) => {
-//   res.status(200).json({ message: `${req.method} ok!!` });
-// };
