@@ -8,7 +8,7 @@ import OrderLayout from "@/components/OrderLayout";
 import { Provider } from "react-redux";
 import { store } from "@/store";
 import { Session } from "next-auth";
-import { getSelectedLocationId } from "@/utils";
+
 import { useEffect, useState } from "react";
 import { fetchAppData } from "@/store/slices/appSlice";
 
@@ -23,11 +23,10 @@ export default function App({
 
   const pathName = router.pathname;
   const isOrder = pathName.split("/")[1] === "order";
-  const selectedLocationId = getSelectedLocationId() as string;
 
   useEffect(() => {
     if (!isOrder) {
-      store.dispatch(fetchAppData(selectedLocationId));
+      store.dispatch(fetchAppData());
     }
   }, [isOrder]);
 

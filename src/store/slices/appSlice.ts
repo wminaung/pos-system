@@ -1,6 +1,6 @@
 import { config } from "@/config/config";
 import { AppDataResponse } from "@/typings/types";
-import { getSelectedLocationId } from "@/utils";
+
 import {
   PayloadAction,
   createAsyncThunk,
@@ -34,7 +34,7 @@ const initialState: AppState = {
 };
 export const fetchAppData = createAsyncThunk(
   "app/fetchAppData",
-  async (locationId: string, thunkAPI) => {
+  async (locationId: string | undefined, thunkAPI) => {
     thunkAPI.dispatch(setAppLoading(true));
     const response = await fetch(
       `${config.backofficeApiBaseUrl}/app?locationId=${locationId}`
