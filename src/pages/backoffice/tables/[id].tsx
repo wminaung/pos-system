@@ -66,7 +66,7 @@ const EditTable = () => {
       <Box sx={{ my: 4 }}>
         <Link
           href={{
-            pathname: `http://localhost:3000/order/location/[locationId]/table/[tableId]`,
+            pathname: `${config.orderBaseRoute}/location/[locationId]/table/[tableId]`,
             query: {
               locationId: selectedLocationId,
               tableId: table.id,

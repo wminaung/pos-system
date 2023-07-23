@@ -3,7 +3,6 @@ import { Button, Grid, Paper, Typography, IconButton } from "@mui/material";
 import { styled } from "@mui/system";
 import { signIn, signOut, useSession } from "next-auth/react";
 import GoogleIcon from "@mui/icons-material/Google";
-import Layout from "@/components/Layout";
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   height: "100vh",
