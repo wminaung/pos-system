@@ -195,7 +195,7 @@ const handleGetRequest = async (
     const data = await getData(newUser, newLocation.id);
     return res.status(200).json(data);
   }
-  const selectedLocationId = Number(req.query.locationId as string);
+  const selectedLocationId = Number(req.query.locationId as string | undefined);
   console.log(selectedLocationId, "selectedLocationId -> location=?");
   const data = await getData(user, selectedLocationId);
   return res.status(200).json(data);
@@ -342,7 +342,9 @@ const getData = async (user: user, selectedLocationId?: number) => {
     menusMenuCategoriesLocations,
     tables,
     menusAddonCategories,
-    selectedLocationId: selectedLocationId || locations[0].id,
+    selectedLocationId: selectedLocationId
+      ? String(selectedLocationId)
+      : String(locations[0].id),
     orderlines,
     orders,
   };
