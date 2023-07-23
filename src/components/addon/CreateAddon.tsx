@@ -20,6 +20,7 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { config } from "@/config/config";
 import { addon } from "@prisma/client";
 import { Payload } from "@/typings/types";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 interface NewAddon {
   name: string;
@@ -28,15 +29,19 @@ interface NewAddon {
 }
 const CreateAddon = () => {
   //************************* */
-
+  const {
+    state: {
+      app: { selectedLocationId },
+      addonCategories,
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
   const [newAddon, setNewAddon] = useState<NewAddon>({
     name: "",
     price: 0,
     addon_category_id: "",
   });
-
-  const { addonCategories } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
 
   const handleCreateAddon = async () => {
     const { name, price, addon_category_id } = newAddon;
@@ -61,7 +66,7 @@ const CreateAddon = () => {
     }
     const data = await res.json();
     console.log("created success", data);
-    fetchData();
+    dispatch(actions.fetchAppData(selectedLocationId as string));
   };
   const handleChange = (event: SelectChangeEvent) => {
     const selectedId = event.target.value;

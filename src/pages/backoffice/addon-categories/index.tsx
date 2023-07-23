@@ -18,13 +18,22 @@ import Layout from "@/components/Layout";
 import DialogBox from "@/components/DialogBox";
 import CreateAddonCategory from "@/components/addonCategory/CreateAddonCategory";
 import { config } from "@/config/config";
+import { useAppSlice } from "@/store/slices/appSlice";
+import ItemCard from "@/components/ItemCard";
+import { BookIcon, QueueIcon } from "@/components/icon";
+import { theme } from "@/config/myTheme";
 
 const AddonCategories = () => {
   //*********************** */
 
-  const { addonCategories } = useBackoffice();
+  const {
+    state: {
+      app: { selectedLocationId },
+      addonCategories,
+    },
 
-  const { fetchData } = useBackofficeUpdate();
+    fetchData,
+  } = useAppSlice();
 
   const handleDelete = async (id: number) => {
     const res = await fetch(
@@ -59,47 +68,12 @@ const AddonCategories = () => {
         justifyContent={"center"}
       >
         {addonCategories.map((addonCategory) => (
-          <Box sx={{ m: 2 }} key={addonCategory.id}>
-            <Card
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                background: "#e1e1e1",
-                boxShadow: 3,
-              }}
-            >
-              <Box
-                sx={{ display: "flex", flexDirection: "column", width: 220 }}
-              >
-                <CardContent sx={{ flex: "1 0 auto" }}>
-                  <Typography component="div" variant="subtitle1">
-                    {addonCategory.name}
-                  </Typography>
-                </CardContent>
-
-                <Box
-                  sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}
-                >
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() =>
-                      addonCategory.id && handleDelete(addonCategory.id)
-                    }
-                  >
-                    <DeleteForever sx={{ height: 38, width: 38 }} />
-                  </IconButton>
-                  <Link
-                    href={`/backoffice/addon-categories/${addonCategory.id}`}
-                    style={{ marginLeft: 8 }}
-                  >
-                    <IconButton aria-label="edit">
-                      <EditNote sx={{ height: 38, width: 38 }} />
-                    </IconButton>
-                  </Link>
-                </Box>
-              </Box>
-            </Card>
-          </Box>
+          <ItemCard
+            icon={<BookIcon sx={{ fontSize: 50, color: theme.text, p: 2 }} />}
+            title={addonCategory.name}
+            href={`/backoffice/addon-categories/${addonCategory.id}`}
+            key={addonCategory.id}
+          />
         ))}
       </Box>
     </Layout>

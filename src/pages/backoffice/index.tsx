@@ -1,10 +1,11 @@
-import React from "react";
-import { Button, Grid, Paper, Typography, IconButton } from "@mui/material";
+import React, { useEffect } from "react";
+import { Button, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import { signIn, signOut, useSession } from "next-auth/react";
-import GoogleIcon from "@mui/icons-material/Google";
+import { useSession } from "next-auth/react";
 import Layout from "@/components/Layout";
-import { useBackoffice } from "@/contexts/BackofficeContext";
+import { useAppSlice } from "@/store/slices/appSlice";
+import { useRouter } from "next/router";
+import { getSelectedLocationId, setSelectedLocationId } from "@/utils";
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   height: "100vh",
@@ -19,14 +20,29 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
 }));
 
-const StyledButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(3, 0, 2),
-}));
+const BackOfficePage = () => {
+  const { data, status } = useSession();
+  const router = useRouter();
+  const { state } = useAppSlice();
+  const { isLoading, selectedLocationId: defaultSelectedLocationId } =
+    state.app;
+  const selectedLocationId = getSelectedLocationId() as string;
+  useEffect(() => {
+    if (status === "authenticated") {
+      !isLoading && router.push("/backoffice/orders");
+    } else if (status === "unauthenticated") {
+      router.push("/auth/signin");
+    } else {
+      console.log("is still ....");
+    }
+  }, [data, router, isLoading]);
 
-const BackOffice = () => {
-  const { data: session } = useSession();
-  console.log("session : ", session);
-  const data = useBackoffice();
+  // useEffect(() => {
+  //   if (defaultSelectedLocationId) {
+  //     dispatch(actions.app.fetchAppData(defaultSelectedLocationId));
+  //     setSelectedLocationId(defaultSelectedLocationId);
+  //   }
+  // }, [defaultSelectedLocationId]);
 
   return (
     <Layout>
@@ -40,6 +56,14 @@ const BackOffice = () => {
           elevation={6}
           square
         >
+          <Button
+            onClick={() => {
+              console.log("first");
+              // dispatch(actions.menus.setMenus([]));
+            }}
+          >
+            cljc
+          </Button>
           <StyledPaper>
             <Typography component="h1" variant="h5" gutterBottom>
               Welcome to happy pos backoffice
@@ -51,4 +75,4 @@ const BackOffice = () => {
   );
 };
 
-export default BackOffice;
+export default BackOfficePage;

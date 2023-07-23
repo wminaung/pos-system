@@ -4,11 +4,14 @@ import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { useOrder } from "@/contexts/OrderContext";
+import { useClientSlice } from "@/store/slices/clientSlice";
 
 const ViewCartBar = () => {
   const router = useRouter();
   const { locationId, tableId } = router.query;
-  const { orderlineItems } = useOrder();
+  const {
+    state: { orderlineItems },
+  } = useClientSlice();
   const cartText = `You have ${orderlineItems.length} item in cart.`;
   return (
     <Box>

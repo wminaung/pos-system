@@ -26,8 +26,33 @@ export default function handler(
 }
 
 // TODO -
-const handleGetRequest = (req: NextApiRequest, res: NextApiResponse<any>) => {
-  res.status(200).json({ message: `${req.method} ok!!` });
+const handleGetRequest = async (
+  req: NextApiRequest,
+  res: NextApiResponse<any>
+) => {
+  const locationId = Number(req.query.locationId as string);
+
+  try {
+    const menus = await prisma.menu.findMany({
+      orderBy: {
+        id: "asc",
+      },
+      include: {
+        menu_addon_category: true,
+        menu_menu_category_location: {
+          where: {
+            location_id: locationId,
+          },
+        },
+      },
+      where: {
+        is_archived: false,
+      },
+    });
+    return res.status(200).json({ data: { menus } });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
 };
 
 // TODO - create Menu
@@ -40,10 +65,11 @@ const handlePostRequest = async (
 
   try {
     const joiResult = await schema.menu.payload.create.validateAsync(req.body);
-    const { name, price, description, addonCatIds, asset_url } =
+    const { name, price, description, addonCatIds, asset_url, menuCatIds } =
       joiResult as Payload.Menu.Create;
     console.log("body", req.body);
-    const newMenus = await prisma.menu.create({
+
+    const newMenu = await prisma.menu.create({
       data: {
         name,
         price,
@@ -57,12 +83,25 @@ const handlePostRequest = async (
             })),
           },
         },
+        menu_menu_category_location: {
+          createMany: {
+            data: menuCatIds.map((menuCatId) => ({
+              location_id: locationId,
+              menu_category_id: menuCatId,
+            })),
+          },
+        },
+      },
+      include: {
+        menu_addon_category: true,
+        menu_menu_category_location: true,
+        orderline: true,
       },
     });
-
+    console.log("newMenu", newMenu);
     return res
       .status(200)
-      .json({ message: `${req.method} ok!!`, newMenus, joiResult });
+      .json({ message: `${req.method} ok!!`, newMenu, joiResult });
   } catch (error) {
     console.error({ error });
     return res.status(500).json({ message: "check prisma query", error });

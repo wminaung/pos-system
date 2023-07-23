@@ -35,30 +35,32 @@ import { menu } from "@prisma/client";
 import { theme as myTheme } from "@/config/myTheme";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const MenuDetail = () => {
   // **************************************************
-
   const {
-    menus,
-    menusMenuCategoriesLocations,
-    menuCategories,
-    addonCategories,
-    selectedLocationId,
-  } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
-
-  console.log("menus :::", menus);
+    state: {
+      app: { selectedLocationId },
+      menus,
+      menusMenuCategoriesLocations,
+      addonCategories,
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   const router = useRouter();
   const { id: menuIdStr } = router.query;
   const [menu, setMenu] = useState<Payload.Menu.Update>();
   const [oldMenu, setOldMenu] = useState<Payload.Menu.Update>();
   const [menuImage, setMenuImage] = useState<File>();
-  const theme = useTheme();
+  const [showPreviewImage, setShowPreviewImage] = useState<
+    string | undefined | null
+  >(null);
 
   const menuId = parseInt(menuIdStr as string, 10);
   const hasMenu = menus.find((menu) => menu.id === menuId && !menu.is_archived);
@@ -87,11 +89,13 @@ const MenuDetail = () => {
         ...hasMenu,
         addonCatIds: addonCatIds,
         isRequired,
+        menuCatIds: [],
       });
       setOldMenu({
         ...hasMenu,
         addonCatIds: addonCatIds,
         isRequired,
+        menuCatIds: [],
       });
     }
   }, [hasMenu]);
@@ -103,7 +107,7 @@ const MenuDetail = () => {
       </Stack>
     );
   }
-  console.log({ c: oldMenu.isRequired, g: menu.isRequired, oldMenu });
+
   // todo UPDATE
   const handleUpdateMenu = async () => {
     // console.log(menu, selectedMenuCatIds);
@@ -130,6 +134,7 @@ const MenuDetail = () => {
       if (response.ok) {
         const imageRes = await response.json();
         assetUrl = imageRes.assetUrl as string;
+        setShowPreviewImage(null);
       } else {
         assetUrl = oldAssetUrl;
       }
@@ -170,8 +175,9 @@ const MenuDetail = () => {
       console.log(await menuRes.json());
       return alert("Menu Update Fail");
     }
-    fetchData();
+    //todo fetchData();
     console.log(await menuRes.json());
+    dispatch(actions.fetchAppData(selectedLocationId as string));
     alert("updated success");
   };
 
@@ -187,12 +193,14 @@ const MenuDetail = () => {
     }
     const resData = await res.json();
     console.log(resData, "resData");
-    await fetchData();
+    //todo   await fetchData();
+    dispatch(actions.fetchAppData(selectedLocationId as string));
     await router.push("/backoffice/menus");
   };
 
   const onFileSelected = (files: File[]) => {
     setMenuImage(files[0]);
+    setShowPreviewImage(URL.createObjectURL(files[0]));
   };
 
   const { name, price, description, addonCatIds, asset_url } = menu;
@@ -301,7 +309,10 @@ const MenuDetail = () => {
           label="required"
         />
         <Box sx={{ mb: 2 }}>
-          <FileDropZone onFileSelected={onFileSelected} />
+          <FileDropZone
+            onFileSelected={onFileSelected}
+            showPreviewImage={showPreviewImage}
+          />
         </Box>
         <Button variant="contained" onClick={handleUpdateMenu}>
           Update

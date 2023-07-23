@@ -1,5 +1,5 @@
 import { config } from "@/config/config";
-import { useBackofficeUpdate } from "@/contexts/BackofficeContext";
+import { useAppSlice } from "@/store/slices/appSlice";
 import { Payload } from "@/typings/types";
 import {
   Box,
@@ -18,7 +18,7 @@ const CreateAddonCategory = () => {
   });
 
   console.log(addonCategory);
-  const { fetchData } = useBackofficeUpdate();
+  const { fetchData } = useAppSlice();
   const handleCreateAddonCategory = async () => {
     const { name, isRequired } = addonCategory;
     if (!name || typeof isRequired !== "boolean") {

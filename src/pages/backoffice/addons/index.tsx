@@ -1,40 +1,31 @@
-import {
-  Box,
-  TextField,
-  Checkbox,
-  Button,
-  Autocomplete,
-  FormControl,
-  FormLabel,
-  FormControlLabel,
-  Card,
-  CardContent,
-  Typography,
-  IconButton,
-  InputLabel,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-} from "@mui/material";
+import { Box, Card, CardContent, Typography, IconButton } from "@mui/material";
 
-import { useRef, useState } from "react";
 import {
   useBackoffice,
   useBackofficeUpdate,
 } from "@/contexts/BackofficeContext";
 import { DeleteForever, EditNote } from "@mui/icons-material";
-import Alertor from "@/components/Alertor";
 import Link from "next/link";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
 import DialogBox from "@/components/DialogBox";
 import CreateAddon from "@/components/addon/CreateAddon";
+import { useAppSlice } from "@/store/slices/appSlice";
+import ItemCard from "@/components/ItemCard";
+import { EggIcon } from "@/components/icon";
+import { theme } from "@/config/myTheme";
 
 const Addons = () => {
   // ********************************
-
-  const { addons, addonCategories } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+  const {
+    state: {
+      app: { selectedLocationId },
+      addons,
+      addonCategories,
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   const handleDeleteAddon = async (addonId: number) => {
     const res = await fetch(
@@ -46,12 +37,8 @@ const Addons = () => {
     if (!res.ok) {
       return alert("not ok");
     }
-    await fetchData();
-    // deleteAddon(addonId, (error, data) => {
-    //   if (data) {
-    //     setDeletedAlert(true);
-    //   }
-    // });
+    dispatch(actions.fetchAppData(selectedLocationId as string));
+    //todo await fetchData();
   };
 
   return (
@@ -70,45 +57,12 @@ const Addons = () => {
         justifyContent={"center"}
       >
         {addons.map((addon) => (
-          <Box sx={{ m: 2 }} key={addon.id}>
-            <Card
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                background: "#e1e1e1",
-                boxShadow: 3,
-              }}
-            >
-              <Box
-                sx={{ display: "flex", flexDirection: "column", width: 220 }}
-              >
-                <CardContent sx={{ flex: "1 0 auto" }}>
-                  <Typography component="div" variant="subtitle1">
-                    {addon.name}
-                  </Typography>
-                </CardContent>
-
-                <Box
-                  sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}
-                >
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => addon.id && handleDeleteAddon(addon.id)}
-                  >
-                    <DeleteForever sx={{ height: 38, width: 38 }} />
-                  </IconButton>
-                  <Link
-                    href={`/backoffice/addons/${addon.id}`}
-                    style={{ marginLeft: 8 }}
-                  >
-                    <IconButton aria-label="edit">
-                      <EditNote sx={{ height: 38, width: 38 }} />
-                    </IconButton>
-                  </Link>
-                </Box>
-              </Box>
-            </Card>
-          </Box>
+          <ItemCard
+            icon={<EggIcon sx={{ fontSize: 50, color: theme.text, p: 2 }} />}
+            title={addon.name}
+            href={`/backoffice/addons/${addon.id}`}
+            key={addon.id}
+          />
         ))}
       </Box>
     </Layout>

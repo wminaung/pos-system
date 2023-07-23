@@ -18,6 +18,10 @@ import {
 } from "@/contexts/BackofficeContext";
 import Image from "next/image";
 import { defaultQRCodeSrc } from "@/utils";
+import { useAppSlice } from "@/store/slices/appSlice";
+import ItemCard from "@/components/ItemCard";
+import { TableBarIcon } from "@/components/icon";
+import { theme } from "@/config/myTheme";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -31,8 +35,14 @@ const MenuProps = {
 };
 
 const Tables = () => {
-  const { tables, selectedLocationId } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+  const {
+    fetchData,
+    state: {
+      tables,
+      app: { selectedLocationId },
+    },
+  } = useAppSlice();
+
   const [open, setOpen] = useState(false);
 
   const [newTable, setNewTable] = useState({
@@ -94,20 +104,14 @@ const Tables = () => {
         </Box>
         <Box sx={{ display: "flex" }}>
           {validTables.map((table) => (
-            <Box sx={{ textAlign: "center", mr: 4 }} key={table.id}>
-              <Link
-                href={`/backoffice/tables/${table.id}`}
-                style={{ textDecoration: "none", color: "#000000" }}
-              >
-                <Image
-                  src={table.asset_url || defaultQRCodeSrc}
-                  alt={table.name}
-                  width={170}
-                  height={170}
-                />
-              </Link>
-              <Typography sx={{ mt: 1 }}>{table.name}</Typography>
-            </Box>
+            <ItemCard
+              icon={
+                <TableBarIcon sx={{ fontSize: 50, color: theme.text, p: 2 }} />
+              }
+              title={table.name}
+              href={`/backoffice/tables/${table.id}`}
+              key={table.id}
+            />
           ))}
         </Box>
       </Box>

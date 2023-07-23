@@ -8,10 +8,17 @@ import { Location } from "@/typings/types";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
 import { theme } from "@/config/myTheme";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const Locations = () => {
-  const { locations, selectedLocationId } = useBackoffice();
-  const { fetchData } = useBackofficeUpdate();
+  const {
+    state: {
+      app: { selectedLocationId },
+      locations,
+    },
+    actions,
+    dispatch,
+  } = useAppSlice();
 
   const [newLocation, setNewLocation] = useState({
     address: "",
@@ -62,8 +69,7 @@ const Locations = () => {
       );
       if (res.ok) {
         const dd = await res.json();
-        fetchData();
-        console.log(dd);
+        dispatch(actions.fetchAppData(selectedLocationId as string));
       }
       ///
     }
@@ -92,7 +98,7 @@ const Locations = () => {
     });
 
     if (res.ok) {
-      fetchData();
+      dispatch(actions.fetchAppData(selectedLocationId as string));
     } else {
       alert("fail");
     }
@@ -113,7 +119,7 @@ const Locations = () => {
     );
     if (res.ok) {
       console.log(await res.json());
-      return fetchData();
+      dispatch(actions.fetchAppData(selectedLocationId as string));
     } else {
       alert(
         "You can't delete this location Please delete first menu form this location"
