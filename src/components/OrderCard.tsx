@@ -29,7 +29,7 @@ interface Props {
     quantity: number;
   };
 }
-
+const orderStatus = OrderStatus;
 const OrderCard = ({ validMenu }: Props) => {
   const [status, setStatus] = useState<OrderStatus>("PENDING");
   const {
@@ -185,7 +185,7 @@ const OrderCard = ({ validMenu }: Props) => {
                 label="Age"
                 onChange={(e) => handleStatusChange(e)}
               >
-                {Object.values(OrderStatus).map((status) => (
+                {Object.values(orderStatus).map((status) => (
                   <MenuItem key={status} value={status}>
                     {status}
                   </MenuItem>
