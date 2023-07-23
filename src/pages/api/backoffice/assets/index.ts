@@ -10,10 +10,6 @@ export const config = {
   },
 };
 
-type Data = {
-  name: string;
-};
-
 type CustomNextApiRequest = NextApiRequest &
   Request & {
     files: any[];
