@@ -1,13 +1,10 @@
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
+
 import { Location } from "@/typings/types";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
-import { theme } from "@/config/myTheme";
+
 import { useAppSlice } from "@/store/slices/appSlice";
 
 const Locations = () => {

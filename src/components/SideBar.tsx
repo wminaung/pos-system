@@ -19,7 +19,6 @@ import FastfoodIcon from "@mui/icons-material/Fastfood";
 import ClassIcon from "@mui/icons-material/Class";
 import CategoryIcon from "@mui/icons-material/Category";
 import TableBarIcon from "@mui/icons-material/TableBar";
-import { useBackoffice } from "@/contexts/BackofficeContext";
 import { useAppSlice } from "@/store/slices/appSlice";
 
 const sidebarMenuItems = [

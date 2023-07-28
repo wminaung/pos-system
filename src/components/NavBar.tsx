@@ -12,30 +12,21 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ClassIcon from "@mui/icons-material/Class";
 import CategoryIcon from "@mui/icons-material/Category";
 import { useState } from "react";
-import { useBackoffice } from "../contexts/BackofficeContext";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { theme } from "@/config/myTheme";
 import { config } from "@/config/config";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 interface Props {
   title?: string;
 }
 
 const NavBar = ({ title }: Props) => {
-  const { locations, selectedLocationId } = useBackoffice();
   const { data: session, status } = useSession();
   const router = useRouter();
-
-  // if (!selectedLocationId || !getAccessToken()) return <h1>ahhaha</h1>;
-  const selectedLocationName = locations.find(
-    (location) => String(location.id) === selectedLocationId
-  )?.name;
-  // const selectedLocation = locations.find(
-  //   (location) => String(location.id) === selectedLocationId
-  // );
 
   return (
     <Box>

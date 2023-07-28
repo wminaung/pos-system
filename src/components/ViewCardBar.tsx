@@ -2,8 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import { useRouter } from "next/router";
-import { useContext } from "react";
-import { useOrder } from "@/contexts/OrderContext";
+
 import { useClientSlice } from "@/store/slices/clientSlice";
 
 const ViewCartBar = () => {

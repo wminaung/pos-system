@@ -25,17 +25,21 @@ interface AppState {
   isLoading: boolean;
   error: Error | null;
   selectedLocationId?: string | null;
+  init: boolean;
 }
 
 const initialState: AppState = {
   isLoading: false,
   error: null,
   selectedLocationId: null,
+  init: false,
 };
 export const fetchAppData = createAsyncThunk(
   "app/fetchAppData",
   async (locationId: string | undefined, thunkAPI) => {
-    thunkAPI.dispatch(setAppLoading(true));
+    const dispatch = thunkAPI.dispatch;
+
+    dispatch(appActions.setAppLoading(true));
     const response = await fetch(
       `${config.backofficeApiBaseUrl}/app?locationId=${locationId}`
     );
@@ -55,8 +59,6 @@ export const fetchAppData = createAsyncThunk(
       orderlines,
       orders,
     } = responseJson as AppDataResponse;
-
-    const dispatch = thunkAPI.dispatch;
 
     dispatch(
       setAppSelectedLocationId(
@@ -83,7 +85,8 @@ export const fetchAppData = createAsyncThunk(
     );
 
     /* final */
-    dispatch(setAppLoading(false));
+    dispatch(appActions.setAppLoading(false));
+    dispatch(appActions.setInit(true));
   }
 );
 
@@ -91,7 +94,10 @@ export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    setAppLoading: (state, action) => {
+    setInit: (state, action: PayloadAction<boolean>) => {
+      state.init = action.payload;
+    },
+    setAppLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
     setAppSelectedLocationId: (

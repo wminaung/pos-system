@@ -1,7 +1,7 @@
 import QuantitySelector from "@/components/QuantitySelector";
 import ViewCartBar from "@/components/ViewCardBar";
 import { theme } from "@/config/myTheme";
-import { useOrder } from "@/contexts/OrderContext";
+
 import { useClientSlice } from "@/store/slices/clientSlice";
 import { AddonCategory } from "@/typings/types";
 import {

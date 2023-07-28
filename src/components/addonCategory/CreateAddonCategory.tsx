@@ -17,7 +17,6 @@ const CreateAddonCategory = () => {
     isRequired: false,
   });
 
-  console.log(addonCategory);
   const { fetchData } = useAppSlice();
   const handleCreateAddonCategory = async () => {
     const { name, isRequired } = addonCategory;

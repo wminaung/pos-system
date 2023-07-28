@@ -58,8 +58,6 @@ const Hero = () => {
                 fontSize: { xs: "16px", md: "20px" },
                 width: "fit-content",
                 backgroundColor: "#4C4C6D",
-                zIndex: 10,
-                position: "relative",
               }}
               onClick={() => router.push("/backoffice")}
             >

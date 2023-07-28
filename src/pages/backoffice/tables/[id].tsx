@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Layout from "@/components/Layout";
 import { config } from "@/config/config";
-import { useBackoffice } from "@/contexts/BackofficeContext";
+
 import { useAppSlice } from "@/store/slices/appSlice";
 import { defaultQRCodeSrc } from "@/utils";
 import { Box, Button, TextField, Typography } from "@mui/material";

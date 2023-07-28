@@ -4,28 +4,20 @@ import {
   Button,
   Card,
   Checkbox,
-  Chip,
   FormControl,
   FormControlLabel,
   InputLabel,
   LinearProgress,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  SelectChangeEvent,
   Stack,
   Switch,
   TextField,
 } from "@mui/material";
 import { use, useEffect, useState } from "react";
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
+
 import { Textarea } from "@mui/joy";
 import FileDropZone from "@/components/FileDropZone";
 import AspectRatio from "@mui/joy/AspectRatio";
-import { Menu, Payload } from "@/typings/types";
+import { Payload } from "@/typings/types";
 import { config } from "@/config/config";
 import { Theme, useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";

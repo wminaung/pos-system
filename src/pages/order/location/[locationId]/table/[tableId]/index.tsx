@@ -4,7 +4,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect, useState } from "react";
-import { useOrder } from "@/contexts/OrderContext";
+
 import MenuCard from "@/components/MenuCard";
 import { useRouter } from "next/router";
 import ViewCartBar from "@/components/ViewCardBar";

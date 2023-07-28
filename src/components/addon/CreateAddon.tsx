@@ -1,24 +1,15 @@
 import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
-import {
   Box,
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import { useRef, useState } from "react";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { useState } from "react";
 import { config } from "@/config/config";
-import { addon } from "@prisma/client";
 import { Payload } from "@/typings/types";
 import { useAppSlice } from "@/store/slices/appSlice";
 

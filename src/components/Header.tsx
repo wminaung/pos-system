@@ -21,6 +21,7 @@ const Header = () => {
         src={headerImg}
         style={{
           width: "100%",
+          height: "auto",
           padding: 0,
           margin: 0,
           objectFit: "cover",
@@ -42,7 +43,14 @@ const Header = () => {
             display: { xs: "none", md: "block" },
           }}
         >
-          <Image src={PandaCooking} alt="header-image" />
+          <Image
+            src={PandaCooking}
+            alt="header-image"
+            style={{
+              width: "auto",
+              height: "auto",
+            }}
+          />
         </Box>
       </Slide>
       <Typography

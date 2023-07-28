@@ -5,19 +5,12 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-  Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { config } from "@/config/config";
 import Layout from "@/components/Layout";
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
-import Image from "next/image";
-import { defaultQRCodeSrc } from "@/utils";
+
 import { useAppSlice } from "@/store/slices/appSlice";
 import ItemCard from "@/components/ItemCard";
 import { TableBarIcon } from "@/components/icon";

@@ -1,9 +1,5 @@
 import { Box, Card, CardContent, Typography, IconButton } from "@mui/material";
 
-import {
-  useBackoffice,
-  useBackofficeUpdate,
-} from "@/contexts/BackofficeContext";
 import { DeleteForever, EditNote } from "@mui/icons-material";
 import Link from "next/link";
 import { config } from "@/config/config";

@@ -1,9 +1,13 @@
 import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "./Layout";
-import { Box } from "@mui/material";
+import { Box, Dialog, DialogContent } from "@mui/material";
+import { useAppSlice } from "@/store/slices/appSlice";
 
 const Loading = () => {
+  const { state } = useAppSlice();
+  const { isLoading, init } = state.app;
+
   return (
     <Box
       sx={{
@@ -13,7 +17,11 @@ const Loading = () => {
         justifyContent: "center",
       }}
     >
-      <CircularProgress />
+      <Dialog open={isLoading}>
+        <DialogContent sx={{ color: "blue" }}>
+          <CircularProgress />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
