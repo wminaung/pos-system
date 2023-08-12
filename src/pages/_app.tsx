@@ -20,26 +20,27 @@ export default function App({
   const router = useRouter();
 
   const pathName = router.pathname;
-  const isBackoffice = pathName.split("/")[1] === "backoffice";
+  const isOrder = pathName.split("/")[1] === "order";
+  const isRoot = pathName.split("/")[1] === "";
 
   useEffect(() => {
-    if (isBackoffice) {
+    if (!isOrder && !isRoot) {
       store.dispatch(fetchAppData());
     }
-  }, [isBackoffice]);
+  }, [isOrder, isRoot]);
 
   return (
     <Provider store={store}>
-      {isBackoffice ? (
+      {isOrder || isRoot ? (
+        <OrderLayout>
+          <Component {...pageProps} />
+        </OrderLayout>
+      ) : (
         <SessionProvider session={session}>
           <BackofficeApp>
             <Component {...pageProps} />
           </BackofficeApp>
         </SessionProvider>
-      ) : (
-        <OrderLayout>
-          <Component {...pageProps} />
-        </OrderLayout>
       )}
     </Provider>
   );

@@ -38,7 +38,7 @@ export const fetchAppData = createAsyncThunk(
   "app/fetchAppData",
   async (locationId: string | undefined, thunkAPI) => {
     const dispatch = thunkAPI.dispatch;
-
+    dispatch(appActions.setInit(true));
     dispatch(appActions.setAppLoading(true));
     const response = await fetch(
       `${config.backofficeApiBaseUrl}/app?locationId=${locationId}`
@@ -86,7 +86,6 @@ export const fetchAppData = createAsyncThunk(
 
     /* final */
     dispatch(appActions.setAppLoading(false));
-    dispatch(appActions.setInit(true));
   }
 );
 
