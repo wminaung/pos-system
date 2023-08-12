@@ -21,16 +21,17 @@ export default function App({
 
   const pathName = router.pathname;
   const isOrder = pathName.split("/")[1] === "order";
+  const isRoot = pathName.split("/")[1] === "";
 
   useEffect(() => {
-    if (!isOrder) {
+    if (!isOrder && !isRoot) {
       store.dispatch(fetchAppData());
     }
-  }, [isOrder]);
+  }, [isOrder, isRoot]);
 
   return (
     <Provider store={store}>
-      {isOrder ? (
+      {isOrder || isRoot ? (
         <OrderLayout>
           <Component {...pageProps} />
         </OrderLayout>
