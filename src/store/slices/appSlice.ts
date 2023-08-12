@@ -43,7 +43,12 @@ export const fetchAppData = createAsyncThunk(
     const response = await fetch(
       `${config.backofficeApiBaseUrl}/app?locationId=${locationId}`
     );
+    if (!response.ok) {
+      dispatch(appActions.setAppLoading(false));
 
+      console.log("connection time out");
+      return;
+    }
     const responseJson = await response.json();
     const {
       company,
