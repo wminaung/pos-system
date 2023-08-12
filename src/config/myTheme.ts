@@ -1,7 +1,9 @@
 export const theme = {
-  main: "#99A98F",
-  second: "#C1D0B5",
-  third: "#D6E8DB",
-  white: "#FFF8DE",
-  text: "#970443",
+  second: "#528078",
+  main: "#3E615B",
+  third: "#FEC100",
+  white: "#fff",
+  text: "#EBEBEB",
+  iconColor: "#025464",
+  extra: "#025464",
 };

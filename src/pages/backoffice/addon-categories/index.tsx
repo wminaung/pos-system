@@ -66,7 +66,9 @@ const AddonCategories = () => {
       >
         {addonCategories.map((addonCategory) => (
           <ItemCard
-            icon={<BookIcon sx={{ fontSize: 50, color: theme.text, p: 2 }} />}
+            icon={
+              <BookIcon sx={{ fontSize: 50, color: theme.iconColor, p: 2 }} />
+            }
             title={addonCategory.name}
             href={`/backoffice/addon-categories/${addonCategory.id}`}
             key={addonCategory.id}

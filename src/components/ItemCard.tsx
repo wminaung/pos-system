@@ -1,3 +1,4 @@
+import { theme } from "@/config/myTheme";
 import { Paper, Typography } from "@mui/material";
 import Link from "next/link";
 import { ReactNode } from "react";
@@ -14,7 +15,7 @@ const ItemCard = ({ icon, title, href, subtitle }: Props) => {
     return (
       <Link href={href} style={{ textDecoration: "none", color: "#000000" }}>
         <Paper
-          elevation={2}
+          elevation={9}
           sx={{
             width: 170,
             height: 170,

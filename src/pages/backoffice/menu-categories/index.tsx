@@ -50,7 +50,7 @@ const MenuCategories = () => {
               <ItemCard
                 icon={
                   <CategoryIcon
-                    sx={{ fontSize: 50, color: theme.text, p: 2 }}
+                    sx={{ fontSize: 50, color: theme.iconColor, p: 2 }}
                   />
                 }
                 title={menuCategory.name}

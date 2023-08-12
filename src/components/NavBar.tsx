@@ -5,20 +5,9 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
-import LunchDiningIcon from "@mui/icons-material/LunchDining";
-import LocalDiningIcon from "@mui/icons-material/LocalDining";
-import SettingsIcon from "@mui/icons-material/Settings";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import ClassIcon from "@mui/icons-material/Class";
-import CategoryIcon from "@mui/icons-material/Category";
-import { useState } from "react";
-
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import { theme } from "@/config/myTheme";
-import { config } from "@/config/config";
-import { useAppSlice } from "@/store/slices/appSlice";
 
 interface Props {
   title?: string;
@@ -55,6 +44,7 @@ const NavBar = ({ title }: Props) => {
           >  </Link> */}
           <Button
             color="inherit"
+            variant="outlined"
             size="large"
             onClick={() => {
               status === "authenticated"

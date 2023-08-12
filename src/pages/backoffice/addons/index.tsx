@@ -54,7 +54,9 @@ const Addons = () => {
       >
         {addons.map((addon) => (
           <ItemCard
-            icon={<EggIcon sx={{ fontSize: 50, color: theme.text, p: 2 }} />}
+            icon={
+              <EggIcon sx={{ fontSize: 50, color: theme.iconColor, p: 2 }} />
+            }
             title={addon.name}
             href={`/backoffice/addons/${addon.id}`}
             key={addon.id}

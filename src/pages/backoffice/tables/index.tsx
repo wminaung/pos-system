@@ -99,7 +99,9 @@ const Tables = () => {
           {validTables.map((table) => (
             <ItemCard
               icon={
-                <TableBarIcon sx={{ fontSize: 50, color: theme.text, p: 2 }} />
+                <TableBarIcon
+                  sx={{ fontSize: 50, color: theme.iconColor, p: 2 }}
+                />
               }
               title={table.name}
               href={`/backoffice/tables/${table.id}`}

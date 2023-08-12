@@ -1,5 +1,4 @@
 import { useAppSlice } from "@/store/slices/appSlice";
-import { NextComponentType, NextPageContext } from "next";
 import Loading from "./Loading";
 import { Box } from "@mui/material";
 
