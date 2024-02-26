@@ -9,14 +9,11 @@ import { Session } from "next-auth";
 import { useEffect, useState } from "react";
 import { fetchAppData } from "@/store/slices/appSlice";
 import BackofficeApp from "@/components/BackofficeApp";
+import { config } from "@/config/config";
 
-type CustomeAppProps = AppProps & { session: Session };
+type CustomAppProps = AppProps & { session: Session };
 
-export default function App({
-  Component,
-  pageProps,
-  session,
-}: CustomeAppProps) {
+export default function App({ Component, pageProps, session }: CustomAppProps) {
   const router = useRouter();
 
   const pathName = router.pathname;
@@ -25,23 +22,16 @@ export default function App({
 
   useEffect(() => {
     if (!isOrder && !isRoot) {
+      console.log("store data is fetching");
       store.dispatch(fetchAppData());
     }
   }, [isOrder, isRoot]);
-
+  console.log({ pathName });
   return (
     <Provider store={store}>
-      {isOrder || isRoot ? (
-        <OrderLayout>
-          <Component {...pageProps} />
-        </OrderLayout>
-      ) : (
-        <SessionProvider session={session}>
-          <BackofficeApp>
-            <Component {...pageProps} />
-          </BackofficeApp>
-        </SessionProvider>
-      )}
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
     </Provider>
   );
 }

@@ -29,12 +29,10 @@ export const menusSlice = createSlice({
 });
 
 export const fetchMenus = createAsyncThunk(
-  "app/fetchAppData",
+  "fetch/get/menus",
   async (locationId: string, thunkAPI) => {
     thunkAPI.dispatch(setAppLoading(true));
-    const response = await fetch(
-      `${config.backofficeApiBaseUrl}/app?locationId=${locationId}`
-    );
+    const response = await fetch(`${config.backofficeApiBaseUrl}/menus`);
 
     const responseJson = await response.json();
     const {} = responseJson;

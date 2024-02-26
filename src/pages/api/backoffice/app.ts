@@ -46,159 +46,159 @@ const handleGetRequest = async (
     (session?.user && session.user.email) || "",
     colors.bold.bgGreen("\n</server session>\n")
   );
+  return res.status(200).json({ something: "issomethng" });
+  // if (!session || !session?.user || !session.user.email) {
+  //   return res.status(404).json({ message: "session not exists" });
+  // }
 
-  if (!session || !session?.user || !session.user.email) {
-    return res.status(404).json({ message: "session not exists" });
-  }
+  // const user = await prisma.user.findUnique({
+  //   where: {
+  //     email: session.user.email,
+  //   },
+  // });
+  // if (!user) {
+  //   const newUserEmail = session.user.email;
+  //   const newUserImage = session.user.image || "";
+  //   const newUserName = session.user.name || "";
 
-  const user = await prisma.user.findUnique({
-    where: {
-      email: session.user.email,
-    },
-  });
-  if (!user) {
-    const newUserEmail = session.user.email;
-    const newUserImage = session.user.image || "";
-    const newUserName = session.user.name || "";
+  //   const newCompany = await prisma.company.create({
+  //     data: {
+  //       name: "Default Company",
+  //     },
+  //   });
 
-    const newCompany = await prisma.company.create({
-      data: {
-        name: "Default Company",
-      },
-    });
+  //   const newUser = await prisma.user.create({
+  //     data: {
+  //       email: newUserEmail,
+  //       name: newUserName,
+  //       password: "",
+  //       image: newUserImage,
+  //       company_id: newCompany.id,
+  //     },
+  //   });
 
-    const newUser = await prisma.user.create({
-      data: {
-        email: newUserEmail,
-        name: newUserName,
-        password: "",
-        image: newUserImage,
-        company_id: newCompany.id,
-      },
-    });
+  //   const newLocation = await prisma.location.create({
+  //     data: {
+  //       name: "Default Location",
+  //       address: "Default address",
+  //       company_id: newCompany.id,
+  //     },
+  //   });
 
-    const newLocation = await prisma.location.create({
-      data: {
-        name: "Default Location",
-        address: "Default address",
-        company_id: newCompany.id,
-      },
-    });
+  //   // create new table
+  //   await prisma.table.create({
+  //     data: {
+  //       name: "table 1",
+  //       asset_url: "",
+  //       location_id: newLocation.id,
+  //     },
+  //   });
 
-    // create new table
-    await prisma.table.create({
-      data: {
-        name: "table 1",
-        asset_url: "",
-        location_id: newLocation.id,
-      },
-    });
+  //   const newMenusData: Prisma.menuCreateInput[] = [
+  //     {
+  //       name: "shan-khout-swell",
+  //       price: 300,
+  //       asset_url: "",
+  //       description: "s-k-w desc",
+  //     },
+  //     {
+  //       name: "mote-hin-khar",
+  //       price: 500,
+  //       asset_url: "",
+  //       description: "m-h-k desc",
+  //     },
+  //   ];
+  //   const newMenus = await prisma.$transaction(
+  //     newMenusData.map((menu) => prisma.menu.create({ data: menu }))
+  //   );
 
-    const newMenusData: Prisma.menuCreateInput[] = [
-      {
-        name: "shan-khout-swell",
-        price: 300,
-        asset_url: "",
-        description: "s-k-w desc",
-      },
-      {
-        name: "mote-hin-khar",
-        price: 500,
-        asset_url: "",
-        description: "m-h-k desc",
-      },
-    ];
-    const newMenus = await prisma.$transaction(
-      newMenusData.map((menu) => prisma.menu.create({ data: menu }))
-    );
+  //   const newMenuCategoriesData = [{ name: "hot-dish" }, { name: "popular" }];
+  //   const newMenuCategories = await prisma.$transaction(
+  //     newMenuCategoriesData.map((menuCategory) =>
+  //       prisma.menu_category.create({ data: menuCategory })
+  //     )
+  //   );
 
-    const newMenuCategoriesData = [{ name: "hot-dish" }, { name: "popular" }];
-    const newMenuCategories = await prisma.$transaction(
-      newMenuCategoriesData.map((menuCategory) =>
-        prisma.menu_category.create({ data: menuCategory })
-      )
-    );
+  //   const newMenuMenuCategoryLocationsData = [
+  //     {
+  //       location_id: newLocation.id,
+  //       menu_id: newMenus[0].id,
+  //       menu_category_id: newMenuCategories[0].id,
+  //     },
+  //     {
+  //       location_id: newLocation.id,
+  //       menu_id: newMenus[1].id,
+  //       menu_category_id: newMenuCategories[1].id,
+  //     },
+  //   ];
 
-    const newMenuMenuCategoryLocationsData = [
-      {
-        location_id: newLocation.id,
-        menu_id: newMenus[0].id,
-        menu_category_id: newMenuCategories[0].id,
-      },
-      {
-        location_id: newLocation.id,
-        menu_id: newMenus[1].id,
-        menu_category_id: newMenuCategories[1].id,
-      },
-    ];
+  //   const newMenuMenuCategoryLocations = await prisma.$transaction(
+  //     newMenuMenuCategoryLocationsData.map((menuMenuCategoryLocation) =>
+  //       prisma.menu_menu_category_location.create({
+  //         data: menuMenuCategoryLocation,
+  //       })
+  //     )
+  //   );
 
-    const newMenuMenuCategoryLocations = await prisma.$transaction(
-      newMenuMenuCategoryLocationsData.map((menuMenuCategoryLocation) =>
-        prisma.menu_menu_category_location.create({
-          data: menuMenuCategoryLocation,
-        })
-      )
-    );
+  //   const newAddonCategoriesData = [
+  //     { name: "Sizes", is_required: true },
+  //     { name: "Topping", is_required: true },
+  //   ];
+  //   const newAddonCategories = await prisma.$transaction(
+  //     newAddonCategoriesData.map((addonCategory) =>
+  //       prisma.addon_category.create({ data: addonCategory })
+  //     )
+  //   );
 
-    const newAddonCategoriesData = [
-      { name: "Sizes", is_required: true },
-      { name: "Topping", is_required: true },
-    ];
-    const newAddonCategories = await prisma.$transaction(
-      newAddonCategoriesData.map((addonCategory) =>
-        prisma.addon_category.create({ data: addonCategory })
-      )
-    );
+  //   const newMenuAddonCategoriesData = [
+  //     {
+  //       addon_category_id: newAddonCategories[0].id,
+  //       menu_id: newMenus[0].id,
+  //     },
+  //     {
+  //       addon_category_id: newAddonCategories[1].id,
+  //       menu_id: newMenus[1].id,
+  //     },
+  //   ];
 
-    const newMenuAddonCategoriesData = [
-      {
-        addon_category_id: newAddonCategories[0].id,
-        menu_id: newMenus[0].id,
-      },
-      {
-        addon_category_id: newAddonCategories[1].id,
-        menu_id: newMenus[1].id,
-      },
-    ];
+  //   await prisma.$transaction(
+  //     newMenuAddonCategoriesData.map((menuAddonCategory) =>
+  //       prisma.menu_addon_category.create({ data: menuAddonCategory })
+  //     )
+  //   );
 
-    await prisma.$transaction(
-      newMenuAddonCategoriesData.map((menuAddonCategory) =>
-        prisma.menu_addon_category.create({ data: menuAddonCategory })
-      )
-    );
-
-    const newAddonsData = [
-      {
-        name: "Large",
-        price: 40,
-        addon_category_id: newAddonCategories[0].id,
-      },
-      {
-        name: "Normal",
-        price: 40,
-        addon_category_id: newAddonCategories[0].id,
-      },
-      {
-        name: "Egg",
-        price: 40,
-        addon_category_id: newAddonCategories[1].id,
-      },
-      {
-        name: "BuuTeeKyaw",
-        price: 40,
-        addon_category_id: newAddonCategories[1].id,
-      },
-    ];
-    await prisma.$transaction(
-      newAddonsData.map((addon) => prisma.addon.create({ data: addon }))
-    );
-    const data = await getData(newUser, newLocation.id);
-    return res.status(200).json(data);
-  }
-  const selectedLocationId = Number(req.query.locationId as string | undefined);
-  console.log(selectedLocationId, "selectedLocationId -> location=?");
-  const data = await getData(user, selectedLocationId);
-  return res.status(200).json(data);
+  //   const newAddonsData = [
+  //     {
+  //       name: "Large",
+  //       price: 40,
+  //       addon_category_id: newAddonCategories[0].id,
+  //     },
+  //     {
+  //       name: "Normal",
+  //       price: 40,
+  //       addon_category_id: newAddonCategories[0].id,
+  //     },
+  //     {
+  //       name: "Egg",
+  //       price: 40,
+  //       addon_category_id: newAddonCategories[1].id,
+  //     },
+  //     {
+  //       name: "BuuTeeKyaw",
+  //       price: 40,
+  //       addon_category_id: newAddonCategories[1].id,
+  //     },
+  //   ];
+  //   await prisma.$transaction(
+  //     newAddonsData.map((addon) => prisma.addon.create({ data: addon }))
+  //   );
+  //   const data = await getData(newUser, newLocation.id);
+  //   return res.status(200).json(data);
+  // }
+  // const selectedLocationId = Number(req.query.locationId as string | undefined);
+  // console.log(selectedLocationId, "selectedLocationId -> location=?");
+  // const data = await getData(user, selectedLocationId);
+  // return res.status(200).json(data);
 };
 
 // TODO

@@ -4,15 +4,18 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import colors from "colors";
 import type { Prisma, user } from "@prisma/client";
+// import { getServerSession } from "next-auth";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
   const method = req.method;
-
+  const a = await getSession({ req });
+  console.log({ a });
   if (method === "GET") {
-    await handleGetRequest(req, res);
+    console.log(req.headers["user-agent"], req.url?.bgYellow);
+    res.status(200).json(req.url);
   } else {
     res.status(405).json({ name: `${method} not allow!!` });
   }

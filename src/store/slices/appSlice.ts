@@ -40,9 +40,7 @@ export const fetchAppData = createAsyncThunk(
     const dispatch = thunkAPI.dispatch;
     dispatch(appActions.setInit(true));
     dispatch(appActions.setAppLoading(true));
-    const response = await fetch(
-      `${config.backofficeApiBaseUrl}/app?locationId=${locationId}`
-    );
+    const response = await fetch(`${config.backofficeApiBaseUrl}/app`);
     if (!response.ok) {
       dispatch(appActions.setAppLoading(false));
 
@@ -71,23 +69,23 @@ export const fetchAppData = createAsyncThunk(
       )
     );
 
-    dispatch(menusActions.setMenus(menus));
-    dispatch(companyActions.setCompany(company));
-    dispatch(menuCategoriesActions.setMenuCategories(menuCategories));
-    dispatch(locationsActions.setLocations(locations));
-    dispatch(addonsActions.setAddons(addons));
-    dispatch(addonCategoriesActions.setAddonCategories(addonCategories));
-    dispatch(tablesActions.setTables(tables));
-    dispatch(orderlinesActions.setOrderlines(orderlines));
-    dispatch(ordersActions.setOrders(orders));
-    dispatch(
-      menusAddonCategoriesActions.setMenusAddonCategories(menusAddonCategories)
-    );
-    dispatch(
-      menusMenuCategoriesLocationsActions.setMenusMenuCategoriesLocations(
-        menusMenuCategoriesLocations
-      )
-    );
+    // dispatch(menusActions.setMenus(menus));
+    // dispatch(companyActions.setCompany(company));
+    // dispatch(menuCategoriesActions.setMenuCategories(menuCategories));
+    // dispatch(locationsActions.setLocations(locations));
+    // dispatch(addonsActions.setAddons(addons));
+    // dispatch(addonCategoriesActions.setAddonCategories(addonCategories));
+    // dispatch(tablesActions.setTables(tables));
+    // dispatch(orderlinesActions.setOrderlines(orderlines));
+    // dispatch(ordersActions.setOrders(orders));
+    // dispatch(
+    //   menusAddonCategoriesActions.setMenusAddonCategories(menusAddonCategories)
+    // );
+    // dispatch(
+    //   menusMenuCategoriesLocationsActions.setMenusMenuCategoriesLocations(
+    //     menusMenuCategoriesLocations
+    //   )
+    // );
 
     /* final */
     dispatch(appActions.setAppLoading(false));

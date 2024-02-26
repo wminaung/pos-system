@@ -8,9 +8,9 @@ const nextConfig = {
       "msquarefdc.sgp1.cdn.digitaloceanspaces.com",
     ],
   },
-  env: {
-    DATABASE_URL: process.env.DATABASE_URL,
-  },
+  // env: {
+  //   DATABASE_URL: process.env.DATABASE_URL,
+  // },
 };
 
 module.exports = nextConfig;

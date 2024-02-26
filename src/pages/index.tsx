@@ -5,7 +5,7 @@ import Hero from "@/components/Hero";
 import Testimonials from "@/components/Testimonial";
 import { Box, Typography } from "@mui/material";
 
-const FoodiePOS = () => {
+const POS_MainPage = () => {
   return (
     <Box
       sx={{
@@ -17,21 +17,9 @@ const FoodiePOS = () => {
         flexDirection: "column",
       }}
     >
-      <Header />
-      <Box
-        sx={{
-          maxWidth: { md: "100%", lg: "1280px" },
-          m: "0 auto",
-          px: { xs: "10px", md: "15px" },
-        }}
-      >
-        <Hero />
-        <Features />
-        <Testimonials />
-      </Box>
-      <Footer />
+      hello world
     </Box>
   );
 };
 
-export default FoodiePOS;
+export default POS_MainPage;

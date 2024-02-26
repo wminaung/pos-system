@@ -26,45 +26,17 @@ const BackOfficePage = () => {
   const { isLoading, selectedLocationId: defaultSelectedLocationId } =
     state.app;
 
-  useEffect(() => {
-    if (status === "authenticated") {
-      !isLoading && router.push("/backoffice/orders");
-    } else if (status === "unauthenticated") {
-      router.push("/auth/signin");
-    } else {
-      console.log("is still ....");
-    }
-  }, [data, isLoading]);
+  // useEffect(() => {
+  //   if (status === "authenticated") {
+  //     !isLoading && router.push("/backoffice/orders");
+  //   } else if (status === "unauthenticated") {
+  //     router.push("/auth/signin");
+  //   } else {
+  //     console.log("is still ....");
+  //   }
+  // }, [data, isLoading]);
 
-  return (
-    <Layout>
-      <StyledGrid container justifyContent="center" alignItems="center">
-        <Grid
-          item
-          xs={12}
-          sm={8}
-          md={9}
-          component={StyledPaper}
-          elevation={6}
-          square
-        >
-          <Button
-            onClick={() => {
-              console.log("first");
-              // dispatch(actions.menus.setMenus([]));
-            }}
-          >
-            cljc
-          </Button>
-          <StyledPaper>
-            <Typography component="h1" variant="h5" gutterBottom>
-              Welcome to happy pos backoffice
-            </Typography>
-          </StyledPaper>
-        </Grid>
-      </StyledGrid>
-    </Layout>
-  );
+  return <div>backoffice</div>;
 };
 
 export default BackOfficePage;
