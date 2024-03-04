@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -14,6 +13,9 @@ import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { CardActionArea } from "@mui/material";
 import useAppSlice from "@/store/hook/useAppSlice";
 import { FormAction } from "@/utils/enums";
+import DialogBox from "../DialogBox";
+import EditMenu from "./forms/EditMenu";
+import { useState } from "react";
 
 export interface B_CardType {
   name: string;
@@ -31,13 +33,17 @@ export default function B_Card({
   price,
 }: B_CardType) {
   const theme = useTheme();
+  const [open, setOpen] = useState(false);
 
   const { actions, dispatch } = useAppSlice();
 
   const handleClick = () => {
     console.log(id, name);
+
+    // todo open dialog box
     dispatch(actions.app.setFormAction(FormAction.edit));
     dispatch(actions.app.setSelectedMenuId(id));
+    setOpen(true);
   };
 
   return (
@@ -55,6 +61,7 @@ export default function B_Card({
             <Typography
               component="div"
               variant="h5"
+              fontSize={{ xs: "1rem", sm: theme.typography.h5.fontSize }}
               textAlign={{ xs: "center", sm: "left" }}
             >
               {name}
@@ -63,6 +70,7 @@ export default function B_Card({
               variant="h6"
               color="text.secondary"
               component="div"
+              fontSize={{ xs: "1rem", sm: theme.typography.h6.fontSize }}
               textAlign={{ xs: "center", sm: "left" }}
             >
               $ {price.toFixed(2)}
@@ -76,6 +84,17 @@ export default function B_Card({
           alt="Live from space album cover"
         />
       </CardActionArea>
+      <span>
+        <DialogBox
+          open={open}
+          setOpen={setOpen}
+          btnText="no"
+          width="100"
+          title="Edit Menu"
+        >
+          <EditMenu />
+        </DialogBox>
+      </span>
     </Card>
   );
 }

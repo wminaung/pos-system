@@ -7,7 +7,7 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { theme } from "@/config/myTheme";
 import { Box } from "@mui/material";
 
@@ -54,13 +54,20 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
 }
 interface Props {
   children: React.ReactNode;
-  btnText: string;
+  btnText?: string;
   title: string;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
   width?: string;
 }
-export default function DialogBox({ children, btnText, title, width }: Props) {
-  const [open, setOpen] = useState(false);
-
+export default function DialogBox({
+  children,
+  btnText,
+  title,
+  width,
+  open,
+  setOpen,
+}: Props) {
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -70,7 +77,7 @@ export default function DialogBox({ children, btnText, title, width }: Props) {
 
   return (
     <Box>
-      <Button
+      {/* <Button
         variant="contained"
         style={{ backgroundColor: "#025464" }}
         sx={{
@@ -80,7 +87,7 @@ export default function DialogBox({ children, btnText, title, width }: Props) {
         onClick={handleClickOpen}
       >
         {btnText}
-      </Button>
+      </Button> */}
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="dialog-title"

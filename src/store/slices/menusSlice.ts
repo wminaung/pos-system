@@ -33,6 +33,13 @@ export const menusSlice = createSlice({
         return item;
       });
     },
+    removeMenu: (state, action: PayloadAction<Menu>) => {
+      state.items = [
+        ...state.items.filter((item) => {
+          return item.id !== action.payload.id;
+        }),
+      ];
+    },
   },
 });
 

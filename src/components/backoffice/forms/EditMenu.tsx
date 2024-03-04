@@ -57,6 +57,26 @@ const EditMenu = () => {
     setUpdatedMenu(selectedMenu || {});
   };
 
+  const handleDelete = async () => {
+    const res = await fetch(
+      `${config.backofficeApiBaseUrl}/menus/${selectedMenuId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!res.ok) {
+      return;
+    }
+    const deletedMenu = await res.json();
+    console.log(deletedMenu, "deletedMenu deletedMenu......");
+
+    dispatch(actions.menus.removeMenu(deletedMenu));
+
+    // setUpdatedMenu({ name: "", description: "", price: 0 } as Menu);
+    // setOldMenu({ name: "", description: "", price: 0 } as Menu);
+  };
+
   const disableEditBtn =
     oldMenu.name === updatedMenu.name &&
     oldMenu.price === updatedMenu.price &&
@@ -141,7 +161,12 @@ const EditMenu = () => {
             </Button>
           </Stack>
           <Stack>
-            <Button variant="outlined" disabled={false} color="error">
+            <Button
+              onClick={handleDelete}
+              variant="outlined"
+              disabled={false}
+              color="error"
+            >
               Delete
             </Button>
           </Stack>

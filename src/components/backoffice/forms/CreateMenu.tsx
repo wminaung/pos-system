@@ -50,10 +50,7 @@ const CreateMenu = () => {
       autoComplete="off"
     >
       <Typography variant="h3" align="center">
-        Create
-      </Typography>
-      <Typography variant="h3" align="center">
-        Menu
+        Create Menu
       </Typography>
 
       <div style={{ padding: "10px" }}>

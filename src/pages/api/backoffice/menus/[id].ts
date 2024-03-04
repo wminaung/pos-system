@@ -81,17 +81,16 @@ const handleDeleteRequest = async (
   const menuId = Number(menuIdStr);
 
   try {
-    const archivedMenu = await prisma.menu.update({
-      data: {
-        is_archived: true,
-      },
-      where: {
-        id: menuId,
-      },
-    });
-    return res
-      .status(200)
-      .json({ archivedMenu, message: `${req.method} ok!!` });
+    // const archivedMenu = await prisma.menu.update({
+    //   data: {
+    //     is_archived: true,
+    //   },
+    //   where: {
+    //     id: menuId,
+    //   },
+    // });
+    const deletedMenu = await prisma.menu.delete({ where: { id: menuId } });
+    return res.status(200).json(deletedMenu);
   } catch (error) {
     return res
       .status(500)
