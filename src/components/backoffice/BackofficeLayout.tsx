@@ -10,44 +10,22 @@ const BackofficeLayout = () => {
   return (
     <Box
       sx={{
+        bgcolor: "#f1f2f3",
+        py: 1.5,
+        px: 5,
         display: "flex",
-        justifyContent: "space-between",
-        height: 800,
-
-        flexDirection: { xs: "column", md: "row" },
+        minHeight: "100vh",
+        flexDirection: "column",
+        alignItems: "end",
+        justifyContent: "start",
+        // flexDirection: { xs: "column", md: "row" },
       }}
     >
-      <Box
-        width={{ md: "100%" }}
-        sx={{
-          order: { xs: 2, md: 1 },
-          mt: 1,
-          p: 1.5,
-          border: "1px solid red",
-          bgcolor: "#f1f2f3",
-        }}
-      >
-        <All />
+      <Box sx={{ mb: 2 }}>
+        <Button variant="contained">create menu</Button>
       </Box>
-      <Box
-        mb={2}
-        width={{ xs: "100%", md: "300px" }}
-        sx={{ mt: 8, order: { xs: 1, md: 2 } }}
-      >
-        <Box sx={{}} component={Paper} elevation={1}>
-          <MenuForm />
-        </Box>
-      </Box>
+      <All />
     </Box>
-
-    // <Box sx={{ display: "flex", justifyContent: "space-between", height: 800 }}>
-    //   <Box width={"80%"}>
-    //     <All />
-    //   </Box>
-    //   <Box width={"300px"} sx={{ bgcolor: "", mt: 20 }}>
-    //     <MenuForm menu={menu} formAction={FormAction.create} />
-    //   </Box>
-    // </Box>
   );
 };
 

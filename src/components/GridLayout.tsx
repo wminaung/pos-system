@@ -47,7 +47,7 @@ const GridLayout = ({
       <Grid container spacing={2} {...containerProps} sx={{ ...containerSx }}>
         {gridItems.map((gridItem) => (
           <Grid key={gridItem.id} item {...gridProps}>
-            <Item elevation={0} sx={itemSx} {...itemsProps}>
+            <Item elevation={0} sx={{ ...itemSx }} {...itemsProps}>
               {gridItem.node}
             </Item>
           </Grid>
@@ -56,31 +56,6 @@ const GridLayout = ({
         {
           // test
         }
-        <Grid item {...gridProps} sx={{}}>
-          <Item
-            sx={{
-              ...itemSx,
-              height: "100%",
-              backgroundColor: "transparent",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            {...itemsProps}
-          >
-            <Box>
-              <Button
-                onClick={() => {
-                  dispatch(actions.app.setFormAction(FormAction.create));
-                }}
-                size="large"
-                variant="contained"
-              >
-                Click to CREATE
-              </Button>
-            </Box>
-          </Item>
-        </Grid>
       </Grid>
     </>
   );

@@ -67,10 +67,13 @@ const All = () => {
     <>
       <GridLayout
         gridItems={createGridItems(menus)}
-        gridProps={{ xs: 12, md: 6, lg: 4 }}
+        gridProps={{ xs: 12, sm: 4, md: 6, lg: 4, xl: 3 }}
         itemsProps={{ elevation: 0 }}
         containerProps={{ spacing: 2 }}
-        containerSx={{}}
+        itemSx={{ bgcolor: "#7abfb2f0" }}
+        containerSx={{
+          justifyContent: { xs: "center", sm: "normal" },
+        }}
       />
     </>
   );

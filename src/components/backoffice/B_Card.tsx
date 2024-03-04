@@ -41,21 +41,29 @@ export default function B_Card({
   };
 
   return (
-    <Card elevation={0}>
+    <Card elevation={0} sx={{}}>
       <CardActionArea
-        sx={{ display: "flex", justifyContent: "space-between" }}
+        sx={{
+          display: "flex",
+          flexDirection: { sm: "column-reverse", md: "row" },
+          justifyContent: "space-between",
+        }}
         onClick={handleClick}
       >
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <CardContent sx={{ flex: "1 0 auto" }}>
-            <Typography component="div" variant="h5" textAlign={"left"}>
+        <Box sx={{}}>
+          <CardContent sx={{}}>
+            <Typography
+              component="div"
+              variant="h5"
+              textAlign={{ xs: "center", sm: "left" }}
+            >
               {name}
             </Typography>
             <Typography
               variant="h6"
               color="text.secondary"
               component="div"
-              textAlign={"left"}
+              textAlign={{ xs: "center", sm: "left" }}
             >
               $ {price.toFixed(2)}
             </Typography>
@@ -63,8 +71,8 @@ export default function B_Card({
         </Box>
         <CardMedia
           component="img"
-          sx={{ width: { xs: 100, sm: 110, md: 130, lg: 135 } }}
-          image="/defaultQRCode.png"
+          sx={{ width: { xs: 140, sm: "100%", md: 140 } }}
+          image="/seafood.png"
           alt="Live from space album cover"
         />
       </CardActionArea>
