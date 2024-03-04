@@ -7,6 +7,8 @@ import { store } from "@/store";
 import { Session } from "next-auth";
 import { useEffect, useState } from "react";
 import { fetchAppData } from "@/store/slices/appSlice";
+import { Box } from "@mui/material";
+import NavBar from "@/components/NavBar";
 
 type CustomAppProps = AppProps & { session: Session };
 
@@ -16,6 +18,7 @@ export default function App({ Component, pageProps, session }: CustomAppProps) {
   const pathName = router.pathname;
   const isOrder = pathName.split("/")[1] === "order";
   const isRoot = pathName.split("/")[1] === "";
+  const isBackoffice = pathName.split("/")[1] === "backoffice";
 
   useEffect(() => {
     if (!isOrder && !isRoot) {
@@ -24,6 +27,21 @@ export default function App({ Component, pageProps, session }: CustomAppProps) {
     }
   }, [isOrder, isRoot]);
   console.log({ pathName });
+
+  // for backoffice
+  if (!isOrder && !isRoot) {
+    return (
+      <Box>
+        <NavBar />
+        <Provider store={store}>
+          <SessionProvider session={session}>
+            <Component {...pageProps} />
+          </SessionProvider>
+        </Provider>
+      </Box>
+    );
+  }
+
   return (
     <Provider store={store}>
       <SessionProvider session={session}>

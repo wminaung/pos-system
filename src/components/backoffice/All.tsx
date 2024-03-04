@@ -70,12 +70,7 @@ const All = () => {
         gridProps={{ xs: 12, md: 6, lg: 4 }}
         itemsProps={{ elevation: 0 }}
         containerProps={{ spacing: 2 }}
-        containerSx={{
-          minHeight: 200,
-          backgroundColor: "#f1f2f3",
-          py: 20,
-          px: 1.5,
-        }}
+        containerSx={{}}
       />
     </>
   );

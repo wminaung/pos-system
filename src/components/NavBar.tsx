@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -14,7 +15,7 @@ interface Props {
 }
 
 const NavBar = ({ title }: Props) => {
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
   const router = useRouter();
 
   return (
@@ -47,12 +48,13 @@ const NavBar = ({ title }: Props) => {
             variant="outlined"
             size="large"
             onClick={() => {
-              status === "authenticated"
-                ? router.push("/auth/logout")
-                : router.push("/auth/login");
+              // status === "authenticated"
+              //   ? router.push("/auth/logout")
+              //   : router.push("/auth/login");
             }}
           >
-            {status === "authenticated" ? "Logout" : "Login"}
+            {/* {status === "authenticated" ? "Logout" : "Login"} */}
+            Logout
           </Button>
         </Toolbar>
       </AppBar>

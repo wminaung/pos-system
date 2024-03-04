@@ -13,16 +13,26 @@ const BackofficeLayout = () => {
         display: "flex",
         justifyContent: "space-between",
         height: 800,
+
         flexDirection: { xs: "column", md: "row" },
       }}
     >
-      <Box width={{ md: "100%" }} sx={{ order: { xs: 2, md: 1 } }}>
+      <Box
+        width={{ md: "100%" }}
+        sx={{
+          order: { xs: 2, md: 1 },
+          mt: 1,
+          p: 1.5,
+          border: "1px solid red",
+          bgcolor: "#f1f2f3",
+        }}
+      >
         <All />
-      </Box>{" "}
+      </Box>
       <Box
         mb={2}
         width={{ xs: "100%", md: "300px" }}
-        sx={{ mt: 8, order: { xs: 1, md: 2 }, bgcolor: "#a5a5a52d" }}
+        sx={{ mt: 8, order: { xs: 1, md: 2 } }}
       >
         <Box sx={{}} component={Paper} elevation={1}>
           <MenuForm />

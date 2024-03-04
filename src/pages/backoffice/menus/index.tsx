@@ -29,7 +29,7 @@ const MenusPage = () => {
     actions,
   } = useAppSlice();
 
-  return <BackofficeLayout></BackofficeLayout>;
+  return <BackofficeLayout />;
 };
 
 export default MenusPage;
