@@ -3,8 +3,8 @@ import { Button, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { useSession } from "next-auth/react";
 import Layout from "@/components/Layout";
-import { useAppSlice } from "@/store/slices/appSlice";
 import { useRouter } from "next/router";
+import useAppSlice from "@/store/hook/useAppSlice";
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   height: "100vh",
@@ -26,17 +26,30 @@ const BackOfficePage = () => {
   const { isLoading, selectedLocationId: defaultSelectedLocationId } =
     state.app;
 
-  // useEffect(() => {
-  //   if (status === "authenticated") {
-  //     !isLoading && router.push("/backoffice/orders");
-  //   } else if (status === "unauthenticated") {
-  //     router.push("/auth/signin");
-  //   } else {
-  //     console.log("is still ....");
-  //   }
-  // }, [data, isLoading]);
-
-  return <div>backoffice</div>;
+  useEffect(() => {
+    if (status === "authenticated") {
+      // !isLoading && router.push("/backoffice/orders");
+    } else if (status === "unauthenticated") {
+      router.push("/auth/signin");
+    } else {
+      console.log("is still ....");
+    }
+  }, [data, isLoading]);
+  return (
+    <StyledGrid container>
+      <StyledPaper elevation={3}>
+        <Typography variant="h5" gutterBottom>
+          Back Office Page
+        </Typography>
+        (
+        <Grid item xs={12}>
+          {/* Your existing code */}
+          <pre>{JSON.stringify(state, null, 2)}</pre>
+        </Grid>
+        )
+      </StyledPaper>
+    </StyledGrid>
+  );
 };
 
 export default BackOfficePage;

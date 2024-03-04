@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Menu } from "@/typings/types";
 import { setAppLoading } from "./appSlice";
 import { config } from "@/config/config";
+import { Menu } from "@prisma/client";
 
 export interface MenusState {
   isLoading: boolean;
@@ -24,6 +24,14 @@ export const menusSlice = createSlice({
     },
     addMenu: (state, action: PayloadAction<Menu>) => {
       state.items = [...state.items, action.payload];
+    },
+    editMenu: (state, action: PayloadAction<Menu>) => {
+      state.items = state.items.map((item) => {
+        if (item.id === action.payload.id) {
+          return action.payload;
+        }
+        return item;
+      });
     },
   },
 });

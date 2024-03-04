@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { theme } from "@/config/myTheme";
 import SideBar from "./SideBar";
 import Loading from "./Loading";
-import { useAppSlice } from "@/store/slices/appSlice";
+import useAppSlice from "@/store/hook/useAppSlice";
 
 interface Props {
   title?: string;

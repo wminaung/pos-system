@@ -1,5 +1,4 @@
 import { config } from "@/config/config";
-import { AppDataResponse } from "@/typings/types";
 
 import {
   PayloadAction,
@@ -7,25 +6,21 @@ import {
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
-import { useAppDispatch, useAppSelector } from "../hook";
 import { RootState } from "..";
 import { menusActions } from "./menusSlice";
-import { companyActions } from "./companySlice";
 import { menuCategoriesActions } from "./menuCategoriesSlice";
-import { addonsActions } from "./addonsSlice";
-import { locationsActions } from "./locationsSlice";
-import { addonCategoriesActions } from "./addonCategoriesSlice";
 import { tablesActions } from "./tablesSlice";
-import { orderlinesActions } from "./orderlinesSlice";
-import { ordersActions } from "./ordersSlice";
-import { menusAddonCategoriesActions } from "./menusAddonCategoriesSlice";
-import { menusMenuCategoriesLocationsActions } from "./menusMenuCategoriesLocationsSlice";
+import { Api } from "@/typings/Api";
+import { menusMenuCategoriesActions } from "./menusMenuCategories";
+import { FormAction } from "@/utils/enums";
 
 interface AppState {
   isLoading: boolean;
   error: Error | null;
   selectedLocationId?: string | null;
   init: boolean;
+  formAction: FormAction;
+  selectedMenuId: number;
 }
 
 const initialState: AppState = {
@@ -33,6 +28,8 @@ const initialState: AppState = {
   error: null,
   selectedLocationId: null,
   init: false,
+  formAction: FormAction.create,
+  selectedMenuId: 0,
 };
 export const fetchAppData = createAsyncThunk(
   "app/fetchAppData",
@@ -43,43 +40,35 @@ export const fetchAppData = createAsyncThunk(
     const response = await fetch(`${config.backofficeApiBaseUrl}/app`);
     if (!response.ok) {
       dispatch(appActions.setAppLoading(false));
-
       console.log("connection time out");
       return;
     }
     const responseJson = await response.json();
-    const {
-      company,
-      menus,
-      menuCategories,
-      addons,
-      addonCategories,
-      menusMenuCategoriesLocations,
-      locations,
-      tables,
-      menusAddonCategories,
-      selectedLocationId,
-      orderlines,
-      orders,
-    } = responseJson as AppDataResponse;
+    const { menus, menuCategories, menusMenuCategories, tables } =
+      responseJson as Api.Response.App.Get;
 
+    dispatch(menusActions.setMenus(menus));
+    dispatch(menuCategoriesActions.setMenuCategories(menuCategories));
     dispatch(
-      setAppSelectedLocationId(
-        selectedLocationId ? String(selectedLocationId) : null
-      )
+      menusMenuCategoriesActions.setMenusMenuCategories(menusMenuCategories)
     );
-
-    // dispatch(menusActions.setMenus(menus));
+    dispatch(tablesActions.setTables(tables));
+    dispatch(appActions.setInit(true));
     // dispatch(companyActions.setCompany(company));
-    // dispatch(menuCategoriesActions.setMenuCategories(menuCategories));
     // dispatch(locationsActions.setLocations(locations));
     // dispatch(addonsActions.setAddons(addons));
     // dispatch(addonCategoriesActions.setAddonCategories(addonCategories));
-    // dispatch(tablesActions.setTables(tables));
+
     // dispatch(orderlinesActions.setOrderlines(orderlines));
     // dispatch(ordersActions.setOrders(orders));
     // dispatch(
     //   menusAddonCategoriesActions.setMenusAddonCategories(menusAddonCategories)
+    // );
+
+    // dispatch(
+    //   setAppSelectedLocationId(
+    //     selectedLocationId ? String(selectedLocationId) : null
+    //   )
     // );
     // dispatch(
     //   menusMenuCategoriesLocationsActions.setMenusMenuCategoriesLocations(
@@ -102,133 +91,52 @@ export const appSlice = createSlice({
     setAppLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
-    setAppSelectedLocationId: (
-      state,
-      action: PayloadAction<string | null | undefined>
-    ) => {
-      state.selectedLocationId = action.payload;
+    setFormAction: (state, action: PayloadAction<FormAction>) => {
+      state.formAction = action.payload;
+    },
+    setSelectedMenuId: (state, action: PayloadAction<number>) => {
+      state.selectedMenuId = action.payload;
     },
   },
 });
-export const { setAppLoading, setAppSelectedLocationId } = appSlice.actions;
+export const { setAppLoading } = appSlice.actions;
 
 export const selectApp = (state: RootState) => state.app;
 export const selectMenus = (state: RootState) => state.menus.items;
-export const selectCompany = (state: RootState) => state.company.item;
 export const selectMenuCategories = (state: RootState) =>
   state.menuCategories.items;
-export const selectAddons = (state: RootState) => state.addons.items;
-export const selectAddonCategories = (state: RootState) =>
-  state.addonCategories.items;
 export const selectTables = (state: RootState) => state.tables.items;
-export const selectLocations = (state: RootState) => state.locations.items;
-export const selectOrderlines = (state: RootState) => state.orderlines.items;
-export const selectOrders = (state: RootState) => state.orders.items;
-export const selectMenusAddonCategories = (state: RootState) =>
-  state.menusAddonCategories.items;
-export const selectMenusMenuCategoriesLocations = (state: RootState) =>
-  state.menusMenuCategoriesLocations.items;
+export const selectMenusMenuCategories = (state: RootState) =>
+  state.menusMenuCategories.items;
 
 export const appData = createSelector(
   [
     selectApp,
     selectMenus,
-    selectCompany,
     selectMenuCategories,
-    selectAddons,
-    selectAddonCategories,
+    selectMenusMenuCategories,
     selectTables,
-    selectLocations,
-    selectOrderlines,
-    selectOrders,
-    selectMenusAddonCategories,
-    selectMenusMenuCategoriesLocations,
   ],
-  (
-    app,
-    menus,
-    company,
-    menuCategories,
-    addons,
-    addonCategories,
-    tables,
-    locations,
-    orderlines,
-    orders,
-    menusAddonCategories,
-    menusMenuCategoriesLocations
-  ) => {
+  (app, menus, menuCategories, menusMenuCategories, tables) => {
     return {
       app,
       menus,
-      company,
       menuCategories,
-      addons,
-      addonCategories,
+      menusMenuCategories,
       tables,
-      locations,
-      orderlines,
-      orders,
-      menusAddonCategories,
-      menusMenuCategoriesLocations,
     };
   }
 );
 export const appActions = appSlice.actions;
 export default appSlice.reducer;
 
-export const useAppSlice = () => {
-  const state = useAppSelector(appData);
-  const dispatch = useAppDispatch();
+// export const selectCompany = (state: RootState) => state.company.item;
 
-  const fetchData = (locationId?: string) => {
-    dispatch(
-      fetchAppData(
-        locationId ? locationId : (state.app.selectedLocationId as string)
-      )
-    );
-  };
-  return {
-    state,
-    dispatch,
-    fetchData,
-    actions: {
-      fetchAppData,
-      app: { ...appActions },
-
-      menus: {
-        ...menusActions,
-      },
-      company: {
-        ...companyActions,
-      },
-      menuCategories: {
-        ...menuCategoriesActions,
-      },
-      menusMenuCategoriesLocations: {
-        ...menusMenuCategoriesLocationsActions,
-      },
-      menusAddonCategories: {
-        ...menusAddonCategoriesActions,
-      },
-      addons: {
-        ...addonsActions,
-      },
-      addonCategories: {
-        ...addonCategoriesActions,
-      },
-      tables: {
-        ...tablesActions,
-      },
-      locations: {
-        ...locationsActions,
-      },
-      orderlines: {
-        ...orderlinesActions,
-      },
-      orders: {
-        ...ordersActions,
-      },
-    },
-  };
-};
+// export const selectAddons = (state: RootState) => state.addons.items;
+// export const selectAddonCategories = (state: RootState) =>
+//   state.addonCategories.items;
+// export const selectLocations = (state: RootState) => state.locations.items;
+// export const selectOrderlines = (state: RootState) => state.orderlines.items;
+// export const selectOrders = (state: RootState) => state.orders.items;
+// export const selectMenusAddonCategories = (state: RootState) =>
+// state.menusAddonCategories.items;

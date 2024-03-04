@@ -1,73 +1,7 @@
-import type {
-  addon,
-  addon_category,
-  company,
-  location,
-  menu,
-  menu_addon_category,
-  menu_category,
-  menu_menu_category_location,
-  order,
-  orderline,
-  table,
-} from "@prisma/client";
-
-export interface Company extends company {
-  location: location[];
-}
-
-export interface Location extends location {
-  company: company;
-  menu_menu_category_location: menu_menu_category_location[];
-}
-
-export interface Menu extends menu {
-  menu_addon_category: menu_addon_category[];
-  menu_menu_category_location: menu_menu_category_location[];
-}
-
-export interface MenuCategory extends menu_category {
-  menu_menu_category_location: menu_menu_category_location[];
-}
-
-export interface MenuMenuCategoryLocation extends menu_menu_category_location {
-  menu: menu | null;
-  menu_category: menu_category | null;
-  location: location;
-}
-
-export interface Addon extends addon {
-  addon_category: addon_category | null;
-}
-
-export interface AddonCategory extends addon_category {
-  addon: addon[];
-  menu_addon_category: menu_addon_category[];
-}
-export interface MenuAddonCategory extends menu_addon_category {
-  addon_category: addon_category[];
-}
-
-export interface Order extends order {
-  location: location;
-  orderline: orderline[];
-  table: table;
-}
-
-export interface Table extends table {
-  location: location | null;
-}
-
-export interface Orderline extends orderline {
-  menu: menu;
-  order: order;
-  addon: addon | null;
-}
-
 export interface OrderlineItem {
   id: string;
   menu: Menu;
-  addons?: addon[];
+  // addons?: addon[];
   quantity: number;
 }
 export enum OrderlineStatus {
@@ -141,20 +75,20 @@ export namespace Payload {
 //   asset_url?: string;
 //   description: string;
 // }
-export interface AppDataResponse {
-  company: Company | null;
-  menus: Menu[];
-  menuCategories: MenuCategory[];
-  addons: Addon[];
-  addonCategories: AddonCategory[];
-  menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
-  locations: Location[];
-  tables: Table[];
-  menusAddonCategories: MenuAddonCategory[];
-  selectedLocationId?: string | null;
-  orderlines: Orderline[];
-  orders: Order[];
-}
+// export interface AppDataResponse {
+//   company: Company | null;
+//   menus: Menu[];
+//   menuCategories: MenuCategory[];
+//   addons: Addon[];
+//   addonCategories: AddonCategory[];
+//   menusMenuCategoriesLocations: MenuMenuCategoryLocation[];
+//   locations: Location[];
+//   tables: Table[];
+//   menusAddonCategories: MenuAddonCategory[];
+//   selectedLocationId?: string | null;
+//   orderlines: Orderline[];
+//   orders: Order[];
+// }
 export interface OrderDataResponse {
   menus: Menu[];
   menuCategories: MenuCategory[];

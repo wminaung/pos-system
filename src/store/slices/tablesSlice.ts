@@ -1,5 +1,5 @@
+import { Table } from "@prisma/client";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Menu, Table } from "@/typings/types";
 
 export interface TablesState {
   isLoading: boolean;

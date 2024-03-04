@@ -8,13 +8,12 @@ datasource db {
 }
 
 model User {
-  id         Int     @id @default(autoincrement())
-  email      String  @unique(map: "unique_email")
-  name       String
-  password   String  @default("")
-  company_id Int
-  image      String?
-  role       Role    @default(admin)
+  id       Int     @id @default(autoincrement())
+  email    String  @unique(map: "unique_email")
+  name     String
+  password String  @default("")
+  image    String?
+  role     Role    @default(admin)
 }
 
 model Menu {
@@ -43,7 +42,7 @@ model MenuMenuCategory {
   menuCategoryId Int?
 }
 
-model Tables {
+model Table {
   id          Int     @id @default(autoincrement())
   name        String
   asset_url   String?

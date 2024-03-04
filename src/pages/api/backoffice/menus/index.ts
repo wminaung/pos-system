@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/utils/db";
 import { Payload } from "@/typings/types";
 import { schema } from "@/utils/schema";
+import { Menu } from "@prisma/client";
 
 //{ name, price, description, menuCatIds, image_url, isRequired }
 
@@ -60,48 +61,22 @@ const handlePostRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const locationId = Number(req.query.locationId as string);
-  console.log(req.body, "reg");
+  const { name, price, description, asset_url, is_archived } = req.body as Menu;
+
+  if (!name || !price || !description) {
+    throw new Error("payload wrong!!!");
+  }
 
   try {
-    const joiResult = await schema.menu.payload.create.validateAsync(req.body);
-    const { name, price, description, addonCatIds, asset_url, menuCatIds } =
-      joiResult as Payload.Menu.Create;
-    console.log("body", req.body);
-
     const newMenu = await prisma.menu.create({
       data: {
         name,
-        price,
         description,
-        asset_url,
-
-        menu_addon_category: {
-          createMany: {
-            data: addonCatIds.map((addonCatId) => ({
-              addon_category_id: addonCatId,
-            })),
-          },
-        },
-        menu_menu_category_location: {
-          createMany: {
-            data: menuCatIds.map((menuCatId) => ({
-              location_id: locationId,
-              menu_category_id: menuCatId,
-            })),
-          },
-        },
-      },
-      include: {
-        menu_addon_category: true,
-        menu_menu_category_location: true,
-        orderline: true,
+        price,
       },
     });
-    console.log("newMenu", newMenu);
-    return res
-      .status(200)
-      .json({ message: `${req.method} ok!!`, newMenu, joiResult });
+
+    return res.status(200).json(newMenu);
   } catch (error) {
     console.error({ error });
     return res.status(500).json({ message: "check prisma query", error });

@@ -19,11 +19,11 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
 }));
 
-const TablesPage = () => {
+const MenuCategoriesPage = () => {
   const { data, status } = useSession();
   const router = useRouter();
   const {
-    state: { tables },
+    state: { menuCategories },
     actions,
   } = useAppSlice();
 
@@ -33,13 +33,14 @@ const TablesPage = () => {
         <Typography variant="h5" gutterBottom>
           Back Office Page
         </Typography>
+
         <Grid item xs={12}>
           {/* Your existing code */}
-          <pre>{JSON.stringify(tables, null, 2)}</pre>
+          <pre>{JSON.stringify(menuCategories, null, 2)}</pre>
         </Grid>
       </StyledPaper>
     </StyledGrid>
   );
 };
 
-export default TablesPage;
+export default MenuCategoriesPage;

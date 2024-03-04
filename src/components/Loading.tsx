@@ -1,8 +1,7 @@
 import CircularProgress from "@mui/material/CircularProgress";
-
 import Layout from "./Layout";
 import { Box, Dialog, DialogContent } from "@mui/material";
-import { useAppSlice } from "@/store/slices/appSlice";
+import useAppSlice from "@/store/hook/useAppSlice";
 
 const Loading = () => {
   const { state } = useAppSlice();

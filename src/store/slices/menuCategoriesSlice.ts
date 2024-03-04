@@ -1,4 +1,4 @@
-import { MenuCategory } from "@/typings/types";
+import { MenuCategory } from "@prisma/client";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface MenuCategoryState {
