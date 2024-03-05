@@ -1,11 +1,12 @@
 "use client";
 import { Box } from "@mui/material";
-import GridLayout, { GridItemType } from "./../GridLayout";
-import { useEffect, useState } from "react";
-import B_Card from "./B_Card";
-import { Menu } from "@prisma/client";
+import GridLayout, { GridItemType } from "../GridLayout";
+import { useEffect, useMemo, useState } from "react";
+import B_Card from "./MenuCard";
+import { Menu, MenuCategory } from "@prisma/client";
 import { config } from "@/config/config";
 import useAppSlice from "@/store/hook/useAppSlice";
+import MenuCategoryCard from "./MenuCategoryCard";
 
 const gridItems: GridItemType[] = [
   {
@@ -30,10 +31,10 @@ const gridItems: GridItemType[] = [
   },
 ];
 
-const All = () => {
+const AllMenuCategories = () => {
   const { actions, dispatch, fetchData, state } = useAppSlice();
 
-  const menus = state.menus;
+  const menuCategories = state.menuCategories;
 
   useEffect(() => {
     // const fetchData = async () => {
@@ -44,29 +45,25 @@ const All = () => {
     // fetchData();
   }, []);
 
-  if (!menus) {
+  if (!menuCategories) {
     return null;
   }
 
-  const createGridItems = (menus: Menu[]): GridItemType[] => {
-    return menus.map((menu) => ({
-      id: menu.id,
-      node: (
-        <B_Card
-          id={menu.id}
-          description={menu.description}
-          name={menu.name}
-          price={menu.price}
-          url={menu.asset_url}
-        />
-      ),
+  const createGridItems = (menuCategories: MenuCategory[]): GridItemType[] => {
+    return menuCategories.map((menuCategory) => ({
+      id: menuCategory.id,
+      node: <MenuCategoryCard {...menuCategory} />,
     }));
   };
+
+  const getItemsCallBack = () => createGridItems(menuCategories);
+
+  const getItems = useMemo(getItemsCallBack, [menuCategories]);
 
   return (
     <>
       <GridLayout
-        gridItems={createGridItems(menus)}
+        gridItems={getItems}
         gridProps={{ xs: 12, sm: 4, md: 6, lg: 4, xl: 3 }}
         itemsProps={{ elevation: 0 }}
         containerProps={{ spacing: 2 }}
@@ -79,4 +76,4 @@ const All = () => {
   );
 };
 
-export default All;
+export default AllMenuCategories;

@@ -8,19 +8,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import All from "./All";
-import useAppSlice from "@/store/hook/useAppSlice";
-import MenuForm from "./forms/MenuForm";
-import { FormAction } from "@/utils/enums";
+import All from "./AllMenus";
 import DialogBox from "../DialogBox";
 import { useState } from "react";
 import CreateMenu from "./forms/CreateMenu";
-import { Add, AddCircleOutline, Google, Label } from "@mui/icons-material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
+import AllMenus from "./AllMenus";
 
-const BackofficeLayout = () => {
+const MenusApp = () => {
   const [open, setOpen] = useState(false);
-  const { state, actions, dispatch } = useAppSlice();
 
   return (
     <Box
@@ -28,6 +24,7 @@ const BackofficeLayout = () => {
         bgcolor: "#f1f2f3",
         py: 1.5,
         px: 5,
+        pb: 10,
         display: "flex",
         minHeight: "100vh",
         flexDirection: "column",
@@ -37,13 +34,6 @@ const BackofficeLayout = () => {
       }}
     >
       <Box sx={{ mb: 2 }}>
-        {/* <Button
-          variant="contained"
-          size="large"
-          endIcon={<AddCircleOutline />}
-          onClick={() => setOpen(true)}
-        ></Button> */}
-
         <Stack direction={"row"} alignItems={"center"}>
           <Typography variant="h6" mr={0.5}>
             Add New Menu
@@ -63,9 +53,13 @@ const BackofficeLayout = () => {
           </DialogBox>
         </span>
       </Box>
-      <All />
+
+      {
+        //! this is all menus >>> <<<
+      }
+      <AllMenus />
     </Box>
   );
 };
 
-export default BackofficeLayout;
+export default MenusApp;

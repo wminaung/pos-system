@@ -42,10 +42,11 @@ const GridLayout = ({
   containerProps = {},
 }: GridLayoutType) => {
   const { actions, dispatch } = useAppSlice();
+
   return (
     <>
       <Grid container spacing={2} {...containerProps} sx={{ ...containerSx }}>
-        {gridItems.map((gridItem) => (
+        {gridItems.reverse().map((gridItem) => (
           <Grid key={gridItem.id} item {...gridProps}>
             <Item elevation={0} sx={{ ...itemSx }} {...itemsProps}>
               {gridItem.node}

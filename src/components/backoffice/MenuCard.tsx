@@ -5,11 +5,7 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { CardActionArea } from "@mui/material";
 import useAppSlice from "@/store/hook/useAppSlice";
 import { FormAction } from "@/utils/enums";
@@ -17,7 +13,7 @@ import DialogBox from "../DialogBox";
 import EditMenu from "./forms/EditMenu";
 import { useState } from "react";
 
-export interface B_CardType {
+export interface MenuCardType {
   name: string;
   url: string | null;
   id: number;
@@ -25,13 +21,13 @@ export interface B_CardType {
   price: number;
 }
 
-export default function B_Card({
+export default function MenuCard({
   name,
   url,
   id,
   description,
   price,
-}: B_CardType) {
+}: MenuCardType) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 

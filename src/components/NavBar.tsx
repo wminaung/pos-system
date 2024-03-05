@@ -19,9 +19,11 @@ const NavBar = ({ title }: Props) => {
   const router = useRouter();
 
   return (
-    <Box>
+    <Box minHeight={75}>
       <AppBar
+        // position="fixed"
         position="static"
+        elevation={0}
         sx={{ backgroundColor: theme.second, color: theme.text }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>

@@ -20,10 +20,10 @@ export const menusSlice = createSlice({
   initialState,
   reducers: {
     setMenus: (state, action: PayloadAction<Menu[]>) => {
-      state.items = action.payload;
+      state.items = action.payload.reverse();
     },
     addMenu: (state, action: PayloadAction<Menu>) => {
-      state.items = [...state.items, action.payload];
+      state.items = [action.payload, ...state.items];
     },
     editMenu: (state, action: PayloadAction<Menu>) => {
       state.items = state.items.map((item) => {

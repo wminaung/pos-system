@@ -1,16 +1,34 @@
 "use client";
 import useAppSlice from "@/store/hook/useAppSlice";
-import { FormAction } from "@/utils/enums";
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Snackbar,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Menu } from "@prisma/client";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import React, { useEffect, useState } from "react";
 import { config } from "@/config/config";
+import { useShowAlert } from "@/hooks/useShowAlert";
 
 const CreateMenu = () => {
   const [newMenu, setNewMenu] = useState<Menu>({} as Menu);
 
+  const [disabled, setDisabled] = useState<boolean>(true);
+
   const { actions, dispatch } = useAppSlice();
+  const { showAlert } = useShowAlert();
+
+  useEffect(() => {
+    if (newMenu) {
+      setDisabled(
+        !(newMenu.price > 0 && !!newMenu.name && !!newMenu.description)
+      );
+    }
+  }, [newMenu]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const res = await fetch(`${config.backofficeApiBaseUrl}/menus`, {
@@ -22,10 +40,12 @@ const CreateMenu = () => {
     });
 
     if (!res.ok) {
+      showAlert("menu create something wrong", "error");
       return;
     }
     const createdMenu = await res.json();
     console.log(createdMenu, "menu creating......");
+    showAlert("new menu successfully created", "success");
 
     dispatch(actions.menus.addMenu(createdMenu));
 
@@ -34,8 +54,6 @@ const CreateMenu = () => {
   const handleReset = () => {
     setNewMenu({} as Menu);
   };
-
-  const disabled = false;
 
   return (
     <Box

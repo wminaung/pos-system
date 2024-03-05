@@ -6,6 +6,7 @@ import { theme } from "@/config/myTheme";
 import SideBar from "./SideBar";
 import Loading from "./Loading";
 import useAppSlice from "@/store/hook/useAppSlice";
+import Footer from "./Footer";
 
 interface Props {
   title?: string;
@@ -25,7 +26,25 @@ const Layout = (props: Props) => {
     state.app.isLoading ||
     !state.app.selectedLocationId;
   return (
-    <Box>
+    <Box
+      sx={{
+        position: "fixed",
+        width: "100%",
+        height: "100%",
+        overflowX: "hidden",
+        top: 0,
+        left: 0,
+        // "&::-webkit-scrollbar": {
+        //   width: "0.4em", // Adjust the width as needed
+        // },
+        // "&::-webkit-scrollbar-track": {
+        //   background: "transparent",
+        // },
+        // "&::-webkit-scrollbar-thumb": {
+        //   background: "transparent",
+        // },
+      }}
+    >
       <NavBar title={props.title} />
       <Box sx={{ display: "flex" }}>
         {session && (
@@ -36,25 +55,19 @@ const Layout = (props: Props) => {
         )}
         <Box
           sx={{
-            p: 3,
             width: "100%",
-            overflowY: "auto",
-            height: "100vh",
+            p: 0,
+            m: 0,
+            overflowY: "scroll",
+            height: "89vh",
+            position: "sticky",
             background: theme.main,
-            "&::-webkit-scrollbar": {
-              width: "0.4em", // Adjust the width as needed
-            },
-            "&::-webkit-scrollbar-track": {
-              background: "transparent",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              background: "transparent",
-            },
           }}
         >
-          {isLoading ? <Loading /> : props.children}
+          {props.children}
         </Box>
       </Box>
+      {/* <Footer /> */}
     </Box>
   );
 };

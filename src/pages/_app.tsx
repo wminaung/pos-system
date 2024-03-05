@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { fetchAppData } from "@/store/slices/appSlice";
 import { Box } from "@mui/material";
 import NavBar from "@/components/NavBar";
+import { SnackbarProvider } from "notistack";
+import Layout from "@/components/Layout";
 
 type CustomAppProps = AppProps & { session: Session };
 
@@ -31,22 +33,25 @@ export default function App({ Component, pageProps, session }: CustomAppProps) {
   // for backoffice
   if (!isOrder && !isRoot) {
     return (
-      <Box>
-        <NavBar />
+      <SnackbarProvider maxSnack={3}>
         <Provider store={store}>
           <SessionProvider session={session}>
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </SessionProvider>
         </Provider>
-      </Box>
+      </SnackbarProvider>
     );
   }
 
   return (
-    <Provider store={store}>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
-    </Provider>
+    <SnackbarProvider maxSnack={3}>
+      <Provider store={store}>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </Provider>
+    </SnackbarProvider>
   );
 }

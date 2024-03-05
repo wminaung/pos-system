@@ -38,7 +38,7 @@ const sidebarMenuItems = [
     id: 3,
     label: "Menu Categories",
     icon: <CategoryIcon />,
-    route: "/backoffice/menu-categories",
+    route: "/backoffice/menuCategories",
   },
   {
     id: 4,
@@ -79,17 +79,6 @@ interface Props {
 const SideBar = ({ profileImageUrl, profileName }: Props) => {
   const textColor = theme.text;
 
-  const {
-    state: {
-      app: { selectedLocationId },
-      locations,
-    },
-  } = useAppSlice();
-
-  const locationName =
-    locations.find((locl) => String(locl.id) === selectedLocationId)?.name ||
-    "?";
-
   return (
     <Box
       sx={{ width: 250, borderTopRightRadius: 1 }}
@@ -118,7 +107,7 @@ const SideBar = ({ profileImageUrl, profileName }: Props) => {
             >
               {profileName}
               <br />
-              {locationName}
+              {"ohaos"}
             </ListItemText>
           </ListItemButton>
         </ListItem>
