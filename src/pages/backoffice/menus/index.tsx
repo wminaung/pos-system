@@ -11,7 +11,6 @@ const MenusPage = () => {
   return (
     <>
       <MenusApp />
-      <Footer />
     </>
   );
 };

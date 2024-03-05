@@ -14,6 +14,7 @@ import { useState } from "react";
 import CreateMenu from "./forms/CreateMenu";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import AllMenus from "./AllMenus";
+import Footer from "../Footer";
 
 const MenusApp = () => {
   const [open, setOpen] = useState(false);
@@ -26,7 +27,7 @@ const MenusApp = () => {
         px: 5,
         pb: 10,
         display: "flex",
-        minHeight: "100vh",
+        // minHeight: "100vh",
         flexDirection: "column",
         alignItems: "end",
         justifyContent: "start",
@@ -53,7 +54,6 @@ const MenusApp = () => {
           </DialogBox>
         </span>
       </Box>
-
       {
         //! this is all menus >>> <<<
       }

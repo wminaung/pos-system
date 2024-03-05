@@ -7,10 +7,8 @@ import { store } from "@/store";
 import { Session } from "next-auth";
 import { useEffect, useState } from "react";
 import { fetchAppData } from "@/store/slices/appSlice";
-import { Box } from "@mui/material";
-import NavBar from "@/components/NavBar";
 import { SnackbarProvider } from "notistack";
-import Layout from "@/components/Layout";
+import BackofficeLayout from "@/components/BackofficeLayout";
 
 type CustomAppProps = AppProps & { session: Session };
 
@@ -36,9 +34,9 @@ export default function App({ Component, pageProps, session }: CustomAppProps) {
       <SnackbarProvider maxSnack={3}>
         <Provider store={store}>
           <SessionProvider session={session}>
-            <Layout>
+            <BackofficeLayout>
               <Component {...pageProps} />
-            </Layout>
+            </BackofficeLayout>
           </SessionProvider>
         </Provider>
       </SnackbarProvider>

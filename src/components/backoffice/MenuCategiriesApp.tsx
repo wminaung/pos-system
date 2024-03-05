@@ -27,7 +27,7 @@ const MenuCategiriesApp = () => {
         px: 5,
         pb: 10,
         display: "flex",
-        minHeight: "100vh",
+        // minHeight: "100vh",
         flexDirection: "column",
         alignItems: "end",
         justifyContent: "start",

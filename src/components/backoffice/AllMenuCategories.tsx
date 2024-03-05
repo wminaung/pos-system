@@ -64,7 +64,7 @@ const AllMenuCategories = () => {
     <>
       <GridLayout
         gridItems={getItems}
-        gridProps={{ xs: 12, sm: 4, md: 6, lg: 4, xl: 3 }}
+        gridProps={{ xs: 12, sm: 6, md: 6, lg: 4, xl: 3 }}
         itemsProps={{ elevation: 0 }}
         containerProps={{ spacing: 2 }}
         itemSx={{ bgcolor: "#7abfb2f0" }}
