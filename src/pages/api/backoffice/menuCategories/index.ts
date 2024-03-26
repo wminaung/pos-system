@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/utils/db";
 import { Payload } from "@/typings/types";
+import { MenuCategory } from "@prisma/client";
 type Data = {
   name: string;
 };
@@ -38,28 +39,14 @@ const handlePostRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name, selectedLocations } = req.body as Payload.MenuCategory.Create;
-  const locationId = Number(req.query.locationId as string);
+  const { name } = req.body as MenuCategory;
   console.log(req.body, "reg");
-  if (!name || !selectedLocations.length)
+  if (!name)
     return res.status(404).json({ error: "name and locationids are needed" });
 
   try {
-    const newMenuCat = await prisma.menu_category.create({
-      data: {
-        name,
-        menu_menu_category_location: {
-          createMany: {
-            data: selectedLocations.map((selectedLocation) => ({
-              location_id: selectedLocation.id,
-              menu_id: null,
-            })),
-          },
-        },
-      },
-      include: {
-        menu_menu_category_location: true,
-      },
+    const newMenuCat = await prisma.menuCategory.create({
+      data: { name },
     });
 
     return res.status(200).json(newMenuCat);

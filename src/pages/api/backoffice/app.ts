@@ -276,10 +276,34 @@ const handleGetRequest = async (
 };
 
 const getData = async (): Promise<Api.Response.App.Get> => {
-  const menus = await prisma.menu.findMany();
-  const menuCategories = await prisma.menuCategory.findMany();
-  const menusMenuCategories = await prisma.menuMenuCategory.findMany();
-  const tables = await prisma.table.findMany();
+  const whereIsArchivedFalse = {
+    where: {
+      is_archived: false,
+    },
+  };
+
+  const menus = await prisma.menu.findMany({
+    ...whereIsArchivedFalse,
+    orderBy: { id: "desc" },
+  });
+  const menuCategories = await prisma.menuCategory.findMany({
+    ...whereIsArchivedFalse,
+    orderBy: { id: "desc" },
+  });
+  const menusMenuCategories = await prisma.menuMenuCategory.findMany({
+    where: {
+      is_archived: false,
+      Menu: { is_archived: false },
+      MenuCategory: { is_archived: false },
+    },
+    orderBy: {
+      id: "desc",
+    },
+  });
+  const tables = await prisma.table.findMany({
+    ...whereIsArchivedFalse,
+    orderBy: { id: "desc" },
+  });
 
   const responseData: Api.Response.App.Get = {
     menus,

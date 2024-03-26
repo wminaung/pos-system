@@ -46,7 +46,7 @@ export const fetchAppData = createAsyncThunk(
     const responseJson = await response.json();
     const { menus, menuCategories, menusMenuCategories, tables } =
       responseJson as Api.Response.App.Get;
-
+    console.log("responseJson", responseJson);
     dispatch(menusActions.setMenus(menus));
     dispatch(menuCategoriesActions.setMenuCategories(menuCategories));
     dispatch(

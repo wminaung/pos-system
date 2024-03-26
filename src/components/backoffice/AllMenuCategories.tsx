@@ -2,7 +2,6 @@
 import { Box } from "@mui/material";
 import GridLayout, { GridItemType } from "../GridLayout";
 import { useEffect, useMemo, useState } from "react";
-import B_Card from "./MenuCard";
 import { Menu, MenuCategory } from "@prisma/client";
 import { config } from "@/config/config";
 import useAppSlice from "@/store/hook/useAppSlice";
@@ -45,10 +44,6 @@ const AllMenuCategories = () => {
     // fetchData();
   }, []);
 
-  if (!menuCategories) {
-    return null;
-  }
-
   const createGridItems = (menuCategories: MenuCategory[]): GridItemType[] => {
     return menuCategories.map((menuCategory) => ({
       id: menuCategory.id,
@@ -56,14 +51,20 @@ const AllMenuCategories = () => {
     }));
   };
 
-  const getItemsCallBack = () => createGridItems(menuCategories);
+  const getItems = useMemo(
+    () => createGridItems(menuCategories),
+    [menuCategories]
+  );
 
-  const getItems = useMemo(getItemsCallBack, [menuCategories]);
+  if (!menuCategories) {
+    return null;
+  }
 
   return (
     <>
       <GridLayout
         gridItems={getItems}
+        // gridItems={createGridItems(menuCategories)}
         gridProps={{ xs: 12, sm: 6, md: 6, lg: 4, xl: 3 }}
         itemsProps={{ elevation: 0 }}
         containerProps={{ spacing: 2 }}

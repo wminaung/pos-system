@@ -66,7 +66,7 @@ const AllMenus = () => {
 
   const getItemsCallBack = () => createGridItems(menus);
 
-  const getItems = useMemo(getItemsCallBack, [menus]);
+  // const getItems = useMemo(getItemsCallBack, [menus]);
 
   return (
     <>

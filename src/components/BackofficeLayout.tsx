@@ -1,4 +1,3 @@
-import * as React from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -31,6 +30,8 @@ import FastfoodIcon from "@mui/icons-material/Fastfood";
 import ClassIcon from "@mui/icons-material/Class";
 import CategoryIcon from "@mui/icons-material/Category";
 import TableBarIcon from "@mui/icons-material/TableBar";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 export const drawerWidth = 240;
 
@@ -139,7 +140,10 @@ const sidebarMenuItems = [
 
 export default function BackofficeLayout({ children }: Props) {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
+
+  console.log("s :", session?.user?.email);
 
   const handleDrawerOpen = () => {
     setOpen(true);

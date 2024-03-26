@@ -21,7 +21,22 @@ export const menuCategoriesSlice = createSlice({
       state.items = action.payload;
     },
     addMenuCategory: (state, action: PayloadAction<MenuCategory>) => {
-      state.items = [...state.items, action.payload];
+      state.items = [action.payload, ...state.items];
+    },
+    editMenuCategory: (state, action: PayloadAction<MenuCategory>) => {
+      state.items = state.items.map((item) => {
+        if (item.id === action.payload.id) {
+          return action.payload;
+        }
+        return item;
+      });
+    },
+    removeMenuCategory: (state, action: PayloadAction<MenuCategory>) => {
+      state.items = [
+        ...state.items.filter((item) => {
+          return item.id !== action.payload.id;
+        }),
+      ];
     },
   },
 });

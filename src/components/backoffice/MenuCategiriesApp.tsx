@@ -15,8 +15,9 @@ import CreateMenu from "./forms/CreateMenu";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import AllMenus from "./AllMenus";
 import AllMenuCategories from "./AllMenuCategories";
+import CreateMenuCategory from "./forms/CreateMenuCategory";
 
-const MenuCategiriesApp = () => {
+const MenuCategoriesApp = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -50,7 +51,7 @@ const MenuCategiriesApp = () => {
         </Stack>
         <span>
           <DialogBox open={open} setOpen={setOpen} title="Create Menu Category">
-            <CreateMenu />
+            <CreateMenuCategory />
           </DialogBox>
         </span>
       </Box>
@@ -63,4 +64,4 @@ const MenuCategiriesApp = () => {
   );
 };
 
-export default MenuCategiriesApp;
+export default MenuCategoriesApp;

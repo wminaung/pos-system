@@ -34,7 +34,8 @@ model MenuCategory {
 }
 
 model MenuMenuCategory {
-  id Int @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
+  is_archived Boolean @default(false)
 
   Menu           Menu?         @relation(fields: [menuId], references: [id])
   menuId         Int?
