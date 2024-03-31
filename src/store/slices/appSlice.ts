@@ -21,6 +21,7 @@ interface AppState {
   init: boolean;
   formAction: FormAction;
   selectedMenuId: number;
+  selectedMenuCategoryId: number;
 }
 
 const initialState: AppState = {
@@ -30,6 +31,7 @@ const initialState: AppState = {
   init: false,
   formAction: FormAction.create,
   selectedMenuId: 0,
+  selectedMenuCategoryId: 0,
 };
 export const fetchAppData = createAsyncThunk(
   "app/fetchAppData",
@@ -96,6 +98,9 @@ export const appSlice = createSlice({
     },
     setSelectedMenuId: (state, action: PayloadAction<number>) => {
       state.selectedMenuId = action.payload;
+    },
+    setSelectedMenuCategoryId: (state, action: PayloadAction<number>) => {
+      state.selectedMenuCategoryId = action.payload;
     },
   },
 });

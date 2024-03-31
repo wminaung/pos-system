@@ -19,7 +19,6 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import Footer from "./Footer";
 import NavBar from "./NavBar";
-
 import { Avatar } from "@mui/material";
 import Link from "next/link";
 import LunchDiningIcon from "@mui/icons-material/LunchDining";
@@ -32,6 +31,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import TableBarIcon from "@mui/icons-material/TableBar";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export const drawerWidth = 240;
 
@@ -142,6 +142,7 @@ export default function BackofficeLayout({ children }: Props) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
+  const router = useRouter();
 
   console.log("s :", session?.user?.email);
 
@@ -197,6 +198,9 @@ export default function BackofficeLayout({ children }: Props) {
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",
                   px: 2.5,
+                }}
+                onClick={() => {
+                  router.push(i.route);
                 }}
               >
                 <ListItemIcon

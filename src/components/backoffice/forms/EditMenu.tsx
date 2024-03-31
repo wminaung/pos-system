@@ -22,7 +22,7 @@ const EditMenu = () => {
       setOldMenu(selectedMenu || {});
       setUpdatedMenu(selectedMenu || {});
     }
-  }, [menus, selectedMenuId]);
+  }, [menus, state.app.selectedMenuId]);
 
   if (!oldMenu || !updatedMenu) return null;
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

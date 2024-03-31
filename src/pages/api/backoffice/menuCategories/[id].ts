@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/utils/db";
 import { Payload } from "@/typings/types";
 import { idsToDelete, idsToUpdate } from "@/utils";
+import { MenuCategory } from "@prisma/client";
 type Data = {
   message: string;
 };
@@ -44,72 +45,26 @@ const handlePutRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const { name, selectedLocations } = req.body as Payload.MenuCategory.Update;
-  if (!name || !selectedLocations.length) {
-    return res.status(404).json({ error: "name are needed" });
-  }
+  const { name, id, is_archived } = req.body as MenuCategory;
 
-  const menuCatIdStr = req.query.id as string;
-  console.log("updated :", menuCatIdStr);
-  const menuCatId = Number(menuCatIdStr);
   try {
-    const updatedMenuCategory = await prisma.menu_category.update({
+    const menucatIdStr = req.query.id as string;
+    const selectedMenuCategoryId = Number(menucatIdStr);
+
+    const updatedMenuCategory = await prisma.menuCategory.update({
       data: {
         name,
       },
-
       where: {
-        id: menuCatId,
+        id: selectedMenuCategoryId,
       },
     });
 
-    const existingLocation = await prisma.menu_menu_category_location.findMany({
-      where: {
-        menu_category_id: menuCatId,
-      },
-      select: {
-        location_id: true,
-      },
-      distinct: ["location_id"],
-    });
-    const existingLocationIds = existingLocation.map(
-      (item) => item.location_id
-    );
-    const selectedLocationIds = selectedLocations.map((item) => item.id);
-
-    const toDeletedLocationIds = idsToDelete(
-      existingLocationIds,
-      selectedLocationIds
-    );
-    const toUpdatedLocationIds = idsToUpdate(
-      existingLocationIds,
-      selectedLocationIds
-    );
-
-    await prisma.menu_menu_category_location.deleteMany({
-      where: {
-        menu_category_id: menuCatId,
-        location_id: {
-          in: toDeletedLocationIds,
-        },
-      },
-    });
-
-    await prisma.menu_menu_category_location.createMany({
-      data: toUpdatedLocationIds.map((locationId) => ({
-        location_id: locationId,
-        menu_id: null,
-        menu_category_id: menuCatId,
-      })),
-    });
-
-    console.log({ toDeletedLocationIds, toUpdatedLocationIds });
-    return res
-      .status(200)
-      .json({ updatedMenuCategory, message: `${req.method} ok!!` });
+    return res.status(200).json(updatedMenuCategory);
   } catch (error) {
-    console.log({ error });
-    return res.status(500).json({ message: " check query update fail", error });
+    return res
+      .status(500)
+      .json({ message: "menu Update fail server error", error });
   }
 };
 
@@ -118,26 +73,26 @@ const handleDeleteRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const menuCatIdStr = req.query.id as string;
-  console.log("delete :", menuCatIdStr);
-  const menuCatId = Number(menuCatIdStr);
-  const locationId = Number(req.query.locationId as string);
+  const menucatIdStr = req.query.id as string;
+  console.log("delete :", menucatIdStr);
+  const menucatId = Number(menucatIdStr);
+
   try {
-    const archivedMenuCat = await prisma.menu_category.update({
-      where: {
-        id: menuCatId,
-      },
-      data: {
-        is_archived: true,
-      },
+    // const archivedMenu = await prisma.menu.update({
+    //   data: {
+    //     is_archived: true,
+    //   },
+    //   where: {
+    //     id: menuId,
+    //   },
+    // });
+    const deletedMenuCategory = await prisma.menuCategory.delete({
+      where: { id: menucatId },
     });
-    return res
-      .status(200)
-      .json({ archivedMenuCat, message: "archivedMenuCat successfully" });
+    return res.status(200).json(deletedMenuCategory);
   } catch (error) {
-    console.log({ error });
     return res
       .status(500)
-      .json({ message: "archivedMenuCat check query delete fail", error });
+      .json({ message: `archived error in ${req.url}`, error });
   }
 };

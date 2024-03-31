@@ -13,6 +13,7 @@ import DialogBox from "../DialogBox";
 import EditMenu from "./forms/EditMenu";
 import { useState } from "react";
 import { MenuCategory } from "@prisma/client";
+import EditMenuCategory from "./forms/EditMenuCategory";
 
 export interface Props extends MenuCategory {}
 
@@ -27,7 +28,7 @@ export default function MenuCategoryCard({ id, is_archived, name }: Props) {
 
     // todo open dialog box
     dispatch(actions.app.setFormAction(FormAction.edit));
-    dispatch(actions.app.setSelectedMenuId(id));
+    dispatch(actions.app.setSelectedMenuCategoryId(id));
     setOpen(true);
   };
 
@@ -80,7 +81,7 @@ export default function MenuCategoryCard({ id, is_archived, name }: Props) {
           {
             // ! need to fix it
           }
-          <EditMenu />
+          <EditMenuCategory />
         </DialogBox>
       </span>
     </Card>
